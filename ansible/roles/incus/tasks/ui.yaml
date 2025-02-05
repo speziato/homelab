@@ -1,0 +1,6 @@
+---
+- name: Install incus-ui-canonical
+  package:
+    name:
+      - incus-ui-canonical
+    state: latest

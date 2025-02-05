@@ -1,0 +1,30 @@
+- name: Install Zabbly's incus repository
+  include_tasks:
+    file: zabbly-repo.yaml
+  tags:
+    - incus
+    - repository
+- name: Install incus
+  include_tasks:
+    file: install.yaml
+  tags:
+    - incus
+    - install
+- name: Configure incus
+  include_tasks:
+    file: configure.yaml
+  tags:
+    - incus
+    - configure
+- name: Configure firewall rules
+  include_tasks:
+    file: firewall.yaml
+  tags:
+    - incus
+    - firewall
+- name: Install incus ui
+  include_tasks:
+    file: ui.yaml
+  tags:
+    - incus
+    - ui

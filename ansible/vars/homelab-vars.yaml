@@ -1,0 +1,59 @@
+server_setup:
+  apt_repos:
+    tailscale:
+      name: "tailscale-{{ansible_distribution_release}}-stable"
+      repo: "https://pkgs.tailscale.com/stable/ubuntu"
+      suites: "{{ansible_distribution_release}}"
+      components:
+      - main
+      gpg_key: "https://pkgs.tailscale.com/stable/ubuntu/{{ansible_distribution_release}}.noarmor.gpg"
+  packages:
+  - net-tools
+  - vim
+  - curl
+  - git
+  unattended_updates:
+    update_time: "03:00"
+    install_time: "04:00"
+    reboot_time: "05:00"
+
+incus:
+  apt_repos:
+    zabbly_incus:
+      name: zabbly-incus-stable
+      repo: "https://pkgs.zabbly.com/incus/stable"
+      gpg_key: "https://pkgs.zabbly.com/key.asc"
+      gpg_key_id: "4EFC590696CB15B87C73A3AD82CC8797C838DCFD"
+      suites: noble # LTS only
+      components:
+      - main
+  internal_dns_domain: "incus.internal"
+  network_cidr: 10.232.144.1/24
+  host_network: 192.168.1.0/24
+  bridge_name: incusbr0
+  storage_pool: /srv/incus-pool/storage
+  ui_title: Speziato - Incus Hypervisor
+  ci_vendor_data: |
+    #cloud-config
+    package_update: true
+    package_upgrade: true
+    packages:
+    - net-tools
+    - git
+    - curl
+    - openssh-server
+    users:
+    - name: {{ ansible_user }}
+      sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+      groups: sudo
+      shell: /bin/bash
+      homedir: /home/{{ ansible_user }}
+      ssh_authorized_keys:
+        - {{ lookup('file', "{{ ssh_pub_key_file }}") }}
+    growpart:
+      mode: auto
+      devices:
+      - '/'
+      - '/dev/sda'
+      - '/dev/sda2'
+      ignore_growroot_disabled: false

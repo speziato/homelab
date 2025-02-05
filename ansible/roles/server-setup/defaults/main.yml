@@ -1,0 +1,20 @@
+---
+server_setup:
+  apt_repos:
+    tailscale:
+      archive: Tailscale
+      name: "tailscale-{{ansible_distribution_release}}-stable"
+      repo: "https://pkgs.tailscale.com/stable/ubuntu"
+      suites: "{{ansible_distribution_release}}"
+      components:
+      - main
+      gpg_key: "https://pkgs.tailscale.com/stable/ubuntu/{{ansible_distribution_release}}.noarmor.gpg"
+  packages:
+  - net-tools
+  - vim
+  - curl
+  - git
+  unattended_updates:
+    update_time: "03:00"
+    install_time: "04:00"
+    reboot_time: "05:00"

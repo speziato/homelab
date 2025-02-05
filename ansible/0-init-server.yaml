@@ -1,0 +1,12 @@
+---
+- name: Server setup
+  hosts: nodes
+  become: true
+  become_method: sudo
+  become_user: root
+  vars_files:
+    - /vars/homelab-vars.yml
+  roles:
+    - server-setup
+  tags:
+    - server-setup
