@@ -22,6 +22,12 @@
   tags:
     - incus
     - firewall
+- name: Enable oci repositories
+  include_tasks:
+    file: oci.yaml
+  tags:
+    - incus
+    - oci
 - name: Install incus ui
   include_tasks:
     file: ui.yaml

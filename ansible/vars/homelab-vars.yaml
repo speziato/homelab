@@ -33,6 +33,9 @@ incus:
   bridge_name: incusbr0
   storage_pool: /srv/incus-pool/storage
   ui_title: Speziato - Incus Hypervisor
+  oci:
+    - remote_name: docker
+      remote_url: https://docker.io
   ci_vendor_data: |
     #cloud-config
     package_update: true

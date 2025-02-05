@@ -1,0 +1,4 @@
+---
+- name: Enable oci containers
+  shell: "incus remote add {{item.remote_name}} {{item.remote_url}} --protocol=oci"
+  loop: "{{incus.oci}}"
