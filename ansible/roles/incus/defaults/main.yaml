@@ -18,6 +18,7 @@ incus:
   oci:
     - remote_name: docker
       remote_url: https://docker.io
+  remote_incus_name: hypervisor
   ci_vendor_data: |
     #cloud-config
     package_update: true

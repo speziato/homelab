@@ -34,3 +34,9 @@
   tags:
     - incus
     - ui
+- name: Configure remote on local host
+  include_tasks:
+    file: remote.yaml
+  tags:
+    - incus
+    - remote
