@@ -1,31 +1,35 @@
 ---
-- name: Update Package Cache
-  apt:
-    update_cache: true
-
-- name: Installing packages
-  package:
-    name:
-      - incus
-      - qemu-system
-      - skopeo
-      - umoci
-    state: latest
-
-- name: Ensure group "incus-admin" exists
-  group:
-    name: incus-admin
-    state: present
-  become: true
-- name: Ensure "{{ ansible_user }}" is part of group "incus-admin"
-  user:
-    name: "{{ ansible_user }}"
-    groups: incus-admin
-    append: true
-  become: true
-- name: Restarting incus service
-  systemd:
-    daemon_reload: true
-    name: incus
-    enabled: true
-    state: restarted
+- block:
+  - name: Update Package Cache
+    apt:
+      update_cache: true
+  
+  - name: Installing packages
+    package:
+      name:
+        - incus
+        - qemu-system
+        - skopeo
+        - umoci
+      state: latest
+  
+  - name: Ensure group "incus-admin" exists
+    group:
+      name: incus-admin
+      state: present
+    become: true
+  - name: Ensure "{{ ansible_user }}" is part of group "incus-admin"
+    user:
+      name: "{{ ansible_user }}"
+      groups: incus-admin
+      append: true
+    become: true
+  - name: Restarting incus service
+    systemd:
+      daemon_reload: true
+      name: incus
+      enabled: true
+      state: restarted
+  tags:
+    - incus
+    - intall

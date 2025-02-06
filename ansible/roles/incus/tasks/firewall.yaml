@@ -1,59 +1,63 @@
 ---
-- name: Get ipv4 bridge address
-  shell: "incus network get {{ incus.bridge_name }} ipv4.address | sed 's|\\.[0-9]\\+/|.0/|'"
-  register: ipv4
-- name: Get ipv6 bridge address
-  shell: "incus network get {{ incus.bridge_name }} ipv6.address | sed 's|:[0-9]\\+/|:/|'"
-  register: ipv6
-- name: Allow guests to get an IP from the Incus host - port 67
-  community.general.ufw:
-    rule: allow
-    direction: in
-    proto: udp
-    port: '67'
-    interface: "{{ incus.bridge_name }}"
-- name: Allow guests to get an IP from the Incus host - port 547
-  community.general.ufw:
-    rule: allow
-    direction: in
-    proto: udp
-    port: '547'
-    interface: "{{ incus.bridge_name }}"
-- name: Allow guests to resolve host names from the Incus host - port 53
-  community.general.ufw:
-    rule: allow
-    direction: in
-    proto: any
-    port: '53'
-    interface: "{{ incus.bridge_name }}"
-- name: Allow guests to have access to outbound connections - ipv4
-  community.general.ufw:
-    rule: allow
-    direction: in
-    route: true
-    proto: any
-    src: "{{ ipv4.stdout }}"
-    interface: "{{ incus.bridge_name }}"
-  when: ipv4.stdout != 'none'
-- name: Allow guests to have access to outbound connections - ipv6
-  community.general.ufw:
-    rule: allow
-    direction: in
-    route: true
-    proto: any
-    src: "{{ ipv6.stdout }}"
-    interface: "{{ incus.bridge_name }}"
-  when: ipv6.stdout != 'none'
-- name: Allow incoming connection to port 8443 (API+UI)
-  community.general.ufw:
-    rule: allow
-    direction: in
-    proto: udp
-    port: '8443'
-    src: "{{ incus.host_network }}"
-- name: "Allow incoming connection from anywhere to {{ incus.bridge_name }}"
-  community.general.ufw:
-    rule: allow
-    direction: out
-    proto: any
-    interface: "{{ incus.bridge_name }}"
+- block:
+   - name: Get ipv4 bridge address
+     shell: "incus network get {{ incus.bridge_name }} ipv4.address | sed 's|\\.[0-9]\\+/|.0/|'"
+     register: ipv4
+   - name: Get ipv6 bridge address
+     shell: "incus network get {{ incus.bridge_name }} ipv6.address | sed 's|:[0-9]\\+/|:/|'"
+     register: ipv6
+   - name: Allow guests to get an IP from the Incus host - port 67
+     community.general.ufw:
+       rule: allow
+       direction: in
+       proto: udp
+       port: '67'
+       interface: "{{ incus.bridge_name }}"
+   - name: Allow guests to get an IP from the Incus host - port 547
+     community.general.ufw:
+       rule: allow
+       direction: in
+       proto: udp
+       port: '547'
+       interface: "{{ incus.bridge_name }}"
+   - name: Allow guests to resolve host names from the Incus host - port 53
+     community.general.ufw:
+       rule: allow
+       direction: in
+       proto: any
+       port: '53'
+       interface: "{{ incus.bridge_name }}"
+   - name: Allow guests to have access to outbound connections - ipv4
+     community.general.ufw:
+       rule: allow
+       direction: in
+       route: true
+       proto: any
+       src: "{{ ipv4.stdout }}"
+       interface: "{{ incus.bridge_name }}"
+     when: ipv4.stdout != 'none'
+   - name: Allow guests to have access to outbound connections - ipv6
+     community.general.ufw:
+       rule: allow
+       direction: in
+       route: true
+       proto: any
+       src: "{{ ipv6.stdout }}"
+       interface: "{{ incus.bridge_name }}"
+     when: ipv6.stdout != 'none'
+   - name: Allow incoming connection to port 8443 (API+UI)
+     community.general.ufw:
+       rule: allow
+       direction: in
+       proto: udp
+       port: '8443'
+       src: "{{ incus.host_network }}"
+   - name: "Allow incoming connection from anywhere to {{ incus.bridge_name }}"
+     community.general.ufw:
+       rule: allow
+       direction: out
+       proto: any
+       interface: "{{ incus.bridge_name }}"
+  tags:
+    - incus
+    - firewall

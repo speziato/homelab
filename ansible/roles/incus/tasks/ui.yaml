@@ -4,3 +4,6 @@
     name:
       - incus-ui-canonical
     state: latest
+  tags:
+    - incus
+    - ui
