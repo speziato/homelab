@@ -1,0 +1,16 @@
+http:
+  routers:
+    jellyfin:
+      rule: "Host(`jellyfin.internal.speziato.dev`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      service: jellyfin
+      # middlewares:
+      #   - ldap@file
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://jellyfin.fritz.box:8096"

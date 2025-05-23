@@ -1,0 +1,17 @@
+http:
+  routers:
+    hypervisor:
+      rule: "Host(`hypervisor.internal.speziato.dev`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      service: hypervisor
+      # middlewares:
+      #   - ldap@file
+  services:
+    hypervisor:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: "https://hypervisor.fritz.box:8006/"

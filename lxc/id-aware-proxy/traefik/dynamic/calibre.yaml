@@ -1,0 +1,16 @@
+http:
+  routers:
+    calibre:
+      rule: "Host(`calibre.internal.speziato.dev`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      service: calibre
+      # middlewares:
+      #   - ldap@file
+  services:
+    calibre:
+      loadBalancer:
+        servers:
+          - url: "http://calibre-web.fritz.box:8083"

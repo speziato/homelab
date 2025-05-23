@@ -1,0 +1,16 @@
+http:
+  routers:
+    tandoor:
+      rule: "Host(`tandoor.internal.speziato.dev`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      service: tandoor
+      # middlewares:
+      #   - ldap@file
+  services:
+    tandoor:
+      loadBalancer:
+        servers:
+          - url: "http://tandoor.fritz.box:8002"

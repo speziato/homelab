@@ -1,0 +1,16 @@
+http:
+  routers:
+    nas:
+      rule: "Host(`deluge.internal.speziato.dev`)"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      service: nas
+      # middlewares:
+      #   - ldap@file
+  services:
+    nas:
+      loadBalancer:
+        servers:
+          - url: "http://nas.fritz.box:8112"
