@@ -1,0 +1,108 @@
+# The base path of Dex and the external name of the OpenID Connect service.
+# This is the canonical URL that all clients MUST use to refer to Dex. If a
+# path is provided, Dex's HTTP service will listen at a non-root URL.
+issuer: https://login.internal.speziato.dev
+
+# The storage configuration determines where Dex stores its state.
+# Supported options include:
+#   - SQL flavors
+#   - key-value stores (eg. etcd)
+#   - Kubernetes Custom Resources
+#
+# See the documentation (https://dexidp.io/docs/storage/) for further information.
+storage:
+  type: sqlite3
+  config:
+    file: /var/dex/dex.db
+
+web:
+  http: 0.0.0.0:5556
+
+# Dex UI configuration
+frontend:
+  issuer: Rick Internal SSO
+  logoURL: theme/logo.png
+  dir: ""
+  theme: dark
+
+# logger:
+#   level: "debug"
+#   format: "text" # can also be "json"
+
+# Expiration configuration for tokens, signing keys, etc.
+# expiry:
+#   deviceRequests: "5m"
+#   signingKeys: "6h"
+#   idTokens: "24h"
+#   refreshTokens:
+#     disableRotation: false
+#     reuseInterval: "3s"
+#     validIfNotUsedFor: "2160h" # 90 days
+#     absoluteLifetime: "3960h" # 165 days
+
+# OAuth2 configuration
+oauth2:
+  # use ["code", "token", "id_token"] to enable implicit flow for web-only clients
+  responseTypes: ["code", "token", "id_token"] # also allowed are "token" and "id_token"
+#
+#   # By default, Dex will ask for approval to share data with application
+#   # (approval for sharing data from connected IdP to Dex is separate process on IdP)
+  skipApprovalScreen: true
+#
+#   # If only one authentication method is enabled, the default behavior is to
+#   # go directly to it. For connected IdPs, this redirects the browser away
+#   # from application to upstream provider such as the Google login page
+#   alwaysShowLoginScreen: false
+#
+#   # Uncomment to use a specific connector for password grants
+#   passwordConnector: local
+
+# Static clients registered in Dex by default.
+#
+# Alternatively, clients may be added through the gRPC API.
+staticClients:
+  - id: traefik_fwd_auth
+    redirectURIs:
+      - 'https://hypervisor.internal.speziato.dev'
+    name: 'Traefik Forward Authentication'
+    secret: pB7D6EubrYhFGPJVYflqKucM
+
+# Connectors are used to authenticate users against upstream identity providers.
+#
+# See the documentation (https://dexidp.io/docs/connectors/) for further information.
+connectors:
+- name: LDAP
+  id: ldap
+  type: ldap
+  config:
+    host: openldap:1389
+    insecureNoSSL: true
+    bindDN: cn=admin,dc=speziato,dc=dev
+    bindPW: '{{ getenv "LDAP_ADMIN_PASSWORD" }}'
+    userSearch:
+      baseDN: dc=speziato,dc=dev
+      filter: (objectClass=inetOrgPerson)
+      username: uid
+      idAttr: uid
+      emailAttr: mail
+      nameAttr: cn
+      preferredUsernameAttr: uid
+    groupSearch:
+      baseDN: dc=speziato,dc=dev
+      filter: (objectClass=groupofnames)
+      nameAttr: cn
+      userMatchers:
+      - userAttr: DN
+        groupAttr: member
+
+# Enable the password database.
+#
+# It's a "virtual" connector (identity provider) that stores
+# login credentials in Dex's store.
+enablePasswordDB: false
+
+# If this option isn't chosen users may be added through the gRPC API.
+# A static list of passwords for the password connector.
+#
+# Alternatively, passwords my be added/updated through the gRPC API.
+# staticPasswords: []

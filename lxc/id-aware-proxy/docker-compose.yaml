@@ -26,6 +26,7 @@ services:
       # - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik:/etc/traefik
     depends_on:
+    - dex
     - openldap
   openldap:
     image: bitnami/openldap:2.6.10
@@ -39,3 +40,16 @@ services:
       - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
       - LDAP_ROOT=DC=speziato,DC=dev
       - LDAP_CUSTOM_LDIF_DIR=/run/secrets/
+  dex:
+    image: dexidp/dex:v2.43.1-alpine
+    ports:
+    - '5556:5556'
+    secrets:
+    - ldap_admin_psw
+    volumes:
+    - ./dex:/var/dex
+    environment:
+     -  LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
+    command: dex serve /var/dex/config.yaml
+    depends_on:
+    - openldap
