@@ -1,0 +1,13 @@
+tcp:
+  routers:
+    ldap:
+      rule: HostSNI(`*`)
+      entryPoints:
+        - "ldap"
+      service: "ldap-service"
+
+  services:
+    ldap-service:
+      loadBalancer:
+        servers:
+          - address: "openldap:389"

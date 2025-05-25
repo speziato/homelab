@@ -1,0 +1,18 @@
+http:
+  middlewares:
+    ldap:
+      plugin:
+        ldapAuth:
+          Attribute: uid
+          SearchFilter: (\{\{.Attribute\}\}=\{\{.Username\}\})
+          BaseDn: dc=speziato,dc=dev
+          BindDn: uid=admin,dc=speziato,dc=dev
+          BindPasswordLabel: ldap_admin_psw
+          Enabled: true
+          LogLevel: ERROR
+          CacheCookieName: SESSION_TOKEN
+          CacheCookieSecure: "true"
+          ForwardUsernameHeader: X-LDAP-USER
+          ServerList:
+            - Port: "1389"
+              Url: ldap://openldap

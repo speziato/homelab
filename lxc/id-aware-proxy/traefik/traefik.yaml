@@ -6,6 +6,8 @@ entryPoints:
     address: :80
   websecure:
     address: :443
+  ldap:
+    address: :389
 serversTransport:
   insecureSkipVerify: true
 api:
@@ -18,6 +20,11 @@ providers:
     watch: true
   # docker:
   #   endpoint: "unix:///var/run/docker.sock"
+experimental:
+  plugins:
+    ldapAuth:
+      moduleName: "github.com/wiltonsr/ldapAuth"
+      version: "v0.1.10"
 http:
   middlewares:
     redirect-to-https:

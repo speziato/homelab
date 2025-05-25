@@ -1,12 +1,17 @@
 secrets:
   cf_token:
     file: ./secrets/cf_token.secret
+  ldap_admin_psw:
+    file: ./secrets/ldap_admin_psw.secret
+  "ldap.ldif":
+    file: ./secrets/ldap.ldif.secret
 services:
   reverse-proxy:
     # The official v3 Traefik docker image
     image: traefik:v3.4
     secrets:
     - cf_token
+    - ldap_admin_psw
     environment:
     - "CF_DNS_API_TOKEN_FILE=/run/secrets/cf_token"
     - "CF_ZONE_API_TOKEN_FILE=/run/secrets/cf_token"
@@ -20,3 +25,17 @@ services:
       # So that Traefik can listen to the Docker events
       # - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik:/etc/traefik
+    depends_on:
+    - openldap
+  openldap:
+    image: bitnami/openldap:2.6.10
+    ports:
+      - '1389:1389'
+    secrets:
+    - ldap_admin_psw
+    - "ldap.ldif"
+    environment:
+      - LDAP_ADMIN_USERNAME=admin
+      - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
+      - LDAP_ROOT=DC=speziato,DC=dev
+      - LDAP_CUSTOM_LDIF_DIR=/run/secrets/
