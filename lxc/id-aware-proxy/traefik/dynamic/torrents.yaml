@@ -1,7 +1,7 @@
 http:
   routers:
     nas:
-      rule: "Host(`deluge.internal.speziato.dev`)"
+      rule: "Host(`torrents.internal.speziato.dev`)"
       entryPoints:
         - websecure
       tls:
@@ -13,4 +13,4 @@ http:
     nas:
       loadBalancer:
         servers:
-          - url: "http://nas.fritz.box:8112"
+          - url: "http://nas.fritz.box:8080"

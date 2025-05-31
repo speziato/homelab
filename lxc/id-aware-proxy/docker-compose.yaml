@@ -8,7 +8,7 @@ secrets:
 services:
   reverse-proxy:
     # The official v3 Traefik docker image
-    image: traefik:v3.4
+    image: docker.io/traefik:v3.4
     secrets:
     - cf_token
     - ldap_admin_psw
@@ -29,7 +29,7 @@ services:
     - dex
     - openldap
   openldap:
-    image: bitnami/openldap:2.6.10
+    image: docker.io/bitnami/openldap:2.6.10
     ports:
       - '1389:1389'
     secrets:
@@ -41,7 +41,7 @@ services:
       - LDAP_ROOT=DC=speziato,DC=dev
       - LDAP_CUSTOM_LDIF_DIR=/run/secrets/
   dex:
-    image: dexidp/dex:v2.43.1-alpine
+    image: docker.io/dexidp/dex:v2.43.1-alpine
     ports:
     - '5556:5556'
     secrets:
