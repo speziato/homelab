@@ -1,0 +1,6 @@
+[env]
+HYPERVISOR_IP="192.168.1.10"
+TAILSCALE_KEY="tskey-auth-kwuc6FYRSv11CNTRL-9ZcipC5f15VemvU3pTCi4VAzLnd1aevT5"
+
+[tools]
+yq = "latest"

@@ -1,17 +1,20 @@
 secrets:
   cf_token:
     file: ./secrets/cf_token.secret
+  lldap_jwt:
+    file: ./secrets/ldap/jwt.secret
   ldap_admin_psw:
-    file: ./secrets/ldap_admin_psw.secret
-  "ldap.ldif":
-    file: ./secrets/ldap.ldif.secret
+    file: ./secrets/ldap/admin_psw.secret
+  oauth2_client_secret:
+    file: ./secrets/oauth2/client_secret.secret
+  oauth2_cookie_secret:
+    file: ./secrets/oauth2/cookie_secret.secret
 services:
   reverse-proxy:
     # The official v3 Traefik docker image
-    image: docker.io/traefik:v3.4
+    image: traefik:v3.4
     secrets:
     - cf_token
-    - ldap_admin_psw
     environment:
     - "CF_DNS_API_TOKEN_FILE=/run/secrets/cf_token"
     - "CF_ZONE_API_TOKEN_FILE=/run/secrets/cf_token"
@@ -27,29 +30,66 @@ services:
       - ./traefik:/etc/traefik
     depends_on:
     - dex
-    - openldap
-  openldap:
-    image: docker.io/bitnami/openldap:2.6.10
+    healthcheck:
+      test: traefik healthcheck --ping
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+  ldap:
+    image: lldap/lldap:2025-08-31-alpine
     ports:
-      - '1389:1389'
+      # For LDAP, not recommended to expose, see Usage section.
+      #- "3890:3890"
+      # For LDAPS (LDAP Over SSL), enable port if LLDAP_LDAPS_OPTIONS__ENABLED set true, look env below
+      #- "6360:6360"
+      # For the web front-end
+      - "17170:17170"
+    volumes:
+      - "./ldap:/data"
     secrets:
     - ldap_admin_psw
-    - "ldap.ldif"
+    env_file:
+      - path: secrets/ldap/lldap.env
+        required: true
     environment:
-      - LDAP_ADMIN_USERNAME=admin
-      - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
-      - LDAP_ROOT=DC=speziato,DC=dev
-      - LDAP_CUSTOM_LDIF_DIR=/run/secrets/
+      - UID=1000
+      - GID=1000
+      - TZ=Europe/Rome
+      - LLDAP_LDAP_BASE_DN=DC=speziato,DC=dev
   dex:
-    image: docker.io/dexidp/dex:v2.43.1-alpine
+    image: dexidp/dex:v2.43.1-alpine
     ports:
     - '5556:5556'
     secrets:
     - ldap_admin_psw
+    - oauth2_client_secret
     volumes:
     - ./dex:/var/dex
     environment:
-     -  LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
+    - LDAP_ADMIN_PASSWORD_FILE=/run/secrets/ldap_admin_psw
+    - OAUTH2_CLIENT_SECRET_FILE=/run/secrets/oauth2_client_secret
     command: dex serve /var/dex/config.yaml
     depends_on:
-    - openldap
+    - ldap
+    healthcheck:
+      test: wget --no-verbose --tries=1 --output-document=/dev/null http://localhost:5558/healthz/live &> /dev/null || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.12.0
+    secrets:
+    - oauth2_client_secret
+    - oauth2_cookie_secret
+    environment:
+    - OAUTH2_PROXY_CLIENT_SECRET_FILE=/run/secrets/oauth2_client_secret
+    - OAUTH2_PROXY_COOKIE_SECRET_FILE=/run/secrets/oauth2_cookie_secret
+    volumes:
+    - ./oauth2-proxy:/etc/oauth2_proxy
+    command: --config=/etc/oauth2_proxy/config.cfg
+    depends_on:
+      - reverse-proxy

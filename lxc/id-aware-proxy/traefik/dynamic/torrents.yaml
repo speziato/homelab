@@ -7,8 +7,23 @@ http:
       tls:
         certResolver: cloudflare
       service: nas
-      # middlewares:
-      #   - ldap@file
+      middlewares:
+        - add-shebang
+        - auth-headers
+        - oauth-auth-redirect
+    nas-oauth:
+      rule: "Host(`torrents.internal.speziato.dev`) && PathPrefix(`/oauth2/`)"
+      middlewares:
+        - auth-headers
+      service: oauth-backend
+      tls:
+        certResolver: cloudflare
+
+  middlewares:
+    add-shebang:
+      redirectRegex:
+        regex: "^https?://torrents.internal.speziato.dev/(^api.*|.*(css|png|jpg|js))$"
+        replacement: "https://torrents.internal.speziato.dev/#/$1"
   services:
     nas:
       loadBalancer:

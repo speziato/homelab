@@ -7,8 +7,6 @@ http:
       tls:
         certResolver: cloudflare
       service: hypervisor
-      # middlewares:
-      #   - ldap@file
   services:
     hypervisor:
       loadBalancer:

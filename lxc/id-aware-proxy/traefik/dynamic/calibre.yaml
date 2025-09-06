@@ -7,8 +7,8 @@ http:
       tls:
         certResolver: cloudflare
       service: calibre
-      # middlewares:
-      #   - ldap@file
+      middlewares:
+        - oauth-auth-redirect
   services:
     calibre:
       loadBalancer:

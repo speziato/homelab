@@ -7,8 +7,6 @@ http:
       tls:
         certResolver: cloudflare
       service: dex
-      # middlewares:
-      #   - ldap@file
   services:
     dex:
       loadBalancer:
