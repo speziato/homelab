@@ -11,6 +11,7 @@ secrets:
     file: ./secrets/oauth2/cookie_secret.secret
 services:
   reverse-proxy:
+    restart: always
     # The official v3 Traefik docker image
     image: traefik:v3.4
     secrets:
@@ -38,6 +39,7 @@ services:
       start_period: 40s
       start_interval: 5s
   ldap:
+    restart: always
     image: lldap/lldap:2025-08-31-alpine
     ports:
       # For LDAP, not recommended to expose, see Usage section.
@@ -59,6 +61,7 @@ services:
       - TZ=Europe/Rome
       - LLDAP_LDAP_BASE_DN=DC=speziato,DC=dev
   dex:
+    restart: always
     image: dexidp/dex:v2.43.1-alpine
     ports:
     - '5556:5556'
@@ -81,6 +84,7 @@ services:
       start_period: 40s
       start_interval: 5s
   oauth2-proxy:
+    restart: always
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.12.0
     secrets:
     - oauth2_client_secret

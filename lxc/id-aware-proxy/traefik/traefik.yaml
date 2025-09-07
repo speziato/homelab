@@ -6,8 +6,6 @@ entryPoints:
     address: :80
   websecure:
     address: :443
-  ldap:
-    address: :389
 ping: {}
 serversTransport:
   insecureSkipVerify: true
