@@ -1,0 +1,5 @@
+[env]
+'_'.file = "{{config_root}}/secrets/.env"
+
+[tools]
+opentofu = "1.9.0"
