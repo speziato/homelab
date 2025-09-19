@@ -18,7 +18,7 @@ services:
       - 8080:8080
     command: sh -c "ln -s -f /run/secrets/qbittorrent_conf /config/qBittorrent.conf && qbittorrent-nox"
     volumes:
-      - ./qbittorrent/torrents:/downloads:U
+      - ./share:/downloads:U
       - ./qbittorrent/config:/config:U
       - ./qbittorrent/torrents:/torrents:U
   samba:
