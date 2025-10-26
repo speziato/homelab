@@ -2,5 +2,5 @@
 **/*.tfplan
 **/*import_*.tf
 **/symmetric.gpg
-**/*.tfstate.backup
 **/.terraform/
+**/*.tfstate*backup
