@@ -1,4 +1,7 @@
-
+import {
+  to = proxmox_lxc.calibre-web
+  id = "hypervisor/lxc/106"
+}
 
 # __generated__ by OpenTofu
 # Please review these resources and move them into your main configuration files.

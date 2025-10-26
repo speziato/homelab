@@ -1,3 +1,8 @@
+import {
+  to = proxmox_lxc.media-server
+  id = "hypervisor/lxc/104"
+}
+
 # __generated__ by OpenTofu
 # Please review these resources and move them into your main configuration files.
 
