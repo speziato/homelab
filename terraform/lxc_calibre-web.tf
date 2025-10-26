@@ -35,7 +35,7 @@ resource "proxmox_lxc" "calibre-web" {
     key     = "0"
     slot    = 0
     storage = ""
-    volume  = "/vm-zfs-pool/books"
-    mp      = "/books"
+    volume  = "/vm-zfs-pool/subvol-104-disk-1/media/books"
+    mp      = "/data/media/books"
   }
 }
