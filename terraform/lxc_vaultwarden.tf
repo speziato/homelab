@@ -38,3 +38,10 @@ resource "proxmox_lxc" "vaultwarden" {
     storage   = "" # local-lvm:vm-105-disk-0
   }
 }
+
+output "vaultwarden" {
+  value = {
+    ansible_host  = proxmox_lxc.vaultwarden.hostname
+    type          = "lxc"
+  }
+}

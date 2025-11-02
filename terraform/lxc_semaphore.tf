@@ -36,3 +36,10 @@ resource "proxmox_lxc" "semaphore" {
   }
   
 }
+
+output "semaphore" {
+  value = {
+    ansible_host  = proxmox_lxc.semaphore.hostname
+    type          = "lxc"
+  }
+}

@@ -64,3 +64,10 @@ resource "proxmox_lxc" "media-server" {
     mp      = "/data"
   }
 }
+
+output "media-server" {
+  value = {
+    ansible_host  = proxmox_lxc.media-server.hostname
+    type          = "lxc"
+  }
+}

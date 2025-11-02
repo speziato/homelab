@@ -109,3 +109,10 @@ resource "proxmox_vm_qemu" "immich" {
     version      = ""
   }
 }
+
+output "immich" {
+  value = {
+    ansible_host  = proxmox_vm_qemu.immich.name
+    type          = "vm"
+  }
+}

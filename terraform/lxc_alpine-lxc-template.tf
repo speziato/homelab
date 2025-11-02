@@ -60,3 +60,10 @@ resource "proxmox_lxc" "alpine-lxc-template" {
     storage   = ""
   }
 }
+
+output "alpine-lxc-template" {
+  value = {
+    ansible_host  = proxmox_lxc.alpine-lxc-template.hostname
+    type          = "lxc"
+  }
+}

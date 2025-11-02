@@ -1,0 +1,39 @@
+[env]
+
+ANSIBLE_ROOT="{{config_root}}/ansible"
+TERRAFORM_ROOT="{{config_root}}/terraform"
+'_'.file = "{{env.TERRAFORM_ROOT}}/secrets/.env"
+MISE_PYTHON_COMPILE = false
+
+[tools]
+opentofu = "1.9.0"
+python = {version = "3.13.7", postinstall = "pip install ansible>=12.1.0" }
+
+[tasks.tf-create]
+description = "Creates a tf file new resource, ready to apply"
+dir = "{{env.TERRAFORM_ROOT}}"
+run = """
+./scripts/create.sh
+"""
+
+[tasks.tf-import]
+description = "Creates a tf file for an existing resource, ready to import"
+dir = "{{env.TERRAFORM_ROOT}}"
+run = """
+./scripts/import.sh
+"""
+
+[tasks.tf-apply]
+description = "Runs tofu apply and updates Ansible inventory"
+dir = "{{env.TERRAFORM_ROOT}}"
+run = """
+tofu apply
+mise run generate-inventory
+"""
+
+[tasks.generate-inventory]
+description = "Generate Ansible inventory YAML from tofu outputs"
+dir = "{{env.TERRAFORM_ROOT}}"
+run = """
+tofu output -json | python3 scripts/generate_inventory.py > "${ANSIBLE_ROOT}/inventory.yaml"
+"""

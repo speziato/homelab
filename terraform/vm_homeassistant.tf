@@ -95,3 +95,10 @@ resource "proxmox_vm_qemu" "homeassistant" {
     version      = ""
   }
 }
+
+output "homeassistant" {
+  value = {
+    ansible_host  = proxmox_vm_qemu.homeassistant.name
+    type          = "vm"
+  }
+}

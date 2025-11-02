@@ -35,3 +35,10 @@ resource "proxmox_lxc" "id-aware-proxy" {
     storage   = ""
   }
 }
+
+output "id-aware-proxy" {
+  value = {
+    ansible_host  = proxmox_lxc.id-aware-proxy.hostname
+    type          = "lxc"
+  }
+}

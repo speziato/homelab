@@ -42,3 +42,10 @@ resource "proxmox_lxc" "calibre-web" {
     mp      = "/data/media/books"
   }
 }
+
+output "calibre-web" {
+  value = {
+    ansible_host  = proxmox_lxc.calibre-web.hostname
+    type          = "lxc"
+  }
+}

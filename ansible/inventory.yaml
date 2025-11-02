@@ -1,0 +1,31 @@
+all:
+  hosts:
+    alpine-lxc-template:
+      ansible_host: alpine-lxc-template
+    calibre-web:
+      ansible_host: calibre-web
+    homeassistant:
+      ansible_host: homeassistant
+    id-aware-proxy:
+      ansible_host: id-aware-proxy
+    immich:
+      ansible_host: immich
+    media-server:
+      ansible_host: media-server
+    semaphore:
+      ansible_host: semaphore
+    vaultwarden:
+      ansible_host: vaultwarden
+  children:
+    vms:
+      hosts:
+        homeassistant: null
+        immich: null
+    lxcs:
+      hosts:
+        alpine-lxc-template: null
+        calibre-web: null
+        id-aware-proxy: null
+        media-server: null
+        semaphore: null
+        vaultwarden: null

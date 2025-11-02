@@ -4,3 +4,4 @@
 **/symmetric.gpg
 **/.terraform/
 **/*.tfstate*backup
+.vscode
