@@ -1,0 +1,5 @@
+machine:
+  nodeLabels:
+    $patch: delete
+cluster:
+  allowSchedulingOnControlPlanes: true

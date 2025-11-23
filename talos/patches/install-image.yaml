@@ -1,0 +1,3 @@
+machine:
+  install:
+    image: factory.talos.dev/metal-installer/b544cd30acb72c66c4d9944718e4eae7047f3009e06e1ca8bffb4b85d8cb868e:v1.11.5

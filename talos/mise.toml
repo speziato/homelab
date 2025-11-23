@@ -1,0 +1,105 @@
+[env]
+CONTROL_PLANE_IP="192.168.1.10"
+DISK_NAME="sdb"
+CLUSTER_NAME="talos-test"
+TALOSCONFIG="{{config_root}}/talosconfig"
+KUBECONFIG="{{config_root}}/kubeconfig"
+'_'.file.path = "secrets/ilo.env"
+
+[vars]
+TALOS_VERSION="1.11.5"
+KUBE_VERSION="1.34.1"
+
+[tools]
+kustomize = "5.8.0"
+talosctl = "{{vars.TALOS_VERSION}}"
+kubectl = "{{vars.KUBE_VERSION}}"
+pipx = "1.8.0"
+yq = "4.49.1"
+
+[tasks.gen-config]
+run = """
+#!/usr/bin/env bash
+
+mise run set-install-image-id
+rm controlplane.yaml
+talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
+    --with-secrets {{config_root}}/secrets/secrets.yaml \
+    --kubernetes-version {{vars.KUBE_VERSION}} \
+    --talos-version {{vars.TALOS_VERSION}} \
+    --config-patch @{{config_root}}/patches/additional-storage-disk1.yaml \
+    --config-patch @{{config_root}}/patches/allow-cp-workload.yaml \
+    --config-patch @{{config_root}}/patches/install-disk.yaml \
+    --config-patch @{{config_root}}/patches/install-image.yaml \
+    --config-patch @{{config_root}}/patches/zfs-kernel-module.yaml \
+    --output-types controlplane,talosconfig
+
+talosctl config endpoint $CONTROL_PLANE_IP 
+talosctl config node $CONTRL_PLANE_IP
+"""
+
+[tasks.apply-conf]
+run = """
+#!/usr/bin/env bash
+talosctl apply-config --nodes $CONTROL_PLANE_IP --file controlplane.yaml
+"""
+
+[tasks.insert-media]
+# SCRIPTED MEDIA WITH REMOTE URLS REQUIRES ILO5!
+# It does not work on my gen8 server.
+# I spent quite some time to get those curls to work so I'll leave this here.
+# It can still be used if you setup a local server to host the iso, I didn't bother and used the ILO web ui, fuck it.
+# Also, maybe with ILO >= 5 you could make it work with ilorest instead of curl
+run = '''
+#!/usr/bin/env bash
+
+MEDIA_URL=$(mise run get-image-url)
+
+VIRTUAL_MEDIA_MGR="redfish/v1/Managers/1/VirtualMedia/2"
+INSERT_MEDIA_URI="${VIRTUAL_MEDIA_MGR}/Actions/Oem/Hp/HpiLOVirtualMedia.InsertVirtualMedia/"
+
+# call to insert virtual media from remote iso
+curl -ksSL \
+  --user "${ILO_USER}:${ILO_PASSWORD}" \
+  --url "https://${ILO_IP}/${INSERT_MEDIA_URI}" \
+  -H 'Content-Type: application/json' \
+  -X "POST" \
+  -d "{\"Image\": \"${MEDIA_URL}\"}"
+
+# call to boot the virtual media the next reset
+curl -ksSL \
+  --user "${ILO_USER}:${ILO_PASSWORD}" \
+  --url "https://${ILO_IP}/${VIRTUAL_MEDIA_MGR}" \
+  -H 'Content-Type: application/json' \
+  -X "PATCH" \
+  -d '{"Oem":{"Hp":{"BootOnNextServerReset":true}}}'
+'''
+
+[tasks.get-schematic-id]
+# https://github.com/siderolabs/image-factory
+run = """
+#!/usr/bin/env bash
+IMAGE_SCHEMATIC_PATH="${1:-{{config_root}}/image-schematic.yaml}"
+curl -X POST -sSL \
+  --data-binary @${IMAGE_SCHEMATIC_PATH} \
+  https://factory.talos.dev/schematics  | yq '.id'
+"""
+
+[tasks.set-install-image-id]
+run = """
+#!/usr/bin/env bash
+
+YAML_PATCH_PATH="${1:-{{config_root}}/patches/install-image.yaml}"
+SCHEMATIC_ID=$(mise run get-schematic-id)
+echo "Setting schematic id [${SCHEMATIC_ID}] in patch file [${YAML_PATCH_PATH}]..."
+yq -i ".machine.install.image |= \\"factory.talos.dev/metal-installer/${SCHEMATIC_ID}:v{{vars.TALOS_VERSION}}\\"" patches/install-image.yaml
+"""
+
+[tasks.get-image-url]
+run = """
+#!/usr/bin/env bash
+
+ID=$(mise run get-schematic-id)
+
+echo "https://factory.talos.dev/image/${ID}/{{vars.TALOS_VERSION}}/metal-amd64.iso"
+"""

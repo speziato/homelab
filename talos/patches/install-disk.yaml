@@ -1,0 +1,4 @@
+machine:
+  install:
+    disk: /dev/sda # From control plane node
+    wipe: true
