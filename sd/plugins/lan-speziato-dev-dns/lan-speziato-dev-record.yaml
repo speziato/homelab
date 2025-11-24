@@ -1,0 +1,10 @@
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: lan-speziato-dev
+spec:
+  endpoints:
+  - dnsName: "*.lan.speziato.dev"
+    recordType: CNAME
+    targets:
+    - ingress.lan.speziato.dev

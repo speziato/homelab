@@ -1,0 +1,19 @@
+[tasks.maintenance]
+env.CHART_VERSION="1.19.0"
+env.NAMESPACE="external-dns"
+run="""
+#!/usr/bin/env bash
+
+helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
+helm repo update
+rm -rf resources/vendor
+helm template external-dns external-dns/external-dns --include-crds -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+rm deploy.maintenance.yaml
+mkdir resources/vendor/crds
+mv resources/vendor/customresourcedefinition-* resources/vendor/crds
+kubectl create ns "${NAMESPACE}" --dry-run=client -oyaml > resources/ns.yaml
+rm kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize edit add secret cloudflare-api-token-secret --from-env-file ./secrets/cloudflare.env --disableNameSuffixHash
+"""

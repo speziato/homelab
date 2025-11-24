@@ -1,0 +1,41 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: metallb-controller
+  labels:
+    app: metallb
+    app.kubernetes.io/component: controller
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: metallb
+      app.kubernetes.io/component: controller
+  namespaceSelector:
+    matchNames:
+    - metallb-system
+  podMetricsEndpoints:
+  - port: monitoring
+    path: /metrics
+    interval: 60s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: metallb-speaker
+  labels:
+    app: metallb
+    app.kubernetes.io/component: speaker
+spec:
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: metallb
+      app.kubernetes.io/component: speaker
+  namespaceSelector:
+    matchNames:
+    - metallb-system
+  podMetricsEndpoints:
+  - port: monitoring
+    path: /metrics
+    interval: 60s

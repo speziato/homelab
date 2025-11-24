@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/ns.yaml
+- resources/vendor/clusterrole-external-dns.yaml
+- resources/vendor/clusterrolebinding-external-dns-viewer.yaml
+- resources/vendor/crds/customresourcedefinition-dnsendpoints.externaldns.k8s.io.yaml
+- resources/vendor/deployment-external-dns.yaml
+- resources/vendor/service-external-dns.yaml
+- resources/vendor/serviceaccount-external-dns.yaml
+namespace: external-dns
+secretGenerator:
+- envs:
+  - ./secrets/cloudflare.env
+  name: cloudflare-api-token-secret
+  options:
+    disableNameSuffixHash: true
+  type: Opaque

@@ -1,9 +1,8 @@
 [env]
 CONTROL_PLANE_IP="192.168.1.10"
-DISK_NAME="sdb"
 CLUSTER_NAME="talos-test"
 TALOSCONFIG="{{config_root}}/talosconfig"
-KUBECONFIG="{{config_root}}/kubeconfig"
+
 '_'.file.path = "secrets/ilo.env"
 
 [vars]

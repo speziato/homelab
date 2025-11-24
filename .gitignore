@@ -1,7 +1,6 @@
 **/*mise.local.toml
-**/*.tfplan
-**/*import_*.tf
 **/symmetric.gpg
-**/.terraform/
-**/*.tfstate*backup
 .vscode
+.furyctl
+kubeconfig
+talosconfig

@@ -1,0 +1,11 @@
+[env]
+FURYCTL_WORKDIR="{{config_root}}"
+FURYCTL_OUTDIR="{{config_root}}"
+FURYCTL_LOG="{{config_root}}/.furyctl/furyctl.log"
+KUBECONFIG="{{config_root}}/../talos/kubeconfig"
+
+[tools]
+furyctl = "0.33.1"
+kustomize = "5.8.0"
+helm = "4.0.0"
+stern = "latest"

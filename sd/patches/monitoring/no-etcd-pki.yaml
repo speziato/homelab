@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: x509-certificate-exporter-control-plane
+  namespace: monitoring
+spec:
+  template:
+    spec:
+      containers:
+      - args:
+        - --listen-address=:9793
+        - --trim-path-components=2
+        - --max-cache-duration=300s
+        - --watch-file=/etc/kubernetes/pki/apiserver.crt
+        - --watch-file=/etc/kubernetes/pki/ca.crt
+        - --watch-file=/etc/kubernetes/pki/front-proxy-ca.crt
+        - --watch-file=/etc/kubernetes/pki/front-proxy-client.crt
+        - --watch-kubeconf=/etc/kubernetes/admin.conf
+        - --watch-kubeconf=/etc/kubernetes/controller-manager.conf
+        - --watch-kubeconf=/etc/kubernetes/scheduler.conf
+        name: x509-certificate-exporter
+        volumeMounts:
+        - mountPath: /etc/etcd/pki
+          name: etc-etcd-pki
+          readOnly: true
+        - mountPath: /etc/kubernetes
+          name: etc-kubernetes
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: x509-certificate-exporter-node-control-plane
+      serviceAccountName: x509-certificate-exporter-node-control-plane
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      volumes:
+      - hostPath: null
+        type: EmptyDir
+        name: etc-etcd-pki
+      - hostPath:
+          path: /etc/kubernetes
+          type: Directory
+        name: etc-kubernetes

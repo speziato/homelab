@@ -1,0 +1,26 @@
+sources:
+  - service
+  # - ingress
+  - crd
+  - pod
+  # - node
+
+triggerLoopOnEvent: true
+policy: sync
+
+domainFilters:
+  - lan.speziato.dev
+
+txtOwnerId: external-dns-homelab
+
+provider: 
+  name: cloudflare
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-token-secret
+        key: api-token
+extraArgs:
+  - --zone-id-filter=6fa74008f12d35ddf5cd594cbd25cbeb
+  - --service-type-filter=LoadBalancer
