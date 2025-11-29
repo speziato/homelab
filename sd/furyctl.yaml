@@ -92,6 +92,8 @@ spec:
           storageSize: "20Gi"
           retentionSize: "18GiB"
           retentionTime: 7d
+        alertmanager:
+          installDefaultRules: false
       # This section contains all the configurations for the tracing module
       tracing:
         # can be tempo or none, with none, nothing from the tracing module will be installed
@@ -128,6 +130,16 @@ spec:
       patches:
         - path: ./patches/monitoring/namespace.yaml
         - path: ./patches/monitoring/no-etcd-pki.yaml
+        - patch: |
+            apiVersion: monitoring.coreos.com/v1
+            kind: ServiceMonitor
+            metadata:
+              name: not-important
+            $patch: delete
+          target:
+            kind: ServiceMonitor
+            namespace: kube-system
+            name: etcd-metrics|kube-controller-manager|kube-scheduler
       secretGenerator:
         - name: cloudflare-api-token-secret
           namespace: cert-manager
