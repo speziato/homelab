@@ -1,0 +1,26 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+HELM_REPO_URL="https://pkgs.tailscale.com/helmcharts"
+HELM_REPO_NAME="tailscale"
+HELM_CHART_NAME="tailscale-operator"
+HELM_CHART_VERSION="1.90.9"
+NAMESPACE=tailscale
+RELEASE_NAME=tailscale
+
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
+helm repo update
+rm -rf resources/vendor
+helm template ${RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+rm deploy.maintenance.yaml
+rm resources/vendor/-.yaml
+mkdir resources/vendor/crds
+mv resources/vendor/customresourcedefinition-* resources/vendor/crds
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize edit add secret operator-oauth --from-env-file=secrets/oidc-client.env
+kustomize edit remove resource patches/add-emptydir-config-volume.yaml
+kustomize edit add patch --path patches/add-emptydir-config-volume.yaml
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >2 && exit 1)
+'''

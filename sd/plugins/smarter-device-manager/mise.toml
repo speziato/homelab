@@ -1,0 +1,20 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+HELM_REPO_URL="https://smarter-project.github.io/smarter-device-manager"
+HELM_REPO_NAME="smarter"
+HELM_CHART_NAME="smarter-device-manager"
+HELM_CHART_VERSION="0.0.10"
+NAMESPACE=kube-system
+RELEASE_NAME=devmgr
+
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
+helm repo update
+rm -rf resources/vendor
+helm template ${RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+rm deploy.maintenance.yaml
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+'''

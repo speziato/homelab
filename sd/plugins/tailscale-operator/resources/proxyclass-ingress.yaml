@@ -1,0 +1,34 @@
+apiVersion: tailscale.com/v1alpha1
+kind: ProxyClass
+metadata:
+  name: tun-access-proxy-class
+spec:
+  statefulSet:
+    pod:
+      # https://github.com/tailscale/tailscale/issues/10814#issuecomment-2479977752
+      tailscaleContainer:
+        resources:
+          # requests:
+          #   cpu: 50m
+          #   memory: 50Mi
+          limits:
+            smarter-devices/net_tun: "1"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+            # add:
+            #   - NET_ADMIN
+      # tailscaleInitContainer:
+      #   resources:
+      #     # requests:
+      #     #   cpu: 50m
+      #     #   memory: 50Mi
+      #   securityContext:
+      #     allowPrivilegeEscalation: false
+      #     capabilities:
+      #       drop:
+      #         - ALL
+      #       # add:
+      #       #   - NET_ADMIN

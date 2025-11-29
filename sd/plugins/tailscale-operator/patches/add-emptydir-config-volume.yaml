@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operator
+  namespace: tailscale
+spec:
+  template:
+    spec:
+      volumes:
+        - name: config
+          emptyDir: {}
+      containers:
+        - name: operator
+          volumeMounts:
+            - name: config
+              mountPath: /.config

@@ -1,0 +1,9 @@
+# Source: smarter-device-manager/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smarter-device-manager
+data:
+  conf.yaml: |
+    - devicematch: ^*tun$
+      nummaxdevices: 20

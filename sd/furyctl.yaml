@@ -161,3 +161,7 @@ spec:
         folder: ./plugins/openebs-zfs-localpv
       - name: zfs-storageclasses
         folder: ./plugins/zfs-storageclasses
+      - name: smarter-device-manager
+        folder: ./plugins/smarter-device-manager
+      - name: tailscale-operator
+        folder: ./plugins/tailscale-operator
