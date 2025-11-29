@@ -1,20 +1,8 @@
 [env]
 CONTROL_PLANE_IP="192.168.1.10"
 CLUSTER_NAME="talos-test"
-TALOSCONFIG="{{config_root}}/talosconfig"
 
 '_'.file.path = "secrets/ilo.env"
-
-[vars]
-TALOS_VERSION="1.11.5"
-KUBE_VERSION="1.34.1"
-
-[tools]
-kustomize = "5.8.0"
-talosctl = "{{vars.TALOS_VERSION}}"
-kubectl = "{{vars.KUBE_VERSION}}"
-pipx = "1.8.0"
-yq = "4.49.1"
 
 [tasks.gen-config]
 run = """
@@ -28,6 +16,8 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --talos-version {{vars.TALOS_VERSION}} \
     --config-patch @{{config_root}}/patches/additional-storage-disk1.yaml \
     --config-patch @{{config_root}}/patches/allow-cp-workload.yaml \
+    --config-patch @{{config_root}}/patches/enable-project-quota.yaml \
+    --config-patch @{{config_root}}/patches/etcd-metrics-patch.yaml \
     --config-patch @{{config_root}}/patches/install-disk.yaml \
     --config-patch @{{config_root}}/patches/install-image.yaml \
     --config-patch @{{config_root}}/patches/zfs-kernel-module.yaml \

@@ -2,5 +2,5 @@ apiVersion: v1alpha1
 kind: ExistingVolumeConfig
 name: disk1
 discovery:
-    volumeSelector:
-        match: volume.dev_path == "/dev/sdb"
+  volumeSelector:
+    match: volume.uuid == "92599495-44c6-43c7-9b9e-457e6235e71e"

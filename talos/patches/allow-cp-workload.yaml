@@ -1,5 +1,6 @@
 machine:
   nodeLabels:
-    $patch: delete
+    $patch: replace
+    openebs.io/zpool: zfs-pool
 cluster:
   allowSchedulingOnControlPlanes: true
