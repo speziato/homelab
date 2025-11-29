@@ -1,0 +1,25 @@
+# Source: zfs-localpv/templates/configmap.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: openebs-zfspv-bin
+  namespace: openebs # should be the same namespace where it is getting mounted
+  labels:
+    chart: zfs-localpv-2.9.0
+    heritage: Helm
+    openebs.io/version: "2.9.0"
+    role: "openebs-zfs"
+    name: "openebs-zfs-node"
+    release: csi
+    app: "openebs-zfs-node"
+    openebs.io/component-name: "openebs-zfs-node"
+data:
+  zfs: |
+    #!/bin/sh
+    if [ -x /host/sbin/zfs ]; then
+      chroot /host /sbin/zfs "$@"
+    elif [ -x /host/usr/sbin/zfs ]; then
+      chroot /host /usr/sbin/zfs "$@"
+    else
+      chroot /host "zfs" "$@"
+    fi

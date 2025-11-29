@@ -1,0 +1,10 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: zfs-block-xfs
+parameters:
+  volblocksize: "4k"
+  thinprovision: "yes"
+  fstype: "xfs"
+  poolname: "zfs-pool"
+provisioner: zfs.csi.openebs.io

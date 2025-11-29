@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - resources/monitoring/prometheus-rules.yaml
+  - resources/ns.yaml
+  - resources/vendor/clusterrole-openebs-zfs-driver-registrar-role.yaml
+  - resources/vendor/clusterrole-openebs-zfs-provisioner-role.yaml
+  - resources/vendor/clusterrole-openebs-zfs-snapshotter-role.yaml
+  - resources/vendor/clusterrolebinding-openebs-zfs-driver-registrar-binding.yaml
+  - resources/vendor/clusterrolebinding-openebs-zfs-provisioner-binding.yaml
+  - resources/vendor/clusterrolebinding-openebs-zfs-snapshotter-binding.yaml
+  - resources/vendor/configmap-openebs-zfspv-bin.yaml
+  - resources/vendor/crds/customresourcedefinition-volumesnapshotclasses.snapshot.storage.k8s.io.yaml
+  - resources/vendor/crds/customresourcedefinition-volumesnapshotcontents.snapshot.storage.k8s.io.yaml
+  - resources/vendor/crds/customresourcedefinition-volumesnapshots.snapshot.storage.k8s.io.yaml
+  - resources/vendor/crds/customresourcedefinition-zfsbackups.zfs.openebs.io.yaml
+  - resources/vendor/crds/customresourcedefinition-zfsnodes.zfs.openebs.io.yaml
+  - resources/vendor/crds/customresourcedefinition-zfsrestores.zfs.openebs.io.yaml
+  - resources/vendor/crds/customresourcedefinition-zfssnapshots.zfs.openebs.io.yaml
+  - resources/vendor/crds/customresourcedefinition-zfsvolumes.zfs.openebs.io.yaml
+  - resources/vendor/csidriver-zfs.csi.openebs.io.yaml
+  - resources/vendor/daemonset-csi-zfs-localpv-node.yaml
+  - resources/vendor/deployment-csi-zfs-localpv-controller.yaml
+  - resources/vendor/priorityclass-csi-zfs-csi-controller-critical.yaml
+  - resources/vendor/priorityclass-csi-zfs-csi-node-critical.yaml
+  - resources/vendor/serviceaccount-openebs-zfs-controller-sa.yaml
+  - resources/vendor/serviceaccount-openebs-zfs-node-sa.yaml
+namespace: openebs
+configMapGenerator:
+  - files:
+      - dashboard.json=resources/monitoring/grafana-dashboard.json
+    name: zfs-localpv-dashboard
+    options:
+      labels:
+        grafana-sighup-dashboard: default

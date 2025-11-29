@@ -1,12 +1,13 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: hostpath-xfs
+  name: zfs-dataset-128k
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-provisioner: kubevirt.io.hostpath-provisioner
-reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true
 parameters:
-  storagePool: xfs
+  recordsize: "128k"
+  thinprovision: "no"
+  fstype: "zfs"
+  poolname: "zfs-pool"
+provisioner: zfs.csi.openebs.io

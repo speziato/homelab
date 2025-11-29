@@ -139,13 +139,13 @@ spec:
   # Plugins to be installed
   plugins:
     kustomize:
-      - name: hostpath-provisioner-operator
-        folder: ./plugins/hostpath-provisioner-operator
-      - name: hostpath-provisioner-backend-config
-        folder: ./plugins/hostpath-provisioner-backend-config
       - name: external-dns
         folder: ./plugins/external-dns
       - name: metallb
         folder: ./plugins/metallb
       - name: lan-speziato-dev-dns
         folder: ./plugins/lan-speziato-dev-dns
+      - name: openebs-zfs-localpv
+        folder: ./plugins/openebs-zfs-localpv
+      - name: zfs-storageclasses
+        folder: ./plugins/zfs-storageclasses

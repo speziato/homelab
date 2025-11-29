@@ -1,0 +1,156 @@
+# Source: zfs-localpv/templates/zfs-node.yaml
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+  name: csi-zfs-localpv-node
+  namespace: openebs
+  labels:
+    chart: zfs-localpv-2.9.0
+    heritage: Helm
+    openebs.io/version: "2.9.0"
+    role: "openebs-zfs"
+    name: "openebs-zfs-node"
+    release: csi
+    app: "openebs-zfs-node"
+    openebs.io/component-name: "openebs-zfs-node"
+spec:
+  selector:
+    matchLabels:
+      name: "openebs-zfs-node"
+      release: csi
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 100%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        chart: zfs-localpv-2.9.0
+        heritage: Helm
+        openebs.io/version: "2.9.0"
+        role: "openebs-zfs"
+        name: "openebs-zfs-node"
+        release: csi
+        app: "openebs-zfs-node"
+        openebs.io/component-name: "openebs-zfs-node"
+        
+        openebs.io/logging: "true"
+    spec:
+      priorityClassName: csi-zfs-csi-node-critical
+      serviceAccountName: openebs-zfs-node-sa
+      hostNetwork: true
+      containers:
+        - name: csi-node-driver-registrar
+          image: "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--v=5"
+            - "--csi-address=$(ADDRESS)"
+            - "--kubelet-registration-path=$(DRIVER_REG_SOCK_PATH)"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "rm -rf /registration/zfs-localpv /registration/zfs-localpv-reg.sock"]
+          env:
+            - name: ADDRESS
+              value: /plugin/csi.sock
+            - name: DRIVER_REG_SOCK_PATH
+              value: "/var/lib/kubelet/plugins/zfs-localpv/csi.sock"
+            - name: KUBE_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_DRIVER
+              value: openebs-zfs
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /plugin
+            - name: registration-dir
+              mountPath: /registration
+          resources:
+            limits:
+              cpu: 100m
+              memory: 320Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+        - name: openebs-zfs-plugin
+          securityContext:
+            privileged: true
+            allowPrivilegeEscalation: true
+          image: "docker.io/openebs/zfs-driver:2.9.0-prerelease"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--nodename=$(OPENEBS_NODE_NAME)"
+            - "--endpoint=$(OPENEBS_CSI_ENDPOINT)"
+            - "--plugin=$(OPENEBS_NODE_DRIVER)"
+          env:
+            - name: OPENEBS_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: OPENEBS_CSI_ENDPOINT
+              value: unix:///plugin/csi.sock
+            - name: OPENEBS_NODE_DRIVER
+              value: agent
+            - name: OPENEBS_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: ALLOWED_TOPOLOGIES
+              value: "All"
+          volumeMounts:
+            - name: plugin-dir
+              mountPath: /plugin
+            - name: device-dir
+              mountPath: /dev
+            - name: encr-keys
+              mountPath: /home/keys
+            - name: chroot-zfs
+              mountPath: /sbin/zfs
+              subPath: zfs
+            - name: host-root
+              mountPath: /host
+              mountPropagation: "HostToContainer"
+              readOnly: true
+            - name: pods-mount-dir
+              mountPath: "/var/lib/kubelet/"
+              # needed so that any mounts setup inside this container are
+              # propagated back to the host machine.
+              mountPropagation: "Bidirectional"
+          resources:
+            limits:
+              cpu: 100m
+              memory: 320Mi
+            requests:
+              cpu: 10m
+              memory: 32Mi
+      volumes:
+        - name: device-dir
+          hostPath:
+            path: /dev
+            type: Directory
+        - name: encr-keys
+          hostPath:
+            path: /var/mnt/disk1/csi/openebs-zfs-keys
+            type: DirectoryOrCreate
+        - name: chroot-zfs
+          configMap:
+            defaultMode: 0555
+            name: openebs-zfspv-bin
+        - name: host-root
+          hostPath:
+            path: /
+            type: Directory
+        - name: registration-dir
+          hostPath:
+            path: "/var/lib/kubelet/plugins_registry/"
+            type: DirectoryOrCreate
+        - name: plugin-dir
+          hostPath:
+            path: "/var/lib/kubelet/plugins/zfs-localpv/"
+            type: DirectoryOrCreate
+        - name: pods-mount-dir
+          hostPath:
+            path: "/var/lib/kubelet/"
+            type: Directory

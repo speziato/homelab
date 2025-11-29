@@ -1,0 +1,25 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+HELM_REPO_URL="https://openebs.github.io/zfs-localpv"
+HELM_REPO_NAME="openebs-zfslocalpv"
+HELM_CHART_NAME="zfs-localpv"
+HELM_CHART_VERSION="2.9.0"
+NAMESPACE=openebs
+
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
+helm repo update
+rm -rf resources/vendor
+helm template csi ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+mkdir resources/vendor/crds
+mv resources/vendor/customresourcedefinition-* resources/vendor/crds
+rm deploy.maintenance.yaml
+curl -sSL "https://github.com/openebs/zfs-localpv/raw/refs/tags/v${HELM_CHART_VERSION}/deploy/sample/prometheus-alert.rules" -o resources/monitoring/prometheus-rules.yaml
+curl -sSL "https://github.com/openebs/zfs-localpv/raw/refs/tags/v${HELM_CHART_VERSION}/deploy/sample/grafana-dashboard.json" -o resources/monitoring/grafana-dashboard.json
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize edit add configmap zfs-localpv-dashboard --from-file=dashboard.json=resources/monitoring/grafana-dashboard.json
+yq -i '.configMapGenerator[] |= select(.name == "zfs-localpv-dashboard") |= .options.labels.grafana-sighup-dashboard = "default"' kustomization.yaml
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" && exit 1)
+'''
