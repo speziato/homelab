@@ -5,4 +5,4 @@ metadata:
 spec:
   type: ingress
   replicas: 1
-  proxyClass: tun-access-proxy-class
+  # proxyClass: tun-access-proxy-class
