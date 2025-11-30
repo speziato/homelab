@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/pvc.yaml
+- resources/vendor/configmap-vaultwarden.yaml
+- resources/vendor/deployment-vaultwarden.yaml
+- resources/vendor/ingress-vaultwarden.yaml
+- resources/vendor/role-vaultwarden.yaml
+- resources/vendor/rolebinding-vaultwarden.yaml
+- resources/vendor/secret-vaultwarden.yaml
+- resources/vendor/service-vaultwarden.yaml
+- resources/vendor/serviceaccount-vaultwarden-svc.yaml
+namespace: services
+secretGenerator:
+- envs:
+  - secrets/admin-token.env
+  name: vaultwarden-admin-token
+  type: Opaque
+patches:
+- path: patches/loadbalancer-class.yaml
+- path: patches/delete-attachments-volumemount.yaml
