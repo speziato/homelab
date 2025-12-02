@@ -1,0 +1,19 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: homeassistant
+  labels:
+    app.kubernetes.io/name: kubevirt-vms
+    app.kubernetes.io/instance: homeassistant
+spec:
+  source:
+    http:
+      url: http://backups-http-server.services/homeassistant/homeassistant.qcow2
+  storage:
+    volumeMode: Block
+    storageClassName: zfs-block-xfs
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 32Gi

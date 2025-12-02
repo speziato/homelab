@@ -1,0 +1,46 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: homeassistant
+  labels:
+    app.kubernetes.io/name: kubevirt-vms
+    app.kubernetes.io/instance: homeassistant
+spec:
+  #runStrategy: Halted
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/size: small
+        kubevirt.io/domain: homeassistant
+        app.kubernetes.io/instance: homeassistant
+    spec:
+      evictionStrategy: LiveMigrate
+      dnsPolicy: "Default"
+      domain:
+        firmware:
+          # this sets the bootloader type
+          bootloader:
+            efi:
+              secureBoot: false
+        cpu:
+          model: host-passthrough
+          cores: 2
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: datavolumevolume
+          interfaces:
+            - name: bridge-net
+              masquerade: {}
+        resources:
+          requests:
+            memory: 4Gi
+      networks:
+        - name: bridge-net
+          pod: {}
+      volumes:
+        - dataVolume:
+            name: homeassistant
+          name: datavolumevolume

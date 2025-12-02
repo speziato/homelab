@@ -1,0 +1,21 @@
+# Source: kubevirt-vms/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    kubevirt.io/domain: homeassistant
+    app.kubernetes.io/instance: homeassistant
+  annotations:
+    tailscale.com/proxy-group: tailscale-ingress
+  name: homeassistant
+spec:
+  type: LoadBalancer
+  loadBalancerClass: tailscale
+  ports:
+  - port: 80
+    name: http
+    protocol: TCP
+    targetPort: 8123
+  selector:
+    kubevirt.io/domain: homeassistant
+    app.kubernetes.io/instance: homeassistant

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backups-http-server
+  labels:
+    app: backups-http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backups-http-server
+  template:
+    metadata:
+      name: backups-http-server
+      labels:
+        app: backups-http-server
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: server
+          image: rtsp/lighttpd:1.4.76
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: backups
+              mountPath: /var/www/html
+            - name: conf
+              mountPath: /etc/lighttpd
+              readOnly: true
+            - name: conf
+              mountPath: /var/www/html/theme.css
+              subPath: theme.css
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: backups-hostpath
+        - name: conf
+          configMap:
+            name: autoindex-conf
+        - name: tmp
+          emptyDir: {}

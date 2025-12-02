@@ -1,0 +1,16 @@
+@import url('https://fonts.cdnfonts.com/css/cascadia-code');
+a,a:active{text-decoration:none;color:#8fbcbb;}
+a:hover,a:focus{text-decoration:underline;color:#88c0d0;font-weight:bold}
+body{font-family:'Cascadia Code',sans-serif;background-color:#2e3440;color:#d8dee9}
+h2{margin-bottom:12px;}
+table{margin-left:12px;max-width:100%;width:100%;margin-bottom:20px;}
+th,td{font:90%;text-align:left;}
+th{font-weight:bold;padding-right:14px;padding-bottom:3px;}
+td{padding-right:14px;}
+td.s,th.s{text-align:right;}
+div.list{background-color:#3b4252;border-top:1px solid #4c566a;border-bottom:1px solid #4c566a;padding-top:10px;padding-bottom:14px;}
+div.foot{font:90%;color:#d8dee9;padding-top:4px;}
+table>thead>tr>th,table>tbody>tr>th,table>tfoot>tr>th,table>thead>tr>td,table>tbody>tr>td,table>tfoot>tr>td{padding:8px;line-height:1.42;vertical-align:top;border-top:1px solid #4c566a;}
+table>thead>tr>th{vertical-align:bottom;border-bottom:2px solid #4c566a;}
+table>tbody+tbody{border-top:2px solid #4c566a;}
+th,td{font:90%;text-align:left;}

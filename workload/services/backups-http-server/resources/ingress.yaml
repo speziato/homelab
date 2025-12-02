@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+  name: backups-http-server
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: backups.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: backups-http-server
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - backups.lan.speziato.dev
+      secretName: backups-tls
