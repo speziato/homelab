@@ -1,0 +1,16 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: dummy-kapp-config-namespace # needed so kustomize won't complain
+rebaseRules:
+  - resourceMatchers:
+      - apiVersionKindMatcher:
+          apiVersion: v1
+          kind: Namespace
+    paths:
+      - [metadata, annotations, ovn.kubernetes.io/cidr]
+      - [metadata, annotations, ovn.kubernetes.io/exclude_ips]
+      - [metadata, annotations, ovn.kubernetes.io/logical_switch]
+      - [metadata, labels, kubernetes.io/metadata.name]
+    type: copy
+    sources: [existing, new]

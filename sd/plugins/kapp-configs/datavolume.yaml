@@ -1,0 +1,12 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: dummy-kapp-config-datavolumes # needed so kustomize won't complain
+rebaseRules:
+  - resourceMatchers:
+      - apiVersionKindMatcher:
+          apiVersion: cdi.kubevirt.io/v1beta1
+          kind: DataVolume
+    path: [metadata, annotations, cdi.kubevirt.io/storage.usePopulator]
+    type: copy
+    sources: [existing, new]

@@ -1,0 +1,14 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: dummy-kapp-config-cdi # needed so kustomize won't complain
+rebaseRules:
+  - resourceMatchers:
+      - apiVersionKindMatcher:
+          apiVersion: cdi.kubevirt.io/v1beta1
+          kind: CDI
+    paths:
+      - [metadata, annotations, cdi.kubevirt.io/configAuthority]
+      - [spec, customizeComponents]
+    type: copy
+    sources: [existing, new]

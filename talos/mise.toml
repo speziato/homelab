@@ -15,6 +15,7 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --kubernetes-version {{vars.KUBE_VERSION}} \
     --talos-version {{vars.TALOS_VERSION}} \
     --config-patch @{{config_root}}/patches/additional-storage-disk1.yaml \
+    --config-patch @{{config_root}}/patches/allow-block-devices-ownership.yaml \
     --config-patch @{{config_root}}/patches/allow-cp-workload.yaml \
     --config-patch @{{config_root}}/patches/enable-project-quota.yaml \
     --config-patch @{{config_root}}/patches/etcd-metrics-patch.yaml \

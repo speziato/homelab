@@ -1,0 +1,50 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../kapp-configs
+  - ./resources/kubevirt-operator.yaml
+  - ./resources/kubevirt-cr.yaml
+  - ./resources/cdi-operator.yaml
+  - ./resources/cdi-cr.yaml
+patches:
+  - patch: |
+      apiVersion: kubevirt.io/v1
+      kind: KubeVirt
+      metadata:
+        name: kubevirt
+        namespace: kubevirt
+      spec:
+        # it works! to be tested more deeply with actual workload
+        # workloadUpdateStrategy:
+        #   workloadUpdateMethods:
+        #     - LiveMigrate
+        monitorNamespace: monitoring
+        serviceMonitorNamespace: kubevirt
+        configuration:
+          smbios:
+            sku: "TalosCloud"
+            version: "v0.1.0"
+            manufacturer: "Talos Virtualization"
+            product: "talosvm"
+            family: "ccio"
+          developerConfiguration:
+            featureGates:
+              - CPUManager
+              - Sidecar
+              - Snapshot
+              - HotplugVolumes
+              # - DataVolumes # GA
+              # - SRIOV # GA
+              # - LiveMigration # GA
+              # - CPUNodeDiscovery # GA
+
+configMapGenerator:
+  - files:
+      - resources/dashboards/kubevirt-control-plane.json
+    name: kubevirt-dashboards
+    options:
+      annotations:
+        grafana-folder: KubeVirt
+      disableNameSuffixHash: true
+      labels:
+        grafana-sighup-dashboard: default

@@ -1,0 +1,14 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: kubevirt-kapp-config-namespace # needed so kustomize won't complain
+rebaseRules:
+  - resourceMatchers:
+      - apiVersionKindMatcher:
+          apiVersion: kubevirt.io/v1
+          kind: KubeVirt
+    paths:
+      - [metadata, annotations, kubevirt.io/latest-observed-api-version]
+      - [metadata, annotations, kubevirt.io/storage-observed-api-version]
+    type: copy
+    sources: [existing, new]

@@ -1,0 +1,13 @@
+[tasks.maintenance]
+description = "Maintenance task to pull Kube-OVN manifests at the specified version"
+env.KUBEVIRT_VERSION="v1.7.0"
+env.CDI_VERSION="v1.63.1"
+run = """
+#!/usr/bin/env bash
+# check the installation guide: 
+curl -sSL -o resources/kubevirt-operator.yaml https://github.com/kubevirt/kubevirt/releases/download/${KUBEVIRT_VERSION}/kubevirt-operator.yaml
+curl -sSL -o resources/kubevirt-cr.yaml https://github.com/kubevirt/kubevirt/releases/download/${KUBEVIRT_VERSION}/kubevirt-cr.yaml
+curl -sSL -o resources/cdi-operator.yaml https://github.com/kubevirt/containerized-data-importer/releases/download/${CDI_VERSION}/cdi-operator.yaml
+curl -sSL -o resources/cdi-cr.yaml https://github.com/kubevirt/containerized-data-importer/releases/download/${CDI_VERSION}/cdi-cr.yaml
+curl -sSL -o resources/dashboards/kubevirt-control-plane.json https://github.com/kubevirt/monitoring/raw/refs/heads/main/dashboards/grafana/kubevirt-control-plane.json
+"""

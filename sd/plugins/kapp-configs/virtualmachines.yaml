@@ -1,0 +1,20 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+metadata:
+  name: dummy-kapp-config-virtualmachines # needed so kustomize won't complain
+rebaseRules:
+  - resourceMatchers:
+      - apiVersionKindMatcher:
+          apiVersion: kubevirt.io/v1
+          kind: VirtualMachine
+    paths:
+      - [metadata, annotations, kubevirt.io/latest-observed-api-version]
+      - [metadata, annotations, kubevirt.io/storage-observed-api-version]
+      - [metadata, annotations, ovn.kubernetes.io/logical_switch]
+      - [spec, template, spec, architecture]
+      - [spec, template, spec, domain, machine, type]
+      - [spec, template, spec, domain, devices, disks]
+      - [spec, template, spec, volumes]
+      - [spec, template, metadata, creationTimestamp]
+    type: copy
+    sources: [existing, new]

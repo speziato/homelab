@@ -165,3 +165,5 @@ spec:
         folder: ./plugins/smarter-device-manager
       - name: tailscale-operator
         folder: ./plugins/tailscale-operator
+      - name: kubevirt
+        folder: ./plugins/kubevirt
