@@ -1,0 +1,15 @@
+# Talos machine configuration file
+cluster:
+  apiServer:
+    extraArgs:
+      feature-gates: "ImageVolume=true"
+  controllerManager:
+    extraArgs:
+      feature-gates: "ImageVolume=true"
+  scheduler:
+    extraArgs:
+      feature-gates: "ImageVolume=true"
+machine:
+  kubelet:
+    extraArgs:
+      feature-gates: "ImageVolume=true"

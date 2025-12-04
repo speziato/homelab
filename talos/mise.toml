@@ -17,6 +17,7 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --config-patch @{{config_root}}/patches/additional-storage-disk1.yaml \
     --config-patch @{{config_root}}/patches/allow-block-devices-ownership.yaml \
     --config-patch @{{config_root}}/patches/allow-cp-workload.yaml \
+    --config-patch @{{config_root}}/patches/enable-imagevolume-fg.yaml \
     --config-patch @{{config_root}}/patches/enable-project-quota.yaml \
     --config-patch @{{config_root}}/patches/etcd-metrics-patch.yaml \
     --config-patch @{{config_root}}/patches/install-disk.yaml \
@@ -32,6 +33,18 @@ talosctl config node $CONTRL_PLANE_IP
 run = """
 #!/usr/bin/env bash
 talosctl apply-config --nodes $CONTROL_PLANE_IP --file controlplane.yaml
+"""
+
+[tasks.patch-mc]
+usage = """
+arg "<patch_file>" help="The patch file to be applied"
+flag "-m --mode <mode>" help="Apply config mode. Default auto" default="auto" {
+  choices "auto" "no-reboot" "reboot" "staged" "try"
+}
+"""
+run = """
+#!/usr/bin/env bash
+talosctl patch mc --patch @${usage_patch_file?} --mode ${usage_mode?}
 """
 
 [tasks.insert-media]
