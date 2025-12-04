@@ -1,0 +1,24 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+
+HELM_REPO_URL="https://cloudnative-pg.github.io/charts"
+HELM_REPO_NAME="cnpg"
+HELM_CHART_NAME="cloudnative-pg"
+HELM_CHART_VERSION="0.26.1"
+NAMESPACE=operators
+RELEASE_NAME=cnpg-operator
+
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
+helm repo update
+rm -rf resources
+mkdir -p resources/crds
+helm template ${RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources
+rm deploy.maintenance.yaml
+rm -f resources/-.yaml
+mv resources/customresourcedefinition-* resources/crds/
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+'''

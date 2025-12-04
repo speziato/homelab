@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/clusterrole-cnpg-controller-manager-edit.yaml
+- resources/clusterrole-cnpg-controller-manager-view.yaml
+- resources/clusterrole-cnpg-controller-manager.yaml
+- resources/clusterrolebinding-cnpg-controller-manager.yaml
+- resources/configmap-cnpg-controller-manager-config.yaml
+- resources/configmap-cnpg-default-monitoring.yaml
+- resources/configmap-cnpg-grafana-dashboard.yaml
+- resources/crds/customresourcedefinition-backups.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-clusterimagecatalogs.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-clusters.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-databases.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-failoverquorums.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-imagecatalogs.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-poolers.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-publications.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-scheduledbackups.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-subscriptions.postgresql.cnpg.io.yaml
+- resources/deployment-cnpg-controller-manager.yaml
+- resources/mutatingwebhookconfiguration-cnpg-mutating-webhook-configuration.yaml
+- resources/podmonitor-cnpg-controller-manager.yaml
+- resources/service-cnpg-webhook-service.yaml
+- resources/serviceaccount-cnpg-controller-manager.yaml
+- resources/validatingwebhookconfiguration-cnpg-validating-webhook-configuration.yaml
+namespace: operators
