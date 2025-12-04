@@ -1,0 +1,31 @@
+# Source: immich/templates/server.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich-server
+  labels:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: server
+    app.kubernetes.io/version: v2.0.0
+    helm.sh/chart: immich-0.10.3
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  namespace: default
+spec:
+  tls:
+    - hosts:
+        - "immich.lan.speziato.dev"
+      secretName: "immich-tls"
+  rules:
+    - host: "immich.lan.speziato.dev"
+      http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: immich-server
+                port:
+                  number: 2283

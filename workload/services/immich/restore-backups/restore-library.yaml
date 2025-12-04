@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: immich-library-restore-from-backups
+spec:
+  template:
+    spec:
+      containers:
+        - image: ogivuk/rsync:x64
+          name: populator
+          resources: 
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+          command:
+            - /bin/sh
+            - -c
+          args:
+            - |
+              echo "starting rsync..."
+              rsync -avzh /mnt/backups/immich /mnt/immich
+              echo "done"
+          volumeMounts:
+            - name: backups
+              mountPath: /mnt/backups
+            - name: immich-library
+              mountPath: /mnt/immich
+      restartPolicy: Never
+      volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: backups-hostpath
+        - name: immich-library
+          persistentVolumeClaim:
+            claimName: immich-library

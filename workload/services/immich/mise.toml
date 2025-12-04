@@ -1,0 +1,19 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+
+HELM_REPO_URL="oci://ghcr.io/immich-app/immich-charts/immich"
+NAMESPACE="services"
+RELEASE_NAME="immich"
+HELM_CHART_VERSION="0.10.3"
+
+rm -rf vendor
+helm template ${RELEASE_NAME} ${HELM_REPO_URL}:${HELM_CHART_VERSION} --values MAINTENANCE.values.yaml > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o vendor
+rm deploy.maintenance.yaml
+rm -f vendor/-.yaml
+pushd vendor 2>&1>/dev/null
+kustomize init --autodetect --recursive
+popd
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+'''

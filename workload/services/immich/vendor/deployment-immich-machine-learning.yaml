@@ -1,0 +1,121 @@
+# Source: immich/templates/machine-learning.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: immich-machine-learning
+  labels:
+    app.kubernetes.io/controller: main
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: machine-learning
+    app.kubernetes.io/version: v2.0.0
+    helm.sh/chart: immich-0.10.3
+  namespace: default
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/controller: main
+      app.kubernetes.io/name: machine-learning
+      app.kubernetes.io/instance: immich
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/controller: main
+        app.kubernetes.io/instance: immich
+        app.kubernetes.io/name: machine-learning
+    spec: 
+      enableServiceLinks: false
+      serviceAccountName: default
+      automountServiceAccountToken: true
+      securityContext: 
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      hostIPC: false
+      hostNetwork: false
+      hostPID: false
+      dnsPolicy: ClusterFirst
+      containers: 
+        - env:
+          - name: DB_DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                key: dbname
+                name: immich-database
+          - name: DB_HOSTNAME
+            valueFrom:
+              secretKeyRef:
+                key: host
+                name: immich-database
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: immich-database
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: user
+                name: immich-database
+          - name: HF_XET_CACHE
+            value: /cache/huggingface-xet
+          - name: IMMICH_MACHINE_LEARNING_URL
+            value: http://immich-machine-learning:3003
+          - name: MPLCONFIGDIR
+            value: /cache/matplotlib-config
+          - name: REDIS_HOSTNAME
+            value: immich-valkey
+          - name: TRANSFORMERS_CACHE
+            value: /cache
+          image: ghcr.io/immich-app/immich-machine-learning:v2.3.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+          name: main
+          ports:
+          - containerPort: 3003
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+          - mountPath: /cache
+            name: cache
+      volumes: 
+        - name: cache
+          persistentVolumeClaim:
+            claimName: immich-machine-learning

@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: immich-db-restore
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      securityContext:
+        fsGroup: 26
+      restartPolicy: OnFailure
+      containers:
+        - name: restore
+          image: ghcr.io/cloudnative-pg/postgresql:18-standard-trixie
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              echo "Starting restore to CloudNativePG..."
+              export PGPASSWORD="${DST_DB_PASSWORD}"
+              gunzip --stdout "/backups/immich/backups/dump_migrated.sql.gz" \
+                | sed "s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g" \
+                | psql --host=${DST_DB_HOST} --port=${DST_DB_PORT:-5432} --dbname=${DST_DB_NAME} --username=${DST_DB_USERNAME}
+
+              echo "Restore complete."
+          env:
+            - name: DST_DB_HOST
+              value: immich-rw.databases.svc.cluster.local
+            - name: DST_DB_PASSWORD
+              value: rN3TQDTBGzhpqGle
+            - name: DST_DB_NAME
+              value: immich
+            - name: DST_DB_USERNAME
+              value: immich
+            
+          volumeMounts:
+            - name: backups
+              mountPath: /backups
+      volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: backups-hostpath

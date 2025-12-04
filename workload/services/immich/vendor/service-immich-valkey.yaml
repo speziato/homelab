@@ -1,0 +1,24 @@
+# Source: immich/templates/valkey.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich-valkey
+  labels:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: valkey
+    app.kubernetes.io/service: immich-valkey
+    app.kubernetes.io/version: v2.0.0
+    helm.sh/chart: immich-0.10.3
+  namespace: default
+spec:
+  type: ClusterIP
+  ports:
+    - port: 6379
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    app.kubernetes.io/controller: main
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/name: valkey

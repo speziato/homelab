@@ -1,0 +1,18 @@
+# Source: immich/templates/machine-learning.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: immich-machine-learning
+  labels:
+    app.kubernetes.io/instance: immich
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: machine-learning
+    app.kubernetes.io/version: v2.0.0
+    helm.sh/chart: immich-0.10.3
+  namespace: default
+spec:
+  accessModes:
+    - "ReadWriteMany"
+  resources:
+    requests:
+      storage: "10Gi"
