@@ -95,11 +95,18 @@ server:
   enabled: true
   controllers:
     main:
+      
       containers:
         main:
           image:
             repository: ghcr.io/immich-app/immich-server
             pullPolicy: IfNotPresent
+  service:
+    main:
+      type: LoadBalancer
+      annotations:
+        tailscale.com/proxy-group: tailscale-ingress
+      loadBalancerClass: tailscale
   ingress:
     main:
       enabled: true
@@ -132,6 +139,8 @@ machine-learning:
             HF_XET_CACHE: /cache/huggingface-xet
             MPLCONFIGDIR: /cache/matplotlib-config
   persistence:
+    tmp:
+      type: emptyDir
     cache:
       enabled: true
       size: 10Gi

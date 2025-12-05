@@ -5,9 +5,6 @@ resources:
 - vendor
 - resources/pvc-library.yaml
 
-patches:
-  - path: ./patches/add-tmp-emptydir.yaml
-
 secretGenerator:
   - name: immich-database
     envs:

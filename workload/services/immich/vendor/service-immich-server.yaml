@@ -10,9 +10,12 @@ metadata:
     app.kubernetes.io/service: immich-server
     app.kubernetes.io/version: v2.0.0
     helm.sh/chart: immich-0.10.3
+  annotations:
+    tailscale.com/proxy-group: tailscale-ingress
   namespace: default
 spec:
-  type: ClusterIP
+  type: LoadBalancer
+  loadBalancerClass: tailscale
   ports:
     - port: 2283
       targetPort: http

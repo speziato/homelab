@@ -17,3 +17,7 @@ kustomize init --autodetect --recursive
 popd
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 '''
+
+[tools]
+dyff = "latest"
+kapp = "latest"

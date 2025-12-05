@@ -115,7 +115,11 @@ spec:
           volumeMounts:
           - mountPath: /cache
             name: cache
+          - mountPath: /tmp
+            name: tmp
       volumes: 
         - name: cache
           persistentVolumeClaim:
             claimName: immich-machine-learning
+        - emptyDir: {}
+          name: tmp
