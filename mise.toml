@@ -1,16 +1,19 @@
 [env]
 KUBECONFIG="{{config_root}}/kubeconfig"
+KUBECTL_EXTERNAL_DIFF = "dyff between --omit-header --set-exit-code"
 TALOSCONFIG="{{config_root}}/talosconfig"
 
 [vars]
-TALOS_VERSION="1.11.5"
 KUBE_VERSION="1.34.1"
+TALOS_VERSION="1.11.5"
 
 [tools]
-kustomize = "5.8.0"
-talosctl = "{{vars.TALOS_VERSION}}"
-kubectl = "{{vars.KUBE_VERSION}}"
-stern = "1.33.1"
-pipx = "1.8.0"
-yq = "4.49.1"
+"ubi:kubevirt/kubevirt" = { rename_exe = "virtctl", version = "1.7.0" }
+dyff = "latest"
 helm = "latest"
+kubectl = "{{vars.KUBE_VERSION}}"
+kustomize = "5.8.0"
+pipx = "1.8.0"
+stern = "1.33.1"
+talosctl = "{{vars.TALOS_VERSION}}"
+yq = "4.49.1"
