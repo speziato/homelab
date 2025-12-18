@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: services
+resources:
+- resources/job-init-config.yaml
+- resources/rbac-wait-for.yaml
+- resources/pvc-config.yaml
+- resources/pvc-media.yaml
+- resources/bazarr/ingress-bazarr-ingress.yaml
+- resources/bazarr/service-bazarr.yaml
+- resources/bazarr/statefulset-bazarr.yaml
+- resources/jellyfin/ingress-jellyfin-ingress.yaml
+- resources/jellyfin/service-jellyfin.yaml
+- resources/jellyfin/statefulset-jellyfin.yaml
+- resources/lidarr/ingress-lidarr-ingress.yaml
+- resources/lidarr/service-lidarr.yaml
+- resources/lidarr/statefulset-lidarr.yaml
+- resources/prowlarr/ingress-prowlarr-ingress.yaml
+- resources/prowlarr/service-prowlarr.yaml
+- resources/prowlarr/statefulset-prowlarr.yaml
+- resources/qbittorrent/ingress-qbittorrent-ingress.yaml
+- resources/qbittorrent/service-qbittorrent.yaml
+- resources/qbittorrent/statefulset-qbittorrent.yaml
+- resources/radarr/ingress-radarr-ingress.yaml
+- resources/radarr/service-radarr.yaml
+- resources/radarr/statefulset-radarr.yaml
+- resources/sonarr/ingress-sonarr-ingress.yaml
+- resources/sonarr/service-sonarr.yaml
+- resources/sonarr/statefulset-sonarr.yaml
+
+configMapGenerator:
+  - name: media-server-env
+    envs:
+      - env/common.env
+secretGenerator:
+  - name: media-server-config-files
+    files:
+      - bazarr.yaml=./config/secrets/bazarr.yaml
+      - lidarr.xml=./config/secrets/lidarr.xml
+      - prowlarr.xml=./config/secrets/prowlarr.xml
+      - qBittorrent.conf=./config/secrets/qBittorrent.conf
+      - radarr.xml=./config/secrets/radarr.xml
+      - sonarr.xml=./config/secrets/sonarr.xml

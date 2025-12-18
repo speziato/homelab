@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  annotations:
+    tailscale.com/proxy-group: tailscale-ingress
+spec:
+  type: LoadBalancer
+  selector:
+    app: jellyfin
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8096
+  loadBalancerClass: tailscale

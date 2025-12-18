@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+  name: lidarr
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: lidarr.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lidarr
+                port:
+                  number: 8686
+  tls:
+    - hosts:
+        - lidarr.lan.speziato.dev
+      secretName: lidarr-tls

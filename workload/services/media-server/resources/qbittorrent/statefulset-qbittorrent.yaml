@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      serviceAccountName: wait-for-job
+      automountServiceAccountToken: false
+
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        seccompProfile:
+          type: RuntimeDefault
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: openebs.io/nodeid
+                    operator: In
+                    values:
+                      - talos-o52-6k4
+
+      restartPolicy: Always
+
+      initContainers:
+        - name: wait-for-setup
+          image: ghcr.io/groundnuty/k8s-wait-for:no-root-v2.0@sha256:a26d3d3f6e1c747dd812aba5eef3189d535d0b4e810506bac51f8209a58a0102
+          args:
+            - job
+            - setup-config-storage
+          volumeMounts:
+            - name: sa-token
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+      containers:
+        - name: qbittorrent
+          image: ghcr.io/home-operations/qbittorrent:4.5.1@sha256:25fc7caf22101f85276ede9b1f76a46b7a93971bb6b70b6c58d14d6ab7f51415
+          envFrom:
+            - configMapRef:
+                name: media-server-env
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: data
+              mountPath: /data/torrents
+              subPath: torrents
+            - name: config
+              mountPath: /config
+              subPath: qbittorrent
+            - name: qbittorrent-tmp
+              mountPath: /tmp
+          ports:
+            - containerPort: 8080
+
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: media-server-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: media-server
+        - name: qbittorrent-tmp
+          emptyDir: {}
+        - name: sa-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 600
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace

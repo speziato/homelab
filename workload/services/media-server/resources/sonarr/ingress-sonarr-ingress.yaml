@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+  name: sonarr
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: sonarr.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sonarr
+                port:
+                  number: 8989
+  tls:
+    - hosts:
+        - sonarr.lan.speziato.dev
+      secretName: sonarr-tls

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+  name: bazarr
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bazarr.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: bazarr
+                port:
+                  number: 6767
+  tls:
+    - hosts:
+        - bazarr.lan.speziato.dev
+      secretName: bazarr-tls

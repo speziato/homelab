@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-config-storage
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: openebs.io/nodeid
+                operator: In
+                values:
+                - talos-o52-6k4
+      containers:
+      - name: setup
+        image: busybox:stable
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Creating directory structure..."
+          for d in jellyfin qbittorrent sonarr radarr lidarr bazarr prowlarr; do mkdir -p /config/$d; done
+          
+          echo "Copying configuration files..."
+          mkdir -p /config/bazarr/config && cp /config-files/bazarr.yaml /config/bazarr/config/config.yaml
+          cp /config-files/lidarr.xml /config/lidarr/config.xml || echo "file already present"
+          cp /config-files/prowlarr.xml /config/prowlarr/config.xml || echo "file already present"
+          cp /config-files/radarr.xml /config/radarr/config.xml || echo "file already present"
+          cp /config-files/sonarr.xml /config/sonarr/config.xml || echo "file already present"
+          cp /config-files/qBittorrent.conf /config/qbittorrent/qBittorrent.conf || echo "file already present"
+          
+          echo "Verifying files..."
+          ls -Rla /config
+          
+          echo "Setup complete!"
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - name: media-server-config
+          mountPath: /config
+        - name: media-server-config-files
+          mountPath: /config-files
+      volumes:
+      - name: media-server-config
+        persistentVolumeClaim:
+          claimName: media-server-config
+      - name: media-server-config-files
+        secret:
+          secretName: media-server-config-files

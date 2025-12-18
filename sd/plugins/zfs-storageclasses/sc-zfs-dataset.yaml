@@ -10,4 +10,5 @@ parameters:
   thinprovision: "no"
   fstype: "zfs"
   poolname: "zfs-pool"
+  shared: "yes"
 provisioner: zfs.csi.openebs.io
