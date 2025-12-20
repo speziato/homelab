@@ -1,0 +1,29 @@
+# Source: garage/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: garage
+  namespace: default
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+spec:
+  endpoints:
+    - port: metrics
+      interval: 60s
+      scrapeTimeout: 10s
+      honorLabels: true
+      path: /metrics
+      scheme: http
+  jobLabel: "garage"
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: garage
+      app.kubernetes.io/instance: garage
+  namespaceSelector:
+    matchNames:
+      - default

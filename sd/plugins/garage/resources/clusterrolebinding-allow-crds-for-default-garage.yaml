@@ -1,0 +1,20 @@
+# Source: garage/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: allow-crds-for-default-garage
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+subjects:
+- kind: ServiceAccount
+  name: garage
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: manage-crds-default-garage
+  apiGroup: rbac.authorization.k8s.io

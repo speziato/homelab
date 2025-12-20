@@ -1,0 +1,27 @@
+# Source: garage/templates/service-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-headless
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 3900
+      targetPort: 3900
+      protocol: TCP
+      name: s3-api
+    - port: 3902
+      targetPort: 3902
+      protocol: TCP
+      name: s3-web
+  selector:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage

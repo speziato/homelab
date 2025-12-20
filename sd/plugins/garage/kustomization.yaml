@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/clusterrole-manage-crds-default-garage.yaml
+- resources/clusterrolebinding-allow-crds-for-default-garage.yaml
+- resources/configmap-garage-config.yaml
+- resources/ingress-garage-s3-api.yaml
+- resources/ns.yaml
+- resources/service-garage-headless.yaml
+- resources/service-garage-metrics.yaml
+- resources/service-garage.yaml
+- resources/serviceaccount-garage.yaml
+- resources/servicemonitor-garage.yaml
+- resources/statefulset-garage.yaml
+namespace: garage
+secretGenerator:
+- envs:
+  - secrets/rpc-secret.env
+  name: garage-rpc-secret
+  options:
+    disableNameSuffixHash: true
+  type: Opaque

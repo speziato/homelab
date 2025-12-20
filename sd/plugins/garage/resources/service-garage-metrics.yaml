@@ -1,0 +1,25 @@
+# Source: garage/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-metrics
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+  annotations:
+    prometheus.io/scrape: "true"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - port: 3903
+      targetPort: 3903
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage

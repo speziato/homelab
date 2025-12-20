@@ -167,3 +167,5 @@ spec:
         folder: ./plugins/tailscale-operator
       - name: kubevirt
         folder: ./plugins/kubevirt
+      - name: garage
+        folder: ./plugins/garage

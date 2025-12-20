@@ -1,0 +1,42 @@
+# Source: garage/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: garage-s3-api
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "*.s3.lan.speziato.dev"
+        - "s3.lan.speziato.dev"
+      secretName: garage-tls
+  rules:
+    - host: "s3.lan.speziato.dev"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3900
+    - host: "*.s3.lan.speziato.dev"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3900

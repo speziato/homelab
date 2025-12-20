@@ -1,0 +1,30 @@
+[tasks.maintenance]
+run = """
+#!/usr/bin/env bash
+HELM_CHART_GIT_TAG="v2.1.0"
+HELM_CHART_VERSION="0.9.1"
+HELM_REPO_NAME="garage"
+HELM_CHART_NAME="garage"
+RELEASE_NAME="garage"
+NAMESPACE="garage"
+
+# Garage does not provide an helm repo, so we need to git clone it
+# we do it smart: sparse, no history, only checkout the "script/helm" folder
+tmpDir=$(mktemp -d)
+git clone --no-checkout --sparse --depth=1 --branch=${HELM_CHART_GIT_TAG} --filter=blob:none  https://git.deuxfleurs.fr/Deuxfleurs/garage $tmpDir
+pushd $tmpDir
+git sparse-checkout set --sparse-index --cone script/helm
+git checkout
+popd
+rm -rf resources
+helm template ${RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}" > deploy.maintenance.yaml
+rm -rf $tmpDir
+kubectl slice -f deploy.maintenance.yaml -o resources
+kubectl create ns ${NAMESPACE} --dry-run=client -oyaml > resources/ns.yaml
+rm resources/secret-garage-rpc-secret.yaml
+rm deploy.maintenance.yaml
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize edit add secret garage-rpc-secret --from-env-file=secrets/rpc-secret.env --disableNameSuffixHash
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+"""
