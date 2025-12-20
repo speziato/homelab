@@ -81,7 +81,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
-              subPath: data-root
             - name: config
               mountPath: /config
               subPath: radarr
