@@ -26,5 +26,6 @@ rm deploy.maintenance.yaml
 rm -f kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret garage-rpc-secret --from-env-file=secrets/rpc-secret.env --disableNameSuffixHash
+kustomize edit add secret garage-admin-credentials --from-env-file=secrets/garage-admin-credentials.env --disableNameSuffixHash
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 """

@@ -20,3 +20,9 @@ secretGenerator:
   options:
     disableNameSuffixHash: true
   type: Opaque
+- envs:
+  - secrets/garage-admin-credentials.env
+  name: garage-admin-credentials
+  options:
+    disableNameSuffixHash: true
+  type: Opaque

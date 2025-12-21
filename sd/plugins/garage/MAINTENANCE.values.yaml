@@ -45,9 +45,9 @@ garage:
   s3:
     api:
       region: "garage"
-      rootDomain: ".s3.garage.tld"
+      rootDomain: ".s3.lan.speziato.dev"
     web:
-      rootDomain: ".web.garage.tld"
+      rootDomain: ".web.lan.speziato.dev"
       index: "index.html"
 
   # -- if not empty string, allow using an existing ConfigMap for the garage.toml,
@@ -230,7 +230,12 @@ tolerations: []
 
 affinity: {}
 
-environment: {}
+environment:
+  - name: GARAGE_ADMIN_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: garage-admin-credentials
+        key: GARAGE_ADMIN_TOKEN
 
 extraVolumes: {}
 

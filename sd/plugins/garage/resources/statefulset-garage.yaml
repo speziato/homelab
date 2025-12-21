@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 0a8b4ce7163e8b5c0946f9b0e31b7d6efaab417f57b943bc620639e18d3b157b
+        checksum/config: 59f2b8ce0ea8ae342ad0c6771faefc0d24ba4d5be9fb6cdaa759d02fd0775b21
       labels:
         helm.sh/chart: garage-0.9.1
         app.kubernetes.io/name: garage
@@ -79,6 +79,12 @@ spec:
               name: web-api
             - containerPort: 3903
               name: admin
+          env:
+            - name: GARAGE_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: GARAGE_ADMIN_TOKEN
+                  name: garage-admin-credentials
           volumeMounts:
             - name: meta
               mountPath: /mnt/meta

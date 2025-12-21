@@ -31,11 +31,11 @@ data:
     [s3_api]
     s3_region = "garage"
     api_bind_addr = "[::]:3900"
-    root_domain = ".s3.garage.tld"
+    root_domain = ".s3.lan.speziato.dev"
 
     [s3_web]
     bind_addr = "[::]:3902"
-    root_domain = ".web.garage.tld"
+    root_domain = ".web.lan.speziato.dev"
     index = "index.html"
 
     [admin]
