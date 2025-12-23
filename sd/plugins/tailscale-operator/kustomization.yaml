@@ -2,9 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - resources/ns.yaml
-# - resources/proxyclass-ingress.yaml
+- resources/proxyclass-ingress.yaml
 - resources/proxygroup-ingress.yaml
+- resources/vendor/clusterrole-tailscale-auth-proxy.yaml
 - resources/vendor/clusterrole-tailscale-operator.yaml
+- resources/vendor/clusterrolebinding-tailscale-auth-proxy.yaml
 - resources/vendor/clusterrolebinding-tailscale-operator.yaml
 - resources/vendor/crds/customresourcedefinition-connectors.tailscale.com.yaml
 - resources/vendor/crds/customresourcedefinition-dnsconfigs.tailscale.com.yaml
@@ -17,6 +19,7 @@ resources:
 - resources/vendor/role-proxies.yaml
 - resources/vendor/rolebinding-operator.yaml
 - resources/vendor/rolebinding-proxies.yaml
+- resources/vendor/serviceaccount-kube-apiserver-auth-proxy.yaml
 - resources/vendor/serviceaccount-operator.yaml
 - resources/vendor/serviceaccount-proxies.yaml
 namespace: tailscale
