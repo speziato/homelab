@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/certificate-barman-cloud-client.yaml
+- resources/certificate-barman-cloud-server.yaml
+- resources/clusterrole-barman-plugin-metrics-auth-role.yaml
+- resources/clusterrole-barman-plugin-metrics-reader.yaml
+- resources/clusterrole-barman-plugin-objectstore-editor-role.yaml
+- resources/clusterrole-barman-plugin-objectstore-viewer-role.yaml
+- resources/clusterrole-plugin-barman-cloud.yaml
+- resources/clusterrolebinding-barman-plugin-metrics-auth-rolebinding.yaml
+- resources/clusterrolebinding-plugin-barman-cloud-binding.yaml
+- resources/customresourcedefinition-objectstores.barmancloud.cnpg.io.yaml
+- resources/deployment-barman-cloud.yaml
+- resources/issuer-selfsigned-issuer.yaml
+- resources/role-barman-plugin-leader-election-role.yaml
+- resources/rolebinding-barman-plugin-leader-election-rolebinding.yaml
+- resources/secret-plugin-barman-cloud-dgkb8f78tm.yaml
+- resources/service-barman-cloud.yaml
+- resources/serviceaccount-plugin-barman-cloud.yaml

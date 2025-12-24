@@ -24,4 +24,3 @@ resources:
 - resources/service-cnpg-webhook-service.yaml
 - resources/serviceaccount-cnpg-controller-manager.yaml
 - resources/validatingwebhookconfiguration-cnpg-validating-webhook-configuration.yaml
-namespace: operators

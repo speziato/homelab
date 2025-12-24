@@ -19,6 +19,6 @@ rm deploy.maintenance.yaml
 rm -f resources/-.yaml
 mv resources/customresourcedefinition-* resources/crds/
 rm -f kustomization.yaml
-kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+kustomize init --autodetect --recursive
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 '''

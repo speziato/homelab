@@ -1,0 +1,15 @@
+[tasks.maintenance]
+run = """
+#!/usr/bin/env bash
+
+VERSION=0.9.0
+
+URL="https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${VERSION}/manifest.yaml"
+
+rm -rf resources
+curl -sSL "${URL}" -o deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources
+rm -rf deploy.maintenance.yaml kustomization.yaml
+kustomize init --autodetect --recursive
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+"""
