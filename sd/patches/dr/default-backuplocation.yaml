@@ -1,0 +1,9 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: kube-system
+spec:
+  default: true # to silence warnings in logs about the default storage location
+  config:
+    region: garage

@@ -4,9 +4,12 @@ FURYCTL_OUTDIR="{{config_root}}"
 FURYCTL_LOG="{{config_root}}/.furyctl/furyctl.log"
 KUBECONFIG="{{config_root}}/../talos/kubeconfig"
 
+'_'.file = "{{config_root}}/secrets/velero-s3-credentials.env"
+
 [tools]
 furyctl = "0.33.1"
 kustomize = "5.8.0"
 helm = "4.0.0"
 stern = "latest"
 kapp = "latest"
+"http:garage" = {version = "2.1.0", url = "https://garagehq.deuxfleurs.fr/_releases/v{{version}}/x86_64-unknown-linux-musl/garage", rename_exe="garage"}

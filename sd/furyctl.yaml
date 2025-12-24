@@ -115,9 +115,21 @@ spec:
       # This section contains all the configurations for the Disaster Recovery module
       dr:
         # type can be none or on-premises
-        type: none
+        type: on-premises
         # Configurations for the velero package
-        velero: {}
+        velero:
+          backend: externalEndpoint
+          externalEndpoint:
+            accessKeyId: "{env://VELERO_S3_ACCESS_KEY}"
+            bucketName: "{env://VELERO_S3_BUCKET_NAME}"
+            endpoint: "{env://VELERO_S3_ENDPOINT}"
+            secretAccessKey: "{env://VELERO_S3_SECRET_KEY}"
+            insecure: true
+          schedules:
+            definitions:
+              manifests:
+                schedule: 10 3 * * *
+                ttl: 320h
       # This section contains all the configurations for the auth module
       auth:
         provider:
@@ -128,6 +140,8 @@ spec:
     # Custom Patches to add or override fields in the generated manifests
     customPatches:
       patches:
+        - path: ./patches/dr/default-backuplocation.yaml
+        - path: ./patches/dr/delete-full-schedule.yaml
         - path: ./patches/monitoring/namespace.yaml
         - path: ./patches/monitoring/no-etcd-pki.yaml
         - patch: |
