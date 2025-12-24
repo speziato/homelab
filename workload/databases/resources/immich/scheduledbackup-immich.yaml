@@ -1,0 +1,12 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: immich
+spec:
+  schedule: "0 10 4 1 * *"  # At 04:10 AM every first day of the month
+  backupOwnerReference: self
+  cluster:
+    name: immich
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

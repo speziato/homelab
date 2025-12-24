@@ -5,6 +5,11 @@ metadata:
 spec:
   instances: 1 
   imageName: ghcr.io/cloudnative-pg/postgresql:18-standard-trixie
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: postgresql
   bootstrap:
     initdb:
       database: immich

@@ -1,0 +1,29 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgresql
+spec:
+  configuration:
+    destinationPath: s3://backups/postgresql/
+    endpointURL: "http://garage.garage.svc.cluster.local:3900"
+    wal:
+      compression: zstd
+    data:
+      compression: bzip2
+    s3Credentials:
+      accessKeyId:
+        key: ACCESS_KEY
+        name: postgresql-object-store-backup-credentials
+      secretAccessKey:
+        key: SECRET_KEY
+        name: postgresql-object-store-backup-credentials
+      region:
+        key: REGION
+        name: postgresql-object-store-backup-credentials
+  retentionPolicy: 15d
+  instanceSidecarConfiguration:
+    env:
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
