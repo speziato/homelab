@@ -20,7 +20,7 @@ garage:
 
   # -- Default to 3 replicas, see the replication_factor section at
   # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor
-  replicationFactor: "3"
+  replicationFactor: "1"
 
   # -- By default, enable read-after-write consistency guarantees, see the consistency_mode section at
   # https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#consistency_mode
@@ -174,7 +174,7 @@ ingress:
            - "*.s3.lan.speziato.dev"
            - s3.lan.speziato.dev
     web:
-      enabled: false
+      enabled: true
       # -- Rely _either_ on the className or the annotation below but not both!
       # If you want to use the className, set
       # className: "nginx"

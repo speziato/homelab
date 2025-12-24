@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manage-crds-default-garage
+  name: manage-crds-garage-garage
   labels:
     helm.sh/chart: garage-0.9.1
     app.kubernetes.io/name: garage

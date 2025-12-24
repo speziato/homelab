@@ -1,0 +1,19 @@
+# Source: garage/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-admin
+  labels:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3903
+      targetPort: 3903
+      protocol: TCP
+      name: admin
+  selector:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage

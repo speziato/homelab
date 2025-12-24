@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: garage
-  namespace: default
+  namespace: garage
   labels:
     helm.sh/chart: garage-0.9.1
     app.kubernetes.io/name: garage
@@ -26,4 +26,4 @@ spec:
       app.kubernetes.io/instance: garage
   namespaceSelector:
     matchNames:
-      - default
+      - garage

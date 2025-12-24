@@ -17,7 +17,7 @@ git sparse-checkout set --sparse-index --cone script/helm
 git checkout
 popd
 rm -rf resources
-helm template ${RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}" > deploy.maintenance.yaml
+helm template ${RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}" --namespace ${NAMESPACE} > deploy.maintenance.yaml
 rm -rf $tmpDir
 kubectl slice -f deploy.maintenance.yaml -o resources
 kubectl create ns ${NAMESPACE} --dry-run=client -oyaml > resources/ns.yaml
@@ -28,4 +28,57 @@ kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret garage-rpc-secret --from-env-file=secrets/rpc-secret.env --disableNameSuffixHash
 kustomize edit add secret garage-admin-credentials --from-env-file=secrets/garage-admin-credentials.env --disableNameSuffixHash
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+"""
+
+[tasks.init-cluster]
+run = """
+#!/usr/bin/env bash
+
+NODE_ID=$(kubectl exec -n garage garage-0 -- /garage status | grep garage | awk '{print $1}')
+PVC_SIZE=200G
+ZONE_NAME=vigevano
+
+GARAGE="kubectl exec -n garage garage-0 -- /garage "
+${GARAGE} layout assign -z ${ZONE_NAME} -c ${PVC_SIZE} ${NODE_ID}
+${GARAGE} layout apply --version 1
+"""
+
+[tasks.create-bucket]
+usage = """
+flag "-n --name <name>" help="The name of the bucket to be created"
+flag "-k --key-name <key_name>" help="The name of the access key to be created"
+"""
+run = """
+#!/usr/bin/env bash
+echo "Creating '${usage_name?}' bucket..."
+GARAGE="kubectl exec -n garage garage-0 -- /garage "
+${GARAGE} bucket create "${usage_name?}" 2>&1 > /dev/null || \
+  echo "Bucket may already exist"
+
+KEY_OUTPUT=$(${GARAGE} key list | grep "${usage_key_name?}" || echo "")
+if [ -n "$KEY_OUTPUT" ]; then
+echo "Access key ${usage_key_name?} already exists"
+  # If key exists, try to get its details
+  ACCESS_KEY=$(echo "$KEY_OUTPUT" | awk '{print $1}')
+  SECRET_KEY="<Cannot get existing secret key>"
+else
+  echo "Creating '${usage_key_name?}' access key..."
+  KEY_OUTPUT=$(${GARAGE} key create ${usage_key_name?} 2>&1)
+  ACCESS_KEY=$(echo "$KEY_OUTPUT" | grep "Key ID:" | awk '{print $NF}')
+  SECRET_KEY=$(echo "$KEY_OUTPUT" | grep "Secret key:" | awk '{print $NF}')
+fi
+
+# Grant write permissions to the key on the bucket
+echo "Granting write permissions to ${usage_key_name?} key on ${usage_name?} bucket..."
+${GARAGE} bucket allow \
+  --read \
+  --write \
+  ${usage_name?} \
+  --key ${usage_key_name?} 2>&1 > /dev/null || echo "Permissions may already be set"
+
+echo "Setup completed successfully"
+echo ""
+echo "Access key information:"
+echo "  Access Key ID: $ACCESS_KEY"
+echo "  Secret Key: $SECRET_KEY"
 """

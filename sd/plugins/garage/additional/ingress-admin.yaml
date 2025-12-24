@@ -1,0 +1,28 @@
+# Source: garage/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: garage-admin
+  labels:
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "garage-admin.lan.speziato.dev"
+      secretName: garage-admin-tls
+  rules:
+    - host: "garage-admin.lan.speziato.dev"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage-admin
+                port:
+                  number: 3903

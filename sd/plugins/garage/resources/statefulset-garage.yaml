@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 59f2b8ce0ea8ae342ad0c6771faefc0d24ba4d5be9fb6cdaa759d02fd0775b21
+        checksum/config: fffc8d141320e5abf9d83a8a72ae530f6c70a248753ae6a3396abcdfd770c106
       labels:
         helm.sh/chart: garage-0.9.1
         app.kubernetes.io/name: garage

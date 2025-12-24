@@ -1,0 +1,34 @@
+# Source: garage/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: garage-s3-web
+  labels:
+    helm.sh/chart: garage-0.9.1
+    app.kubernetes.io/name: garage
+    app.kubernetes.io/instance: garage
+    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/managed-by: Helm
+    
+spec:
+  rules:
+    - host: "*.web.garage.tld"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3902
+    - host: "mywebpage.example.com"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage
+                port:
+                  number: 3902

@@ -12,7 +12,7 @@ data:
 
     block_size = 1048576
 
-    replication_factor = 3
+    replication_factor = 1
     consistency_mode = "consistent"
 
     compression_level = 3
@@ -24,7 +24,7 @@ data:
     bootstrap_peers = []
 
     [kubernetes_discovery]
-    namespace = "default"
+    namespace = "garage"
     service_name = "garage"
     skip_crd = false
 

@@ -1,10 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- resources/clusterrole-manage-crds-default-garage.yaml
-- resources/clusterrolebinding-allow-crds-for-default-garage.yaml
+- additional
+- resources/clusterrole-manage-crds-garage-garage.yaml
+- resources/clusterrolebinding-allow-crds-for-garage-garage.yaml
 - resources/configmap-garage-config.yaml
 - resources/ingress-garage-s3-api.yaml
+- resources/ingress-garage-s3-web.yaml
 - resources/ns.yaml
 - resources/service-garage-headless.yaml
 - resources/service-garage-metrics.yaml
