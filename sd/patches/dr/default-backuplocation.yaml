@@ -7,3 +7,5 @@ spec:
   default: true # to silence warnings in logs about the default storage location
   config:
     region: garage
+  objectStorage:
+    prefix: velero
