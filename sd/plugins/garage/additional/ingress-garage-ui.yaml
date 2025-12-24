@@ -1,0 +1,27 @@
+# Source: garage/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: garage-ui
+  labels:
+    app: garage-ui
+    
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "garage-ui.lan.speziato.dev"
+      secretName: garage-ui-tls
+  rules:
+    - host: "garage-ui.lan.speziato.dev"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: garage-ui
+                port:
+                  number: 3909

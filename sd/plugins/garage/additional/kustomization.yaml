@@ -1,5 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+- deployment-garage-ui.yaml
 - ingress-admin.yaml
+- ingress-garage-ui.yaml
 - service-admin.yaml
+- service-garage-ui.yaml

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: garage-ui
+  name: garage-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: garage-ui
+  template:
+    metadata:
+      labels:
+        app: garage-ui
+    spec:
+      containers:
+      - env:
+          - name: API_BASE_URL
+            value: "http://garage-admin:3903"
+          - name: S3_ENDPOINT_URL
+            value: "http://garage:3900"
+          - name: API_ADMIN_KEY
+            valueFrom:
+              secretKeyRef:
+                key: GARAGE_ADMIN_TOKEN
+                name: garage-admin-credentials
+        image: khairul169/garage-webui:1.1.0
+        name: garage-webui
+        ports:
+          - containerPort: 3909
+            name: s3-ui
+        resources:
+          requests:
+            cpu: 50m
+            memory: 90Mi
+        securityContext:
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        volumeMounts:
+          - name: config
+            mountPath: /etc/garage.toml
+            subPath: garage.toml
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: config
+          configMap:
+            name: garage-config
