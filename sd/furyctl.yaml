@@ -183,3 +183,5 @@ spec:
         folder: ./plugins/kubevirt
       - name: garage
         folder: ./plugins/garage
+      - name: schedule-pvc-backup
+        folder: ./plugins/schedule-pvc-backup

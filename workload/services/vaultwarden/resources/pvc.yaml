@@ -2,6 +2,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: vaultwarden
+  labels:
+    backup: velero
 spec:
   accessModes:
     - ReadWriteOnce

@@ -1,0 +1,32 @@
+# Copyright (c) 2017-present SIGHUP s.r.l All rights reserved.
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: pvc-backup
+spec:
+  schedule: "0 2 * * *"
+  template:
+    snapshotMoveData: true
+    datamover: velero
+    includedNamespaces:
+    - 'services'
+    excludedNamespaces: null
+    includedResources:
+    - 'persistentvolumeclaims'
+    - 'persistentvolumes'
+    excludedResources: null
+    includeClusterResources: true
+    labelSelector:
+      matchLabels:
+        backup: velero
+    snapshotVolumes: true
+    storageLocation: default
+    volumeSnapshotLocations:
+    - default
+    ttl: 360h0m0s
+    hooks:
+      resources: []
