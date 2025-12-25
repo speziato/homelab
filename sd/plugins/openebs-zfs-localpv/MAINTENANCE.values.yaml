@@ -59,7 +59,7 @@ zfsNode:
   # by default all the node label keys are allowed.
   # For example:
   # allowedTopologyKeys: "kubernetes.io/hostname,openebs.io/rack"
-  allowedTopologyKeys: "All"
+  allowedTopologyKeys: "openebs.io/zpool,kubernetes.io/hostname,openebs.io/nodeid"
   initContainers: {}
   additionalVolumes: {}
 

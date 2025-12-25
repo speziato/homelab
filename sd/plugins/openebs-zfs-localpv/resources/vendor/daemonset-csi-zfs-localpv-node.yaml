@@ -98,7 +98,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: ALLOWED_TOPOLOGIES
-              value: "All"
+              value: "openebs.io/zpool,kubernetes.io/hostname,openebs.io/nodeid"
           volumeMounts:
             - name: plugin-dir
               mountPath: /plugin
