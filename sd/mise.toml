@@ -13,3 +13,4 @@ helm = "4.0.0"
 stern = "latest"
 kapp = "latest"
 "http:garage" = {version = "2.1.0", url = "https://garagehq.deuxfleurs.fr/_releases/v{{version}}/x86_64-unknown-linux-musl/garage", rename_exe="garage"}
+velero = "1.17.1"
