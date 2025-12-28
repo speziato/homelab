@@ -1,0 +1,20 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backups-sftp-sync
+spec:
+  groups:
+  - name: backup.rules
+    interval: 180s
+    rules:
+    - alert: BackupsSFTPSyncFailed
+      expr: kube_job_status_failed{job_name=~"backup-sftp-sync.*"} > 0
+      for: 15m
+      annotations:
+        summary: "Backups SFTP sync job failed"
+    - alert: BackupsSFTPCleanupFailed
+      expr: kube_job_status_failed{job_name=~"backup-sftp-cleanup.*"} > 0
+      for: 15m
+      annotations:
+        summary: "Backups SFTP cleanup job failed"

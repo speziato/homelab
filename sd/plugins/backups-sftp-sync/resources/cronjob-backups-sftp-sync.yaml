@@ -1,0 +1,198 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backups-sftp-sync
+spec:
+  # Run every day at 5AM
+  schedule: "0 5 * * *"
+  
+  # Keep last 3 successful and 1 failed job for debugging
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  
+  # Don't run concurrent syncs
+  concurrencyPolicy: Forbid
+  
+  # If job is delayed, still run it
+  startingDeadlineSeconds: 300
+  
+  jobTemplate:
+    spec:
+      # Don't retry failed sync jobs automatically
+      backoffLimit: 0
+      
+      template:
+        metadata:
+          labels:
+            app: backups-sftp-sync
+        spec:
+          restartPolicy: Never
+          
+          # Init container to set up SSH key permissions
+          initContainers:
+          - name: setup
+            image: busybox:stable
+            envFrom:
+              - secretRef:
+                  name: backup-sftp-sync-credentials
+              - configMapRef:
+                  name: backup-sftp-sync-config
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /home/user/.ssh
+                cp /ssh-key /home/user/.ssh/ssh-key
+                chmod 600 /home/user/.ssh/ssh-key
+                chmod 700 /home/user/.ssh
+
+                # In the container command
+                cat > /home/user/rclone.conf << EOF
+                [garage-s3]
+                type = s3
+                provider = Other
+                env_auth = false
+                access_key_id = $BACKUPS_S3_ACCESS_KEY
+                secret_access_key = $BACKUPS_S3_SECRET_KEY
+                endpoint = http://$BACKUPS_S3_ENDPOINT
+                region = garage
+                force_path_style = true
+                acl = private
+                bucket_acl = private
+
+                [sftp-remote]
+                type = sftp
+                host = $SFTP_HOST
+                user = $SFTP_USER
+                port = $SFTP_PORT
+                key_file = /home/user/.ssh/ssh-key
+
+                [sftp-encrypted]
+                type = crypt
+                filename_encryption = off
+                directory_name_encryption = false
+                remote = sftp-remote:$SFTP_BACKUP_PATH
+                password = $RCLONE_CRYPT_PASSWORD
+                password2 = $RCLONE_CRYPT_SALT
+                EOF
+            securityContext:
+              # Run as non-root for better security
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                  - ALL
+            volumeMounts:
+            - name: ssh-key
+              mountPath: /ssh-key
+              readOnly: true
+              subPath: ssh-key
+            - name: ssh-home
+              mountPath: /home/user
+          
+          containers:
+          - name: rclone-sync
+            image: docker.io/rclone/rclone:sha-7c16602@sha256:3d7dc78f74b7617cf75aff996bd52e3ed70a31a623777934046070e276535792
+            imagePullPolicy: IfNotPresent
+            envFrom:
+              - configMapRef:
+                  name: backup-sftp-sync-config
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -e
+                
+                # Log start time
+                echo "Starting backup sync at $(date)"
+                
+                # Source (Garage S3) and destination (SFTP with encryption)
+                SOURCE="garage-s3:$BACKUPS_S3_BUCKET_NAME"
+                DEST="sftp-encrypted:"
+
+                RCLONE="rclone --config=/home/user/rclone.conf"
+                
+                # Optional: Show what will be synced (dry-run)
+                echo "=== Dry-run preview ==="
+                ${RCLONE} \
+                  sync "$SOURCE" "$DEST" \
+                  --dry-run \
+                  --verbose \
+                  --progress \
+                  --transfers=4 \
+                  --checkers=8 \
+                  --max-size=10G || echo "Dry-run preview failed, continuing with actual sync"
+                
+                # Actual sync
+                echo ""
+                echo "=== Starting actual sync ==="
+                ${RCLONE} \
+                  sync "$SOURCE" "$DEST" \
+                  --verbose \
+                  --progress \
+                  --transfers=4 \
+                  --checkers=8 \
+                  --max-size=10G \
+                  --stats=30s \
+                  --bwlimit=100M \
+                  --retries=3 \
+                  --retries-sleep=10s
+                
+                SYNC_EXIT=$?
+                
+                if [ $SYNC_EXIT -eq 0 ]; then
+                  echo "Sync completed successfully at $(date)"
+                  exit 0
+                else
+                  echo "Sync failed with exit code $SYNC_EXIT"
+                  exit $SYNC_EXIT
+                fi
+            
+            # Optional: Increase log verbosity for debugging
+            # - name: RCLONE_VERBOSE
+            #   value: "2"
+            
+            volumeMounts:
+            - name: ssh-home
+              mountPath: /home/user
+            
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "500m"
+              limits:
+                memory: "512Mi"
+                cpu: "1000m"
+            
+            securityContext:
+              # Run as non-root for better security
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                  - ALL
+            
+            # Ensure container doesn't hang
+            terminationGracePeriodSeconds: 60
+          
+          # Cleanup on failure
+          activeDeadlineSeconds: 7200  # 2 hours timeout
+          
+          volumes:
+          - name: ssh-key
+            secret:
+              secretName: sftp-ssh-key
+              defaultMode: 0644
+          - name: ssh-home
+            emptyDir: {}

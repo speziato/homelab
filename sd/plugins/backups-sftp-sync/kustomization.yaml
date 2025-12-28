@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: backups
+resources:
+- resources/namespace-backups.yaml
+- resources/cronjob-backups-sftp-sync.yaml
+- resources/cronjob-backups-sftp-cleanup.yaml
+- resources/prometheusrule-backups-sftp-sync.yaml
+
+secretGenerator:
+  - name: backup-sftp-sync-credentials
+    envs:
+      - secrets/backup-sftp-sync-credentials.env
+  - name: sftp-ssh-key
+    files:
+      - ssh-key=secrets/keys/ssh-key
+configMapGenerator:
+  - name: backup-sftp-sync-config
+    envs:
+      - config/backup-sftp-sync-config.env
