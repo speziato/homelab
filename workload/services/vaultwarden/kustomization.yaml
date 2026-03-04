@@ -17,5 +17,5 @@ secretGenerator:
   name: vaultwarden-admin-token
   type: Opaque
 patches:
-- path: patches/loadbalancer-class.yaml
 - path: patches/delete-attachments-volumemount.yaml
+- path: patches/loadbalancer-class.yaml
