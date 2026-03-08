@@ -12,3 +12,4 @@ parameters:
   poolname: "zfs-pool"
   shared: "yes"
 provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain

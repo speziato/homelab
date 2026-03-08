@@ -8,3 +8,4 @@ parameters:
   fstype: "xfs"
   poolname: "zfs-pool"
 provisioner: zfs.csi.openebs.io
+reclaimPolicy: Retain

@@ -7,7 +7,7 @@ KUBECONFIG="{{config_root}}/../talos/kubeconfig"
 '_'.file = "{{config_root}}/secrets/velero-s3-credentials.env"
 
 [tools]
-furyctl = "0.33.1"
+furyctl = "0.34.0"
 kustomize = "5.8.0"
 helm = "4.0.0"
 stern = "latest"
