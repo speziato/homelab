@@ -25,7 +25,8 @@ notif:
       **Pod**: `{{ .Entry.Metadata.pod_name }}`
       **Namespace**: `{{ .Entry.Metadata.pod_namespace }}`
       
-      {{ if (eq .Entry.Status "new") }}New tag available{{ else }}Tag updated{{ end}}: {{ .Entry.Manifest.Tag }}.
+      {{ if (eq .Entry.Status "new") }}New tag available{{ else }}Tag updated{{ end}}: {{ .Entry.Manifest.Tag }}.{{ if .Entry.Image.HubLink }}
+      See more: [{{ .Entry.Image.HubLink }}]({{ .Entry.Image.HubLink }}){{ end }}
 defaults:
   watchRepo: true
   notifyOn:
