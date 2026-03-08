@@ -1,0 +1,16 @@
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: diun-metrics
+  namespace: diun
+  labels:
+    app: diun
+spec:
+  selector:
+    app: diun
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      protocol: TCP

@@ -187,6 +187,8 @@ spec:
         folder: ./plugins/schedule-pvc-backup
       - name: backups-sftp-sync
         folder: ./plugins/backups-sftp-sync
+      - name: diun
+        folder: ./plugins/diun
       # - name: operators
       #   folder: ./plugins/operators
       # - name: oracle-infra

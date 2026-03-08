@@ -1,0 +1,52 @@
+# diun.yml
+db:
+  path: /data/diun.db
+watch:
+  workers: 10
+  schedule: "0 19 * * *"
+  jitter: 30s
+  firstCheckNotif: true
+  runOnStartup: true
+  compareDigest: true
+providers:
+  kubernetes:
+    watchByDefault: true
+    namespaces:
+      - services
+notif:
+  webhook:
+    endpoint: "http://127.0.0.1:8080/webhook"
+    method: POST
+  telegram:
+    templateBody: |
+      **‼️ Diun - Container Image Updates ‼️**
+
+      **Image"** `{{ .Entry.Manifest.Name }}`
+      **Pod**: `{{ .Entry.Metadata.pod_name }}`
+      **Namespace**: `{{ .Entry.Metadata.pod_namespace }}`
+      
+      {{ if (eq .Entry.Status "new") }}New tag available{{ else }}Tag updated{{ end}}: {{ .Entry.Manifest.Tag }}.
+defaults:
+  watchRepo: true
+  notifyOn:
+    - new
+    - update
+  maxTags: 10
+  
+  includeTags:                        # only notify for tags matching these patterns
+    - ^v?\d+\.\d+(\.\d+)?([-_].+)?$ # matches: v1.2.3, 1.2-alpine, v1.2, v1.2.3_alpine etc
+    - ^no-root-v\d+\.\d+            # specific for k8s-wait-for
+
+  excludeTags:                        # additionally exclude these explicitly
+    - nightly
+    - latest
+    - edge
+    - dev
+    - main
+    - master
+    - snapshot
+    - beta
+    - alpha
+    - rc
+    - cuda
+    - openvino

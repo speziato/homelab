@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/clusterrole-diun.yaml
+- resources/clusterrolebinding-diun.yaml
+- resources/deployment-diun.yaml
+- resources/pvc-diun-data.yaml
+- resources/pvc-diun-metrics.yaml
+- resources/service-diun-metrics.yaml
+- resources/serviceaccount-diun.yaml
+- resources/servicemonitor-diun.yaml
+
+namespace: monitoring
+
+configMapGenerator:
+  - name: diun-config
+    files:
+      - resources/config/diun.yaml
+  - name: diun-env
+    envs:
+      - resources/config/diun.env
+  - name: diun-metrics-exporter-script
+    files:
+      - resources/scripts/exporter.py
+secretGenerator:
+  - name: diun-telegram-bot
+    envs:
+      - resources/secrets/telegram.env

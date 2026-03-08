@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: diun
+spec:
+  selector:
+    matchLabels:
+      app: diun
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15m
+      scrapeTimeout: 10s
+  namespaceSelector:
+    matchNames:
+      - diun
