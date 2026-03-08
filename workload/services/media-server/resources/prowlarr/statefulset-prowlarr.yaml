@@ -53,7 +53,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: prowlarr
-          image: ghcr.io/home-operations/prowlarr:2.3.1@sha256:4394dff2311238bf5c31e006872122ed4e5f6bf042d33528d80acd44a09c57f7
+          image: ghcr.io/home-operations/prowlarr:2.3.3@sha256:77af331ea53601fe4b8cc865d0bd3dc6eb73903a04483b49f7d5f78ee723510e
           envFrom:
             - configMapRef:
                 name: media-server-env

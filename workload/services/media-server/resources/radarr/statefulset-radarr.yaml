@@ -53,7 +53,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: radarr
-          image: ghcr.io/home-operations/radarr:6.1.0@sha256:10f94c85f605d42e5e78de928f24758b5750a4e99eee8d0ef9ff150f7a2df033
+          image: ghcr.io/home-operations/radarr:6.1.1@sha256:5e08c0eefd2770d1d29395c4f84fe5bf7dfc3a986598021306a5d8ac017a3989
           envFrom:
             - configMapRef:
                 name: media-server-env
