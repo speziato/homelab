@@ -2,6 +2,7 @@
 CONTROL_PLANE_IP="192.168.1.10"
 CLUSTER_NAME="talos-test"
 
+
 '_'.file.path = "secrets/ilo.env"
 
 [tasks.gen-config]
@@ -9,7 +10,7 @@ run = """
 #!/usr/bin/env bash
 
 mise run set-install-image-id
-rm controlplane.yaml
+rm -rf controlplane.yaml talosconfig
 talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --with-secrets {{config_root}}/secrets/secrets.yaml \
     --kubernetes-version {{vars.KUBE_VERSION}} \
@@ -25,6 +26,7 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --config-patch @{{config_root}}/patches/zfs-kernel-module.yaml \
     --output-types controlplane,talosconfig
 
+talosctl config context $CLUSTER_NAME
 talosctl config endpoint $CONTROL_PLANE_IP 
 talosctl config node $CONTRL_PLANE_IP
 """
