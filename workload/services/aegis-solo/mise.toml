@@ -1,0 +1,21 @@
+[tasks.maintenance]
+run = '''
+#!/usr/bin/env bash
+
+HELM_REPO_URL="oci://ghcr.io/matstech/charts/aegis"
+HELM_CHART_VERSION="2.1.0"
+NAMESPACE=services
+RELEASE_NAME=aegis
+
+rm -rf resources
+mkdir -p resources
+helm template "${RELEASE_NAME}" "${HELM_REPO_URL}:${HELM_CHART_VERSION}" --namespace "${NAMESPACE}" --no-hooks --values MAINTENANCE.values.yaml  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources
+rm deploy.maintenance.yaml
+rm -f resources/-.yaml
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace ${NAMESPACE}
+kustomize edit add secret aegis-keys --from-env-file secrets/keys.env
+kustomize edit add secret aegis-env --from-env-file secrets/aegis.env
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
+'''
