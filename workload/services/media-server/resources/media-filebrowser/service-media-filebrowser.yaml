@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-filebrowser
+  labels:
+    app.kubernetes.io/instance: filebrowser-quantum
+    app.kubernetes.io/name: filebrowser-quantum
+spec:
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+  selector:
+    app.kubernetes.io/instance: filebrowser-quantum
+    app.kubernetes.io/name: filebrowser-quantum

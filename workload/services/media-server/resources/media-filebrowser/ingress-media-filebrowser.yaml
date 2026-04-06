@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+  name: media-filebrowser
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: media-filebrowser.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: media-filebrowser
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - media-filebrowser.lan.speziato.dev
+      secretName: media-filebrowser-tls
