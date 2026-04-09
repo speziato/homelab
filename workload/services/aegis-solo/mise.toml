@@ -3,7 +3,7 @@ run = '''
 #!/usr/bin/env bash
 
 HELM_REPO_URL="oci://ghcr.io/matstech/charts/aegis"
-HELM_CHART_VERSION="2.1.0"
+HELM_CHART_VERSION="2.1.1"
 NAMESPACE=services
 RELEASE_NAME=aegis
 

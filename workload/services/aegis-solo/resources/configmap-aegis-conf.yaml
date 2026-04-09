@@ -7,11 +7,11 @@ kind: ConfigMap
 metadata:
   name: aegis-conf
   labels:
-    helm.sh/chart: aegis-2.1.0
+    helm.sh/chart: aegis-2.1.1
     app.kubernetes.io/name: aegis
     app.kubernetes.io/instance: aegis
-    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/version: "2.1.1"
     app.kubernetes.io/managed-by: Helm
 data:
   config.json: |-
-    {"ginmode":"release","kids":["solo"],"loglevel":"info","server":{"dropHeaders":["Authorization"],"injectHeaders":[{"name":"Authorization","valueFromEnv":"GITHUB_TOKEN"}],"mode":"PLAIN","port":8080,"probesport":2112,"tls":{"cacert":"test/cacert.pem","certpath":"test/server.crt","keypath":"test/server.key"},"upstream":"api.github.com"}}
+    {"ginmode":"release","kids":["solo"],"loglevel":"info","server":{"dropHeaders":["Authorization"],"injectHeaders":[{"name":"Authorization","valueFromEnv":"GITHUB_TOKEN"}],"mode":"PLAIN","port":8080,"probesport":2112,"tls":{"cacert":"test/cacert.pem","certpath":"test/server.crt","keypath":"test/server.key"},"upstream":"https://api.github.com"}}

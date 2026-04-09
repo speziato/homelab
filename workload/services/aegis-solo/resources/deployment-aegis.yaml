@@ -7,10 +7,10 @@ kind: Deployment
 metadata:
   name: aegis
   labels:
-    helm.sh/chart: aegis-2.1.0
+    helm.sh/chart: aegis-2.1.1
     app.kubernetes.io/name: aegis
     app.kubernetes.io/instance: aegis
-    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/version: "2.1.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -40,7 +40,7 @@ spec:
             runAsUser: 1000
             seccompProfile:
               type: RuntimeDefault
-          image: "matteos93/aegis:2.1.0"
+          image: "matteos93/aegis:2.1.1"
           imagePullPolicy: Always
           ports:
             - name: http

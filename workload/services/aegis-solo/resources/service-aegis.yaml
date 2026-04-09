@@ -7,10 +7,10 @@ kind: Service
 metadata:
   name: aegis
   labels:
-    helm.sh/chart: aegis-2.1.0
+    helm.sh/chart: aegis-2.1.1
     app.kubernetes.io/name: aegis
     app.kubernetes.io/instance: aegis
-    app.kubernetes.io/version: "2.1.0"
+    app.kubernetes.io/version: "2.1.1"
     app.kubernetes.io/managed-by: Helm
   annotations:
     tailscale.com/proxy-group: tailscale-ingress
