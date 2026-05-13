@@ -4,7 +4,7 @@ run = '''
 HELM_REPO_URL="https://guerzon.github.io/vaultwarden"
 HELM_REPO_NAME="vaultwarden"
 HELM_CHART_NAME="vaultwarden"
-HELM_CHART_VERSION="0.34.6"
+HELM_CHART_VERSION="0.36.4"
 NAMESPACE=services
 RELEASE_NAME=vaultwarden
 
@@ -17,9 +17,7 @@ rm deploy.maintenance.yaml
 rm -f kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret vaultwarden-admin-token --from-env-file=secrets/admin-token.env
-kustomize edit remove resource patches/delete-attachments-volumemount.yaml
 kustomize edit remove resource patches/loadbalancer-class.yaml
-kustomize edit add patch --path patches/delete-attachments-volumemount.yaml
 kustomize edit add patch --path patches/loadbalancer-class.yaml
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 '''

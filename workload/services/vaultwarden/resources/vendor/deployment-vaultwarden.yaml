@@ -6,10 +6,10 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/component: vaultwarden
-    helm.sh/chart: vaultwarden-0.34.6
+    helm.sh/chart: vaultwarden-0.36.4
     app.kubernetes.io/name: vaultwarden
     app.kubernetes.io/instance: vaultwarden
-    app.kubernetes.io/version: "1.35.3"
+    app.kubernetes.io/version: "1.36.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -27,8 +27,8 @@ spec:
         app.kubernetes.io/name: vaultwarden
         app.kubernetes.io/instance: vaultwarden
       annotations:
-        checksum/config: cd97540da46bc4f3e9e17d200408bfa33a9fcb26
-        checksum/secret: f8cc776ad63341775a075d5f332816bc1721f08a
+        checksum/config: e2cd905238a09ba624694c3bba5229afa6556fd2
+        checksum/secret: 6263563e0f636e7e5be8642cf4e6775c5becb9d4
     spec:
       
       securityContext:
@@ -36,7 +36,7 @@ spec:
         supplementalGroups:
         - 1000
       containers:
-        - image: docker.io/vaultwarden/server:1.35.4-alpine
+        - image: docker.io/vaultwarden/server:1.36.0-alpine
           imagePullPolicy: IfNotPresent
           name: vaultwarden
           envFrom:
@@ -55,8 +55,6 @@ spec:
           volumeMounts:
             - name: vaultwarden-data
               mountPath: /data
-            - name: vaultwarden-data
-              mountPath: /data/attachments
           resources:
             limits:
               cpu: 300m
@@ -94,8 +92,8 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 3
+      serviceAccountName: vaultwarden-svc
       volumes:
         - name: vaultwarden-data
           persistentVolumeClaim:
             claimName: vaultwarden
-      serviceAccountName: vaultwarden-svc
