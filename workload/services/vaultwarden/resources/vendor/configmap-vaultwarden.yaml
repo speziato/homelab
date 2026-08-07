@@ -6,10 +6,10 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/component: vaultwarden
-    helm.sh/chart: vaultwarden-0.36.4
+    helm.sh/chart: vaultwarden-0.44.1
     app.kubernetes.io/name: vaultwarden
     app.kubernetes.io/instance: vaultwarden
-    app.kubernetes.io/version: "1.36.0"
+    app.kubernetes.io/version: "1.37.1"
     app.kubernetes.io/managed-by: Helm
 data:
   DOMAIN: "https://vaultwarden.speziato.dev"
@@ -23,6 +23,10 @@ data:
   WEB_VAULT_ENABLED: "true"
   DB_CONNECTION_RETRIES: "15"
   DATABASE_MAX_CONNS: "10"
+  DATABASE_TIMEOUT: "30"
+  DATABASE_IDLE_TIMEOUT: "600"
+  DATABASE_MIN_CONNS: "2"
+  ENABLE_DB_WAL: "true"
   INVITATION_ORG_NAME: "Speziato - Vaultwarden"
   ICON_BLACKLIST_NON_GLOBAL_IPS: "true"
   IP_HEADER: "X-Real-IP"

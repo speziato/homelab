@@ -5,11 +5,8 @@ resources:
 - resources/vendor/configmap-vaultwarden.yaml
 - resources/vendor/deployment-vaultwarden.yaml
 - resources/vendor/ingress-vaultwarden.yaml
-- resources/vendor/role-vaultwarden.yaml
-- resources/vendor/rolebinding-vaultwarden.yaml
 - resources/vendor/secret-vaultwarden.yaml
 - resources/vendor/service-vaultwarden.yaml
-- resources/vendor/serviceaccount-vaultwarden-svc.yaml
 namespace: services
 secretGenerator:
 - envs:

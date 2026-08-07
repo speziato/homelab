@@ -6,10 +6,10 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/component: vaultwarden
-    helm.sh/chart: vaultwarden-0.36.4
+    helm.sh/chart: vaultwarden-0.44.1
     app.kubernetes.io/name: vaultwarden
     app.kubernetes.io/instance: vaultwarden
-    app.kubernetes.io/version: "1.36.0"
+    app.kubernetes.io/version: "1.37.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -27,8 +27,8 @@ spec:
         app.kubernetes.io/name: vaultwarden
         app.kubernetes.io/instance: vaultwarden
       annotations:
-        checksum/config: e2cd905238a09ba624694c3bba5229afa6556fd2
-        checksum/secret: 6263563e0f636e7e5be8642cf4e6775c5becb9d4
+        checksum/config: 4cec527c77c174df66e437e534cdd622fc9eda5d
+        checksum/secret: aa449861668da53855ddf24b56603d9e73661941
     spec:
       
       securityContext:
@@ -36,7 +36,7 @@ spec:
         supplementalGroups:
         - 1000
       containers:
-        - image: docker.io/vaultwarden/server:1.36.0-alpine
+        - image: docker.io/vaultwarden/server:1.37.1-alpine
           imagePullPolicy: IfNotPresent
           name: vaultwarden
           envFrom:
@@ -78,6 +78,7 @@ spec:
             httpGet:
               path: /alive
               port: http
+              scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 1
@@ -87,12 +88,12 @@ spec:
             httpGet:
               path: /alive
               port: http
+              scheme: HTTP
             initialDelaySeconds: 5
             periodSeconds: 10
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 3
-      serviceAccountName: vaultwarden-svc
       volumes:
         - name: vaultwarden-data
           persistentVolumeClaim:
