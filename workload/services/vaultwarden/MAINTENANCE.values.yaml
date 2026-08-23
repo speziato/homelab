@@ -5,15 +5,15 @@
 image:
   ## @param image.registry Vaultwarden image registry
   ##
-  registry: docker.io
-  ## @param image.repository Vaultwarden image repository
-  ##
-  repository: vaultwarden/server
-  ##
-  ## @param image.tag Vaultwarden image tag
-  ## Ref: https://hub.docker.com/r/vaultwarden/server/tags
-  ##
-  tag: "1.37.1-alpine"
+  # registry: docker.io
+  # ## @param image.repository Vaultwarden image repository
+  # ##
+  # repository: vaultwarden/server
+  # ##
+  # ## @param image.tag Vaultwarden image tag
+  # ## Ref: https://hub.docker.com/r/vaultwarden/server/tags
+  # ##
+  # tag: "1.37.2-alpine"
   ## @param image.pullPolicy Vaultwarden image pull policy
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
