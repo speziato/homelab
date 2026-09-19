@@ -4,7 +4,7 @@ run = '''
 HELM_REPO_URL="https://pkgs.tailscale.com/helmcharts"
 HELM_REPO_NAME="tailscale"
 HELM_CHART_NAME="tailscale-operator"
-HELM_CHART_VERSION="1.90.9"
+HELM_CHART_VERSION="1.102.4"
 NAMESPACE=tailscale
 RELEASE_NAME=tailscale
 
@@ -23,4 +23,27 @@ kustomize edit add secret operator-oauth --from-env-file=secrets/oidc-client.env
 kustomize edit remove resource patches/add-emptydir-config-volume.yaml
 kustomize edit add patch --path patches/add-emptydir-config-volume.yaml
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >2 && exit 1)
+'''
+
+[tasks.diff]
+description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
+run = '''
+#!/usr/bin/env bash
+TMPDIR=$(mktemp -d)
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}} > "${OUTFILE}"
+kapp deploy --diff-run -a kfd-plugin-tailscale-operator -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
+rm -rf "${TMPDIR}"
+'''
+
+[tasks.deploy]
+description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
+run = '''
+#!/usr/bin/env bash
+
+TMPDIR=$(mktemp -d)
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}} > "${OUTFILE}"
+kapp deploy -a kfd-plugin-tailscale-operator -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
+rm -rf "${TMPDIR}"
 '''

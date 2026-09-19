@@ -1,5 +1,5 @@
 # Source: tailscale-operator/templates/deployment.yaml
-# Copyright (c) Tailscale Inc & AUTHORS
+# Copyright (c) Tailscale Inc & contributors
 # SPDX-License-Identifier: BSD-3-Clause
 
 apiVersion: apps/v1
@@ -31,8 +31,6 @@ spec:
             capabilities:
               drop:
               - ALL
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
             readOnlyRootFilesystem: true
             runAsGroup: 1000
             runAsNonRoot: true
@@ -46,7 +44,7 @@ spec:
             requests:
               cpu: 150m
               memory: 128Mi
-          image: tailscale/k8s-operator:v1.90.9
+          image: tailscale/k8s-operator:v1.102.4
           imagePullPolicy: Always
           env:
             - name: OPERATOR_INITIAL_TAGS
@@ -61,6 +59,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: OPERATOR_SERVICE_ACCOUNT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
             - name: OPERATOR_LOGIN_SERVER
               value: 
             - name: OPERATOR_INGRESS_CLASS_NAME
@@ -70,7 +72,7 @@ spec:
             - name: CLIENT_SECRET_FILE
               value: /oauth/client_secret
             - name: PROXY_IMAGE
-              value: tailscale/tailscale:v1.90.9
+              value: tailscale/tailscale:v1.102.4
             - name: PROXY_TAGS
               value: tag:k8s
             - name: APISERVER_PROXY
@@ -86,8 +88,8 @@ spec:
                 fieldRef:
                   fieldPath: metadata.uid
           volumeMounts:
-          - name: oauth
-            mountPath: /oauth
-            readOnly: true
+            - name: oauth
+              mountPath: /oauth
+              readOnly: true
       nodeSelector:
         kubernetes.io/os: linux

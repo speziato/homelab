@@ -10,9 +10,12 @@ resources:
 - resources/vendor/clusterrolebinding-tailscale-operator.yaml
 - resources/vendor/crds/customresourcedefinition-connectors.tailscale.com.yaml
 - resources/vendor/crds/customresourcedefinition-dnsconfigs.tailscale.com.yaml
+- resources/vendor/crds/customresourcedefinition-peerrelays.tailscale.com.yaml
 - resources/vendor/crds/customresourcedefinition-proxyclasses.tailscale.com.yaml
+- resources/vendor/crds/customresourcedefinition-proxygrouppolicies.tailscale.com.yaml
 - resources/vendor/crds/customresourcedefinition-proxygroups.tailscale.com.yaml
 - resources/vendor/crds/customresourcedefinition-recorders.tailscale.com.yaml
+- resources/vendor/crds/customresourcedefinition-tailnets.tailscale.com.yaml
 - resources/vendor/deployment-operator.yaml
 - resources/vendor/ingressclass-tailscale.yaml
 - resources/vendor/role-operator.yaml
