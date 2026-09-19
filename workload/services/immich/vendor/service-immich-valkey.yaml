@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: valkey
     app.kubernetes.io/service: immich-valkey
-    app.kubernetes.io/version: v2.0.0
-    helm.sh/chart: immich-0.10.3
-  namespace: default
+    app.kubernetes.io/version: v3.2.0
+    helm.sh/chart: immich-0.13.2
+  namespace: services
 spec:
   type: ClusterIP
   ports:

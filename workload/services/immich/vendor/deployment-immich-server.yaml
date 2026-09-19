@@ -8,14 +8,14 @@ metadata:
     app.kubernetes.io/instance: immich
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: server
-    app.kubernetes.io/version: v2.0.0
-    helm.sh/chart: immich-0.10.3
-  namespace: default
+    app.kubernetes.io/version: v3.2.0
+    helm.sh/chart: immich-0.13.2
+  namespace: services
 spec:
   revisionHistoryLimit: 3
   replicas: 1
   strategy:
-    type: RollingUpdate
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/controller: main
@@ -29,8 +29,8 @@ spec:
         app.kubernetes.io/name: server
     spec: 
       enableServiceLinks: false
-      serviceAccountName: default
-      automountServiceAccountToken: true
+      serviceAccountName: immich-server
+      automountServiceAccountToken: false
       securityContext: 
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
@@ -71,7 +71,7 @@ spec:
             value: all
           - name: REDIS_HOSTNAME
             value: immich-valkey
-          image: ghcr.io/immich-app/immich-server:v2.5.6
+          image: ghcr.io/immich-app/immich-server:v3.2.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3

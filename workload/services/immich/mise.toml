@@ -5,10 +5,10 @@ run = '''
 HELM_REPO_URL="oci://ghcr.io/immich-app/immich-charts/immich"
 NAMESPACE="services"
 RELEASE_NAME="immich"
-HELM_CHART_VERSION="0.10.3"
+HELM_CHART_VERSION="0.13.2"
 
 rm -rf vendor
-helm template ${RELEASE_NAME} ${HELM_REPO_URL}:${HELM_CHART_VERSION} --values MAINTENANCE.values.yaml > deploy.maintenance.yaml
+helm template ${RELEASE_NAME} ${HELM_REPO_URL}:${HELM_CHART_VERSION} --namespace ${NAMESPACE} --values MAINTENANCE.values.yaml > deploy.maintenance.yaml
 kubectl slice -f deploy.maintenance.yaml -o vendor
 rm deploy.maintenance.yaml
 rm -f vendor/-.yaml

@@ -7,12 +7,12 @@ metadata:
     app.kubernetes.io/instance: immich
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: server
-    app.kubernetes.io/version: v2.0.0
-    helm.sh/chart: immich-0.10.3
+    app.kubernetes.io/version: v3.2.0
+    helm.sh/chart: immich-0.13.2
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
-  namespace: default
+  namespace: services
 spec:
   tls:
     - hosts:

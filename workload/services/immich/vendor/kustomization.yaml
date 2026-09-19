@@ -10,4 +10,7 @@ resources:
 - service-immich-machine-learning.yaml
 - service-immich-server.yaml
 - service-immich-valkey.yaml
+- serviceaccount-immich-machine-learning.yaml
+- serviceaccount-immich-server.yaml
+- serviceaccount-immich-valkey.yaml
 - servicemonitor-immich-server.yaml

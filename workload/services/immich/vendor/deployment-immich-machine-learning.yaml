@@ -8,14 +8,14 @@ metadata:
     app.kubernetes.io/instance: immich
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: machine-learning
-    app.kubernetes.io/version: v2.0.0
-    helm.sh/chart: immich-0.10.3
-  namespace: default
+    app.kubernetes.io/version: v3.2.0
+    helm.sh/chart: immich-0.13.2
+  namespace: services
 spec:
   revisionHistoryLimit: 3
   replicas: 1
   strategy:
-    type: RollingUpdate
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/controller: main
@@ -29,8 +29,8 @@ spec:
         app.kubernetes.io/name: machine-learning
     spec: 
       enableServiceLinks: false
-      serviceAccountName: default
-      automountServiceAccountToken: true
+      serviceAccountName: immich-machine-learning
+      automountServiceAccountToken: false
       securityContext: 
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
@@ -75,7 +75,7 @@ spec:
             value: immich-valkey
           - name: TRANSFORMERS_CACHE
             value: /cache
-          image: ghcr.io/immich-app/immich-machine-learning:v2.5.6
+          image: ghcr.io/immich-app/immich-machine-learning:v3.2.0
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
