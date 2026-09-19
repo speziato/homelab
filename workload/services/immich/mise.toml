@@ -6,6 +6,7 @@ HELM_REPO_URL="oci://ghcr.io/immich-app/immich-charts/immich"
 NAMESPACE="services"
 RELEASE_NAME="immich"
 HELM_CHART_VERSION="0.13.2"
+# Helm chart repo: https://github.com/immich-app/immich-charts/tree/main/charts/immich
 
 rm -rf vendor
 helm template ${RELEASE_NAME} ${HELM_REPO_URL}:${HELM_CHART_VERSION} --namespace ${NAMESPACE} --values MAINTENANCE.values.yaml > deploy.maintenance.yaml
