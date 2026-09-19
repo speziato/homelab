@@ -54,7 +54,7 @@ spec:
 
       containers:
         - name: jellyfin
-          image: ghcr.io/jellyfin/jellyfin:10.11.8-amd64.20260405-192842@sha256:713be14dd1f838ce1e87ca427139fb970f5447a3e507a0b283935954451d6cff
+          image: ghcr.io/jellyfin/jellyfin:12.1-amd64.20260915-010956@sha256:c0166b09f7068e7738d006d86a71ad58b981e4ecf1bf0a24fbba2498ecfe8715
           envFrom:
             - configMapRef:
                 name: media-server-env
