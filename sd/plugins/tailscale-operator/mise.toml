@@ -7,6 +7,7 @@ HELM_CHART_NAME="tailscale-operator"
 HELM_CHART_VERSION="1.102.4"
 NAMESPACE=tailscale
 RELEASE_NAME=tailscale
+# Helm chart repo: https://github.com/tailscale/tailscale/tree/main/cmd/k8s-operator/deploy/chart
 
 helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
 helm repo update
