@@ -6,27 +6,13 @@ resources:
 - resources/rbac-wait-for.yaml
 - resources/pvc-config.yaml
 - resources/pvc-media.yaml
-- resources/bazarr/ingress-bazarr-ingress.yaml
-- resources/bazarr/service-bazarr.yaml
-- resources/bazarr/statefulset-bazarr.yaml
-- resources/jellyfin/ingress-jellyfin-ingress.yaml
-- resources/jellyfin/service-jellyfin.yaml
-- resources/jellyfin/statefulset-jellyfin.yaml
-- resources/lidarr/ingress-lidarr-ingress.yaml
-- resources/lidarr/service-lidarr.yaml
-- resources/lidarr/statefulset-lidarr.yaml
-- resources/prowlarr/ingress-prowlarr-ingress.yaml
-- resources/prowlarr/service-prowlarr.yaml
-- resources/prowlarr/statefulset-prowlarr.yaml
-- resources/qbittorrent/ingress-qbittorrent-ingress.yaml
-- resources/qbittorrent/service-qbittorrent.yaml
-- resources/qbittorrent/statefulset-qbittorrent.yaml
-- resources/radarr/ingress-radarr-ingress.yaml
-- resources/radarr/service-radarr.yaml
-- resources/radarr/statefulset-radarr.yaml
-- resources/sonarr/ingress-sonarr-ingress.yaml
-- resources/sonarr/service-sonarr.yaml
-- resources/sonarr/statefulset-sonarr.yaml
+- resources/bazarr
+- resources/jellyfin
+- resources/lidarr
+- resources/prowlarr
+- resources/qbittorrent
+- resources/radarr
+- resources/sonarr
 
 configMapGenerator:
   - name: media-server-env
