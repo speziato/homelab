@@ -53,7 +53,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: sonarr
-          image: ghcr.io/home-operations/sonarr:4.0.16@sha256:0a1b8f5cb5b072f7ad8c6ff64a25dc512115d1a114ecf19a58a3b4f870207ddd
+          image: ghcr.io/home-operations/sonarr:4.0.20@sha256:1f19eb5e0f421418c1a956bbe01310a0141423afe28bd9a4b1dcb8629ff2bce2
           envFrom:
             - configMapRef:
                 name: media-server-env

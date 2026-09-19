@@ -54,7 +54,7 @@ spec:
 
       containers:
         - name: bazarr
-          image: ghcr.io/home-operations/bazarr:1.5.6@sha256:79fc37491f55c7e24427bcd669bce3df2d7415ca432a47ce9d53cc5988af8411
+          image: ghcr.io/home-operations/bazarr:1.6.1@sha256:e5d192a6f62a4f2336b40e1021fb3e31acfeb125ba970b65bcf6d607e29146cf
           envFrom:
             - configMapRef:
                 name: media-server-env
