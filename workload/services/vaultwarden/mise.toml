@@ -4,9 +4,10 @@ run = '''
 HELM_REPO_URL="https://guerzon.github.io/vaultwarden"
 HELM_REPO_NAME="vaultwarden"
 HELM_CHART_NAME="vaultwarden"
-HELM_CHART_VERSION="0.46.1"
+HELM_CHART_VERSION="0.46.2"
 NAMESPACE=services
 RELEASE_NAME=vaultwarden
+# Helm chart repo: https://github.com/guerzon/vaultwarden/tree/main/charts/vaultwarden
 
 helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
 helm repo update
