@@ -7,5 +7,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Ti
+      storage: 1300Gi
   storageClassName: "zfs-dataset-128k"
+  volumeName: "pvc-2a468b85-f17f-4b2d-a797-2c506367489b"
