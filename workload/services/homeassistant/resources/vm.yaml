@@ -16,7 +16,7 @@ spec:
         app.kubernetes.io/instance: homeassistant
     spec:
       evictionStrategy: LiveMigrate
-      dnsPolicy: "Default"
+      dnsPolicy: "ClusterFirst"
       domain:
         firmware:
           # this sets the bootloader type
