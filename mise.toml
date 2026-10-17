@@ -5,15 +5,27 @@ TALOSCONFIG="{{config_root}}/talosconfig"
 
 [vars]
 KUBE_VERSION="1.34.1"
-TALOS_VERSION="1.11.5"
+TALOS_VERSION="1.14.4"
 
 [tools]
 "ubi:kubevirt/kubevirt" = { rename_exe = "virtctl", version = "1.7.0" }
 dyff = "latest"
 helm = "latest"
-kubectl = "{{vars.KUBE_VERSION}}"
+kubectl = "1.34.1"
 kustomize = "5.8.0"
 pipx = "1.8.0"
 stern = "1.33.1"
-talosctl = "{{vars.TALOS_VERSION}}"
+talosctl = "1.14.4"
 yq = "4.49.1"
+
+[tasks.debug-node]
+run = """
+#!/usr/bin/env bash
+
+kubectl debug $(kubectl get nodes -o name | head -n 1) \
+  -it \
+  -n kube-system \
+  --image=nicolaka/netshoot \
+  --profile=sysadmin \
+  -- bash
+"""

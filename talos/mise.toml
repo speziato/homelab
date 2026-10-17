@@ -2,7 +2,6 @@
 CONTROL_PLANE_IP="192.168.1.10"
 CLUSTER_NAME="talos-test"
 
-
 '_'.file.path = "secrets/ilo.env"
 
 [tasks.gen-config]
@@ -49,6 +48,53 @@ run = """
 talosctl patch mc --patch @${usage_patch_file?} --mode ${usage_mode?}
 """
 
+[tasks.get-schematic-id]
+# https://github.com/siderolabs/image-factory
+run = """
+#!/usr/bin/env bash
+IMAGE_SCHEMATIC_PATH="${1:-{{config_root}}/image-schematic.yaml}"
+curl -X POST -sSL \
+  --data-binary @${IMAGE_SCHEMATIC_PATH} \
+  https://factory.talos.dev/schematics  | yq '.id'
+"""
+
+[tasks.set-install-image-id]
+run = """
+#!/usr/bin/env bash
+
+YAML_PATCH_PATH="${1:-{{config_root}}/patches/install-image.yaml}"
+SCHEMATIC_ID=$(mise run get-schematic-id)
+echo "Setting schematic id [${SCHEMATIC_ID}] in patch file [${YAML_PATCH_PATH}]..."
+yq -i ".machine.install.image |= \\"factory.talos.dev/metal-installer/${SCHEMATIC_ID}:v{{vars.TALOS_VERSION}}\\"" patches/install-image.yaml
+"""
+
+[tasks.upgrade]
+run = """
+#!/usr/bin/env bash
+SCHEMATIC_ID=$(mise run get-schematic-id)
+
+mkdir -p backups
+talosctl etcd snapshot save --nodes "${CONTROL_PLANE_IP}" backups/backup-$(date +%Y-%m-%d).db
+talosctl upgrade --nodes "${CONTROL_PLANE_IP}" \
+  --image "factory.talos.dev/metal-installer/${SCHEMATIC_ID}:v{{vars.TALOS_VERSION}}"
+
+mise run set-install-image-id
+
+echo "upgrade finished, check the status with:"
+echo "  talosctl version"
+echo "  talosctl health"
+echo "  talosctl etcd status"
+"""
+
+[tasks.get-image-url]
+run = """
+#!/usr/bin/env bash
+
+ID=$(mise run get-schematic-id)
+
+echo "https://factory.talos.dev/image/${ID}/{{vars.TALOS_VERSION}}/metal-amd64.iso"
+"""
+
 [tasks.insert-media]
 # SCRIPTED MEDIA WITH REMOTE URLS REQUIRES ILO5!
 # It does not work on my gen8 server.
@@ -79,32 +125,3 @@ curl -ksSL \
   -X "PATCH" \
   -d '{"Oem":{"Hp":{"BootOnNextServerReset":true}}}'
 '''
-
-[tasks.get-schematic-id]
-# https://github.com/siderolabs/image-factory
-run = """
-#!/usr/bin/env bash
-IMAGE_SCHEMATIC_PATH="${1:-{{config_root}}/image-schematic.yaml}"
-curl -X POST -sSL \
-  --data-binary @${IMAGE_SCHEMATIC_PATH} \
-  https://factory.talos.dev/schematics  | yq '.id'
-"""
-
-[tasks.set-install-image-id]
-run = """
-#!/usr/bin/env bash
-
-YAML_PATCH_PATH="${1:-{{config_root}}/patches/install-image.yaml}"
-SCHEMATIC_ID=$(mise run get-schematic-id)
-echo "Setting schematic id [${SCHEMATIC_ID}] in patch file [${YAML_PATCH_PATH}]..."
-yq -i ".machine.install.image |= \\"factory.talos.dev/metal-installer/${SCHEMATIC_ID}:v{{vars.TALOS_VERSION}}\\"" patches/install-image.yaml
-"""
-
-[tasks.get-image-url]
-run = """
-#!/usr/bin/env bash
-
-ID=$(mise run get-schematic-id)
-
-echo "https://factory.talos.dev/image/${ID}/{{vars.TALOS_VERSION}}/metal-amd64.iso"
-"""
