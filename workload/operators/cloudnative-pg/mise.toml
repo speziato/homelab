@@ -6,7 +6,7 @@ run = '''
 HELM_REPO_URL="https://cloudnative-pg.github.io/charts"
 HELM_REPO_NAME="cnpg"
 HELM_CHART_NAME="cloudnative-pg"
-HELM_CHART_VERSION="0.27.1"
+HELM_CHART_VERSION="0.28.3"
 NAMESPACE=operators
 RELEASE_NAME=cnpg-operator
 
