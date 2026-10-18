@@ -11,6 +11,7 @@ resources:
 - resources/crds/customresourcedefinition-backups.postgresql.cnpg.io.yaml
 - resources/crds/customresourcedefinition-clusterimagecatalogs.postgresql.cnpg.io.yaml
 - resources/crds/customresourcedefinition-clusters.postgresql.cnpg.io.yaml
+- resources/crds/customresourcedefinition-databaseroles.postgresql.cnpg.io.yaml
 - resources/crds/customresourcedefinition-databases.postgresql.cnpg.io.yaml
 - resources/crds/customresourcedefinition-failoverquorums.postgresql.cnpg.io.yaml
 - resources/crds/customresourcedefinition-imagecatalogs.postgresql.cnpg.io.yaml
