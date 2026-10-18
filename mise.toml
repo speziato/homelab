@@ -17,6 +17,7 @@ pipx = "1.8.0"
 stern = "1.33.1"
 talosctl = "1.14.4"
 yq = "4.49.1"
+"github:patrickdappollonio/kubectl-slice" = "1.4.2"
 
 [tasks.debug-node]
 run = """
