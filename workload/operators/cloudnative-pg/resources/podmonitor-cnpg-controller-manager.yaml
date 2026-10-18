@@ -23,10 +23,10 @@ metadata:
   name: cnpg-controller-manager
   namespace: default
   labels:
-    helm.sh/chart: cloudnative-pg-0.26.1
+    helm.sh/chart: cloudnative-pg-0.27.1
     app.kubernetes.io/name: cloudnative-pg
     app.kubernetes.io/instance: cnpg-operator
-    app.kubernetes.io/version: "1.27.1"
+    app.kubernetes.io/version: "1.28.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
