@@ -8,9 +8,11 @@ NAMESPACE=operators
 URL="https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${VERSION}/manifest.yaml"
 
 rm -rf resources
+mkdir -p resources/crds
 curl -sSL "${URL}" -o deploy.maintenance.yaml
 kubectl slice -f deploy.maintenance.yaml -o resources
 rm -rf deploy.maintenance.yaml kustomization.yaml
+mv resources/customresourcedefinition-* resources/crds/
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 """

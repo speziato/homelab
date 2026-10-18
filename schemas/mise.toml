@@ -1,0 +1,48 @@
+[tasks.convert]
+description = "Convert a CRD yaml file to json schema"
+usage = """
+arg "<crd_url>" var=#true help="The CRD yaml file to be converted"
+"""
+run = """
+#!/usr/bin/env bash
+echo "Starting conversion of CRD yaml to json schema..."
+
+IMAGE="ghcr.io/tricktron/crd2jsonschema:latest"
+
+CRI_CLI=$(command -v podman || command -v docker)
+if [ -z "$CRI_CLI" ]; then
+  echo "Error: Neither podman nor docker is installed."
+  exit 1
+fi
+
+eval "crd_urls=(${usage_crd_url?})"
+
+${CRI_CLI} run --rm \
+  -v {{config_root}}:/app/schemas \
+  -v {{config_root}}/../sd:/app/sd:ro \
+  -v {{config_root}}/../workload:/app/workload:ro \
+  -w /app/schemas \
+  ${IMAGE} -o . ${crd_urls[@]}
+
+echo "Done"
+"""
+
+[tasks.maintenance]
+description = "Download and convert all CRDs used in this project to json schemas"
+run = """
+#!/usr/bin/env bash
+echo "Starting conversion of all CRDs for this project..."
+
+CRDS=(
+    "../workload/operators/cloudnative-pg/resources/crds/customresourcedefinition-clusters.postgresql.cnpg.io.yaml"
+    "../workload/operators/cloudnative-pg/resources/crds/customresourcedefinition-backups.postgresql.cnpg.io.yaml"
+    "../workload/operators/cloudnative-pg/resources/crds/customresourcedefinition-scheduledbackups.postgresql.cnpg.io.yaml"
+    "../workload/operators/plugin-barman-cloud/resources/crds/customresourcedefinition-objectstores.barmancloud.cnpg.io.yaml"
+    "../sd/.furyctl/homelab/vendor/modules/monitoring/katalog/prometheus-operator/crds/0podmonitorCustomResourceDefinition.yaml"
+    "../sd/.furyctl/homelab/vendor/modules/monitoring/katalog/prometheus-operator/crds/0prometheusruleCustomResourceDefinition.yaml"
+)
+
+mise run --quiet --output prefix convert "${CRDS[@]}"
+
+echo "Done"
+"""

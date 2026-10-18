@@ -10,7 +10,7 @@ resources:
 - resources/clusterrole-plugin-barman-cloud.yaml
 - resources/clusterrolebinding-barman-plugin-metrics-auth-rolebinding.yaml
 - resources/clusterrolebinding-plugin-barman-cloud-binding.yaml
-- resources/customresourcedefinition-objectstores.barmancloud.cnpg.io.yaml
+- resources/crds/customresourcedefinition-objectstores.barmancloud.cnpg.io.yaml
 - resources/deployment-barman-cloud.yaml
 - resources/issuer-selfsigned-issuer.yaml
 - resources/role-barman-plugin-leader-election-role.yaml
