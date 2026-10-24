@@ -38,7 +38,7 @@ spec:
 
       initContainers:
         - name: wait-for-setup
-          image: ghcr.io/groundnuty/k8s-wait-for:no-root-v2.0@sha256:a26d3d3f6e1c747dd812aba5eef3189d535d0b4e810506bac51f8209a58a0102
+          image: k8s-wait-for
           args:
             - job
             - setup-config-storage
@@ -53,7 +53,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: lidarr
-          image: ghcr.io/home-operations/lidarr:3.1.6@sha256:b4c60ae24ff264bcdfd8d5562982d99105c17b82c28a6986498f6fb215b7f42e
+          image: lidarr
           envFrom:
             - configMapRef:
                 name: media-server-env

@@ -38,7 +38,7 @@ spec:
 
       initContainers:
         - name: wait-for-setup
-          image: ghcr.io/groundnuty/k8s-wait-for:no-root-v2.0@sha256:a26d3d3f6e1c747dd812aba5eef3189d535d0b4e810506bac51f8209a58a0102
+          image: k8s-wait-for
           args:
             - job
             - setup-config-storage
@@ -53,7 +53,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: qbittorrent
-          image: ghcr.io/home-operations/qbittorrent:5.2.3@sha256:4fcf15b7f265c2c8d7bc2a7e13240a07e0593c326f3cf3b5b9bb69eec5b79299
+          image: qbittorrent
           envFrom:
             - configMapRef:
                 name: media-server-env

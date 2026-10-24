@@ -27,3 +27,36 @@ secretGenerator:
       - qBittorrent.conf=./config/secrets/qBittorrent.conf
       - radarr.xml=./config/secrets/radarr.xml
       - sonarr.xml=./config/secrets/sonarr.xml
+images:
+  - name: k8s-wait-for
+    newName: ghcr.io/groundnuty/k8s-wait-for
+    newTag: no-root-v2.0
+    digest: sha256:a26d3d3f6e1c747dd812aba5eef3189d535d0b4e810506bac51f8209a58a0102
+  - name: bazarr
+    newName: ghcr.io/home-operations/bazarr
+    newTag: 1.6.2
+    digest: sha256:b8434a7339ebd9c2bfe4464c28db79944e0f52f47da85345fc7e0563c19f83ac
+  - name: jellyfin
+    newName: ghcr.io/jellyfin/jellyfin
+    newTag:  12.3-amd64.20261023-013714
+    digest: sha256:720ad28968e040f1ea049749f4ce546b28c7251244a6eb8aacf9147d8afbc24d
+  - name: lidarr
+    newName: ghcr.io/home-operations/lidarr
+    newTag: 3.1.6.5078
+    digest: sha256:24dacfbfa34ab6d99d6f0f2060fd8e97d1a8c5e82ff3d85f0e5a4c46bd9a3b2b
+  - name: prowlarr
+    newName: ghcr.io/home-operations/prowlarr
+    newTag: 2.6.5.5623
+    digest: sha256:0e2e6e9a2a16683a160ff1c6830d8192231a0502ab0d605b416023b2ca225ff9
+  - name: qbittorrent
+    newName: ghcr.io/home-operations/qbittorrent
+    newTag: 5.3.0
+    digest: sha256:5a858e61f94cf2712391db32ed03556576c700858f3e62c4c6fcde262443ebd8
+  - name: radarr
+    newName: ghcr.io/home-operations/radarr
+    newTag: 6.4.4.10685
+    digest: sha256:1902ad2c08e9bac276ff9a1429af2eaa2f3c635a51f138f1b3eb734995171537
+  - name: sonarr
+    newName: ghcr.io/home-operations/sonarr
+    newTag: 5.0.0.2742
+    digest: sha256:491f13c731083c1e3a5eb707750ad61f0052a5a6c12b37f6f524eaa35664915d
