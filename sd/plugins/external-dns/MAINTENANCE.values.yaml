@@ -7,14 +7,19 @@ sources:
 
 triggerLoopOnEvent: true
 policy: sync
-
+interval: 5m
 domainFilters:
-  - lan.speziato.dev
+  - speziato.dev
 
+logLevel: debug
 txtOwnerId: external-dns-homelab
-
+txtPrefix: external-dns-%{record_type}.
 provider: 
   name: cloudflare
+managedRecordTypes:
+  - A
+  - CNAME
+  - TXT
 env:
   - name: CF_API_TOKEN
     valueFrom:

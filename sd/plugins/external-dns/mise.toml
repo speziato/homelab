@@ -1,5 +1,5 @@
 [tasks.maintenance]
-env.CHART_VERSION="1.19.0"
+env.CHART_VERSION="1.23.0"
 env.NAMESPACE="external-dns"
 run="""
 #!/usr/bin/env bash
@@ -17,3 +17,26 @@ rm kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret cloudflare-api-token-secret --from-env-file ./secrets/cloudflare.env --disableNameSuffixHash
 """
+
+[tasks.diff]
+description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
+run = '''
+#!/usr/bin/env bash
+TMPDIR=$(mktemp -d)
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}} > "${OUTFILE}"
+kapp deploy --diff-run -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
+rm -rf "${TMPDIR}"
+'''
+
+[tasks.deploy]
+description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
+run = '''
+#!/usr/bin/env bash
+
+TMPDIR=$(mktemp -d)
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}} > "${OUTFILE}"
+kapp deploy -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
+rm -rf "${TMPDIR}"
+'''

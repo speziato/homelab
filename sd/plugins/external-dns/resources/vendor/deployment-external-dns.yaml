@@ -5,10 +5,10 @@ metadata:
   name: external-dns
   namespace: external-dns
   labels:
-    helm.sh/chart: external-dns-1.19.0
+    helm.sh/chart: external-dns-1.23.0
     app.kubernetes.io/name: external-dns
     app.kubernetes.io/instance: external-dns
-    app.kubernetes.io/version: "0.19.0"
+    app.kubernetes.io/version: "0.23.0"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -43,7 +43,7 @@ spec:
             runAsGroup: 65532
             runAsNonRoot: true
             runAsUser: 65532
-          image: registry.k8s.io/external-dns/external-dns:v0.19.0
+          image: registry.k8s.io/external-dns/external-dns:v0.23.0
           imagePullPolicy: IfNotPresent
           env:
             - name: CF_API_TOKEN
@@ -52,9 +52,9 @@ spec:
                   key: api-token
                   name: cloudflare-api-token-secret
           args:
-            - --log-level=info
+            - --log-level=debug
             - --log-format=text
-            - --interval=1m
+            - --interval=5m
             - --events
             - --source=service
             - --source=crd
@@ -62,10 +62,14 @@ spec:
             - --policy=sync
             - --registry=txt
             - --txt-owner-id=external-dns-homelab
-            - --domain-filter=lan.speziato.dev
+            - --txt-prefix=external-dns-%{record_type}.
+            - --domain-filter=speziato.dev
+            - --managed-record-types=A
+            - --managed-record-types=CNAME
+            - --managed-record-types=TXT
             - --provider=cloudflare
-            - --zone-id-filter=6fa74008f12d35ddf5cd594cbd25cbeb
-            - --service-type-filter=LoadBalancer
+            - "--zone-id-filter=6fa74008f12d35ddf5cd594cbd25cbeb"
+            - "--service-type-filter=LoadBalancer"
           ports:
             - name: http
               protocol: TCP

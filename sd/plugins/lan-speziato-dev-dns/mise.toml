@@ -1,0 +1,19 @@
+
+[tasks.diff]
+description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
+run = '''
+#!/usr/bin/env bash
+mise run deploy -- --diff-run
+'''
+
+[tasks.deploy]
+description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
+run = '''
+#!/usr/bin/env bash
+
+TMPDIR=$(mktemp -d)
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}} > "${OUTFILE}"
+kapp deploy -a kfd-plugin-lan-speziato-dev-dns -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c "${@}"
+rm -rf "${TMPDIR}"
+'''
