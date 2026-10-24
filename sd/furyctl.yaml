@@ -144,6 +144,7 @@ spec:
         - path: ./patches/dr/delete-full-schedule.yaml
         - path: ./patches/monitoring/namespace.yaml
         - path: ./patches/monitoring/no-etcd-pki.yaml
+        - path: ./patches/monitoring/grafana-sizing.yaml
         - patch: |
             apiVersion: monitoring.coreos.com/v1
             kind: ServiceMonitor
