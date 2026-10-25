@@ -6,7 +6,7 @@ It's based on rclone.
 
 ## Caveats
 
-The crypt passwords that are placed in the config file for rclone need to be obscure using `rclone obscure`. See more in [rclone docs](https://rclone.org/crypt/).
+The crypt passwords that are placed in the config file for rclone need to be obscured using `rclone obscure`. See more in [rclone docs](https://rclone.org/crypt/).
 
 You can run something like:
 

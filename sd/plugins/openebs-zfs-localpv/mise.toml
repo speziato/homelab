@@ -4,6 +4,7 @@ run = '''
 HELM_REPO_URL="https://openebs.github.io/zfs-localpv"
 HELM_REPO_NAME="openebs-zfslocalpv"
 HELM_CHART_NAME="zfs-localpv"
+# renovate: datasource=helm depName=zfs-localpv registryUrl=https://openebs.github.io/zfs-localpv
 HELM_CHART_VERSION="2.9.0"
 NAMESPACE=openebs
 

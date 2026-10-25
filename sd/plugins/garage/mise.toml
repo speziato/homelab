@@ -1,8 +1,9 @@
 [tasks.maintenance]
 run = """
 #!/usr/bin/env bash
+
+# renovate: datasource=git-tags depName=garage packageName=https://git.deuxfleurs.fr/Deuxfleurs/garage
 HELM_CHART_GIT_TAG="v2.1.0"
-HELM_CHART_VERSION="0.9.1"
 HELM_REPO_NAME="garage"
 HELM_CHART_NAME="garage"
 RELEASE_NAME="garage"
@@ -17,7 +18,7 @@ git sparse-checkout set --sparse-index --cone script/helm
 git checkout
 popd
 rm -rf resources
-helm template ${RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}" --namespace ${NAMESPACE} > deploy.maintenance.yaml
+helm template ${RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --namespace ${NAMESPACE} > deploy.maintenance.yaml
 rm -rf $tmpDir
 kubectl slice -f deploy.maintenance.yaml -o resources
 kubectl create ns ${NAMESPACE} --dry-run=client -oyaml > resources/ns.yaml

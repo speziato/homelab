@@ -1,8 +1,9 @@
-[vars]
-VERSION="v0.15.2"
 [tasks.maintenance]
 run = '''
 #!/usr/bin/env bash
+
+# renovate: datasource=github-releases depName=metallb/metallb
+VERSION="v0.15.2"
 rm -rf ./vendor
 rm -rf kustomization.yaml
 kustomize localize "github.com/metallb/metallb/config/native?ref={{vars.VERSION}}" vendor
@@ -11,4 +12,5 @@ kustomize edit add resource ./vendor/config/native
 kustomize edit add resource ./resources/ip-address-pool.yaml
 kustomize edit add resource ./resources/l2-advertisement.yaml
 kustomize edit add resource ./resources/podmonitor.yaml
+kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >&2 && exit 1)
 '''

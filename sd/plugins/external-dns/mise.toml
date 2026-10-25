@@ -1,13 +1,15 @@
 [tasks.maintenance]
-env.CHART_VERSION="1.23.0"
-env.NAMESPACE="external-dns"
 run="""
 #!/usr/bin/env bash
+
+# renovate: datasource=helm depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns/
+HELM_CHART_VERSION="1.23.0"
+NAMESPACE="external-dns"
 
 helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
 helm repo update
 rm -rf resources/vendor
-helm template external-dns external-dns/external-dns --include-crds -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${CHART_VERSION}"  > deploy.maintenance.yaml
+helm template external-dns external-dns/external-dns --include-crds -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
 kubectl slice -f deploy.maintenance.yaml -o resources/vendor
 rm deploy.maintenance.yaml
 mkdir resources/vendor/crds
@@ -22,11 +24,8 @@ kustomize edit add secret cloudflare-api-token-secret --from-env-file ./secrets/
 description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
 run = '''
 #!/usr/bin/env bash
-TMPDIR=$(mktemp -d)
-OUTFILE="${TMPDIR}/out.yaml"
-kustomize build {{config_root}} > "${OUTFILE}"
-kapp deploy --diff-run -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
-rm -rf "${TMPDIR}"
+
+mise run deploy -- --diff-run
 '''
 
 [tasks.deploy]
@@ -35,8 +34,8 @@ run = '''
 #!/usr/bin/env bash
 
 TMPDIR=$(mktemp -d)
+trap 'rm -rf "${TMPDIR}"' EXIT
 OUTFILE="${TMPDIR}/out.yaml"
 kustomize build {{config_root}} > "${OUTFILE}"
-kapp deploy -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
-rm -rf "${TMPDIR}"
+kapp deploy -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c "${@]}"
 '''
