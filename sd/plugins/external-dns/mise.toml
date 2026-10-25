@@ -1,16 +1,24 @@
-[tasks.maintenance]
+[env]
+PLUGIN_NAME="external-dns"
+
+[tasks._maintenance]
 run="""
 #!/usr/bin/env bash
+set -euo pipefail
 
+HELM_REPO_URL="https://kubernetes-sigs.github.io/external-dns/"
+HELM_REPO_NAME="external-dns"
+HELM_CHART_NAME="external-dns"
+HELM_RELEASE_NAME="external-dns"
 # renovate: datasource=helm depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns/
 HELM_CHART_VERSION="1.23.0"
 NAMESPACE="external-dns"
 
-helm repo add external-dns https://kubernetes-sigs.github.io/external-dns/
-helm repo update
+helm repo add ${HELM_REPO_NAME} https://kubernetes-sigs.github.io/external-dns/ > /dev/null
+helm repo update > /dev/null
 rm -rf resources/vendor
-helm template external-dns external-dns/external-dns --include-crds -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
-kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+helm template ${HELM_RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} --include-crds -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor -q
 rm deploy.maintenance.yaml
 mkdir resources/vendor/crds
 mv resources/vendor/customresourcedefinition-* resources/vendor/crds
@@ -19,23 +27,3 @@ rm kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret cloudflare-api-token-secret --from-env-file ./secrets/cloudflare.env --disableNameSuffixHash
 """
-
-[tasks.diff]
-description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
-run = '''
-#!/usr/bin/env bash
-
-mise run deploy -- --diff-run
-'''
-
-[tasks.deploy]
-description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
-run = '''
-#!/usr/bin/env bash
-
-TMPDIR=$(mktemp -d)
-trap 'rm -rf "${TMPDIR}"' EXIT
-OUTFILE="${TMPDIR}/out.yaml"
-kustomize build {{config_root}} > "${OUTFILE}"
-kapp deploy -a kfd-plugin-external-dns -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c "${@]}"
-'''

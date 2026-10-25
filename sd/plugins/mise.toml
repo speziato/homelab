@@ -1,0 +1,80 @@
+[tasks._sanity]
+run = """
+#!/usr/bin/env bash
+echo -n "Sanity check... "
+[[ -n ${PLUGIN_NAME} ]] || (echo "FAIL - To run this task, set the 'PLUGIN_NAME' env variable" && exit 1)
+echo "OK"
+"""
+[tasks._premaintenance]
+run = """
+echo "Starting maintenance task for ${PLUGIN_NAME}..."
+"""
+[tasks._postmaintenance]
+run = """
+echo "Done maintenance task for ${PLUGIN_NAME}..."
+"""
+[tasks._maintenance]
+# default maintenance task - noop
+run = """
+echo No maintenance
+"""
+
+[tasks.maintenance]
+run = [
+    { task = "_sanity" },
+    { task = "_premaintenance" },
+    { task = "_maintenance" },
+    { task = "_verify" },
+    { task = "_postmaintenance" }
+]
+
+[tasks.diff]
+description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
+depends = ["_sanity"]
+run = '''
+#!/usr/bin/env bash
+mise run deploy -- --diff-run
+'''
+
+[tasks.deploy]
+description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
+depends = ["_sanity"]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "${TMPDIR}"' EXIT
+OUTFILE="${TMPDIR}/out.yaml"
+kustomize build {{config_root}}/${PLUGIN_NAME?} > "${OUTFILE}"
+kapp deploy -a kfd-plugin-${PLUGIN_NAME:-} -n kube-system -f "${OUTFILE}" --allow-all-ns --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c "${@}"
+'''
+
+[tasks._verify]
+run = """
+#!/usr/bin/env bash
+echo -n "Verifying that kustomize project builds... "
+set -euo pipefail
+kustomize build {{config_root}}/${PLUGIN_NAME?} > /dev/null 2>&1 || (echo "FAIL - Something went wrong, check upstream for changes" >&2 && exit 1)
+echo "OK"
+"""
+
+
+[tasks.create-plugin]
+description = "creates a new plugin folder already configured for the above mise tasks"
+usage = '''
+arg "<name>" help="New plugin name"
+'''
+
+run = """
+#!/usr/bin/env bash
+
+[[ -n ${usage_name} ]] || (echo "You must pass a name for the new plugin" && exit 1)
+
+mkdir -p "{{ config_root }}/${usage_name?}"
+cat > "{{ config_root }}/${usage_name?}/mise.toml" << EOF
+[env]
+PLUGIN_NAME="${usage_name?}"
+EOF
+
+PLUGIN_NAME=${usage_name?} yq -i '.spec.plugins.kustomize += [{"name": strenv(PLUGIN_NAME), "folder": "./plugins/"+strenv(PLUGIN_NAME)}]' {{config_root}}/../furyctl.yaml
+"""

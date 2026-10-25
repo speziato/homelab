@@ -1,7 +1,11 @@
-[tasks.maintenance]
+[env]
+PLUGIN_NAME="kubevirt"
+
+[tasks._maintenance]
 description = "Maintenance task to pull Kubevirt manifests at the specified version"
 run = """
 #!/usr/bin/env bash
+set -euo pipefail
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 KUBEVIRT_VERSION="v1.7.0"

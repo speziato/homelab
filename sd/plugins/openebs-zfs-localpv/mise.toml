@@ -1,26 +1,35 @@
-[tasks.maintenance]
+[env]
+PLUGIN_NAME="openebs-zfs-localpv"
+
+[tasks._maintenance]
 run = '''
 #!/usr/bin/env bash
+set -euo pipefail
+
 HELM_REPO_URL="https://openebs.github.io/zfs-localpv"
 HELM_REPO_NAME="openebs-zfslocalpv"
 HELM_CHART_NAME="zfs-localpv"
+HELM_RELEASE_NAME="csi"
 # renovate: datasource=helm depName=zfs-localpv registryUrl=https://openebs.github.io/zfs-localpv
 HELM_CHART_VERSION="2.9.0"
 NAMESPACE=openebs
 
-helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
-helm repo update
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL} > /dev/null
+helm repo update > /dev/null
 rm -rf resources/vendor
-helm template csi ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
-kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+helm template ${HELM_RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor -q
 mkdir resources/vendor/crds
 mv resources/vendor/customresourcedefinition-* resources/vendor/crds
 rm deploy.maintenance.yaml
 curl -sSL "https://github.com/openebs/zfs-localpv/raw/refs/tags/v${HELM_CHART_VERSION}/deploy/sample/prometheus-alert.rules" -o resources/monitoring/prometheus-rules.yaml
 curl -sSL "https://github.com/openebs/zfs-localpv/raw/refs/tags/v${HELM_CHART_VERSION}/deploy/sample/grafana-dashboard.json" -o resources/monitoring/grafana-dashboard.json
+
+# add prom rule schema at the top of the file, for vscode's sake
+sed -i '1s#^#\# yaml-language-server: \$schema=https://raw.githubusercontent.com/speziato/homelab/main/schemas/monitoring.coreos.com/prometheusrule_v1.json\n#' resources/monitoring/prometheus-rules.yaml
+
 rm -f kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add configmap zfs-localpv-dashboard --from-file=dashboard.json=resources/monitoring/grafana-dashboard.json
 yq -i '.configMapGenerator[] |= select(.name == "zfs-localpv-dashboard") |= .options.labels.grafana-sighup-dashboard = "default"' kustomization.yaml
-kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" && exit 1)
 '''
