@@ -1,0 +1,1 @@
+{ "kubernetes": { "managerFilePatterns": ["/^sd/plugins/.+\\.ya?ml$/"] } }

@@ -1,0 +1,14 @@
+{ 
+  "extends": [
+    "config:recommended",
+    "local>speziato/homelab//renovate/common",
+    "local>speziato/homelab//renovate/workload-services",
+    "local>speziato/homelab//renovate/sd-plugins"
+  ],
+  "includePaths": [
+    "workload/services/**",
+    "sd/plugins/**"
+  ],
+  "schedule": ["before 6am on saturday"],
+  "prConcurrentLimit": 5
+}

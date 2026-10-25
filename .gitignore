@@ -4,3 +4,4 @@
 .furyctl
 kubeconfig
 talosconfig
+renovate/reports/
