@@ -22,12 +22,11 @@ pushd $tmpDir > /dev/null
 git sparse-checkout set --sparse-index --cone script/helm 2> /dev/null
 git checkout 2> /dev/null
 popd > /dev/null
-rm -rf resources
+rm -rf vendor
 helm template ${HELM_RELEASE_NAME} ${tmpDir}/script/helm/garage --values MAINTENANCE.values.yaml --namespace ${NAMESPACE} > deploy.maintenance.yaml
 rm -rf $tmpDir
-kubectl slice -f deploy.maintenance.yaml -o resources -q
-kubectl create ns ${NAMESPACE} --dry-run=client -oyaml > resources/ns.yaml
-rm resources/secret-garage-rpc-secret.yaml
+kubectl slice -f deploy.maintenance.yaml -o vendor -q
+rm vendor/secret-garage-rpc-secret.yaml
 rm deploy.maintenance.yaml
 rm -f kustomization.yaml
 kustomize init --autodetect --recursive --namespace "${NAMESPACE}"

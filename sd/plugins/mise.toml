@@ -29,14 +29,15 @@ run = [
 ]
 
 [tasks.diff]
+output="interleave"
 description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
-depends = ["_sanity"]
 run = '''
 #!/usr/bin/env bash
 mise run deploy -- --diff-run
 '''
 
 [tasks.deploy]
+output="interleave"
 description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
 depends = ["_sanity"]
 run = '''
