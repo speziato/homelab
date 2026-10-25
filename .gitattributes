@@ -1,2 +1,3 @@
-**/*secrets/**          filter=git-crypt diff=git-crypt
-workload/**/*secrets/** filter=git-crypt-workload diff=git-crypt-workload
+**/*secrets/**              filter=git-crypt diff=git-crypt
+workload/**/*secrets/**     filter=git-crypt-workload diff=git-crypt-workload
+sd/plugins/**/secrets/**    filter=git-crypt-workload diff=git-crypt-workload
