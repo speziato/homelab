@@ -17,6 +17,7 @@ controllers:
     containers:
       main:
         image:
+          # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server
           tag: v3.3.5
         securityContext:
           allowPrivilegeEscalation: false

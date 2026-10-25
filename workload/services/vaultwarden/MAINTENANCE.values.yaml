@@ -13,6 +13,7 @@ image:
   ## @param image.tag Vaultwarden image tag
   ## Ref: https://hub.docker.com/r/vaultwarden/server/tags
   ##
+  # renovate: datasource=docker depName=vaultwarden/server versioning=docker
   tag: "1.37.4-alpine"
   ## @param image.pullPolicy Vaultwarden image pull policy
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -760,7 +761,7 @@ smtp:
   ## @param smtp.acceptInvalidCerts Accept Invalid Certificates
   ##
   acceptInvalidCerts: "false"
-  ## @param smtp.heloName HELO Hostname: override the pod hostname used in the SMTP HELO command
+  ## @param smtp.heloName HELO Hostname: override the pod hostname used in the SMTP HELO command
   ##
   heloName: ""
   ## @param smtp.debug SMTP debugging
@@ -874,11 +875,11 @@ ingress:
 ## Ref: https://gateway-api.sigs.k8s.io/
 ##
 
-## @param httpRoute HTTPRoute configuration. Supports two shapes — see examples below.
+## @param httpRoute HTTPRoute configuration. Supports two shapes - see examples below.
 ## Requires Gateway API CRDs to be installed in the cluster.
 ## Ref: https://gateway-api.sigs.k8s.io/guides/#installing-gateway-api
 ##
-## Shape 1 — Flat (single HTTPRoute, backward-compatible with chart v0.37.0):
+## Shape 1 - Flat (single HTTPRoute, backward-compatible with chart v0.37.0):
 ## httpRoute:
 ##   enabled: true
 ##   labels: {}
@@ -893,7 +894,7 @@ ingress:
 ##   rules: []           # full override; takes precedence over path and httpsRedirect
 ##   httpsRedirect: false
 ##
-## Shape 2 — Map (multiple named HTTPRoutes, e.g. HTTPS backend + HTTP-to-HTTPS redirect):
+## Shape 2 - Map (multiple named HTTPRoutes, e.g. HTTPS backend + HTTP-to-HTTPS redirect):
 ## httpRoute:
 ##   main:
 ##     enabled: true
