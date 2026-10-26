@@ -22,4 +22,7 @@ secretGenerator:
   - name: git-crypt
     files:
       - secrets/workload.git-crypt.key
-
+images:
+  - name: renovate
+    newName: ghcr.io/renovatebot/renovate
+    newTag: 44.181.5@sha256:17a72d4e9787445c5047cfb20989b033a270833521fd0485c6372bdee21f92eb

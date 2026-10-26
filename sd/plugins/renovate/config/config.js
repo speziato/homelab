@@ -4,7 +4,6 @@ module.exports = {
   onboarding: false,
   requireConfig: "optional",
   username: "speziatorenovate[bot]",
-  allowPostUpgradeCommandTemplating: true,
   allowedCommands: [
     "^/config/renovate-maintenance\\.sh (workload/services|sd/plugins)/[a-z0-9-]+$",
   ],

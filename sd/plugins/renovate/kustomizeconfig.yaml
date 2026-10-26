@@ -17,3 +17,8 @@ nameReference:
         version: v1alpha1
         kind: RenovateJob
         path: spec/extraVolumes/secret/secretName
+images:
+  - path: spec/image
+    group: renovate-operator.mogenius.com
+    version: v1alpha1
+    kind: RenovateJob
