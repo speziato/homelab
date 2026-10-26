@@ -20,7 +20,7 @@ spec:
       serviceAccountName: diun
       containers:
         - name: diun
-          image: ghcr.io/crazy-max/diun:4.31
+          image: ghcr.io/crazy-max/diun:4.33
           imagePullPolicy: Always
           args: ["serve"]
           envFrom:
