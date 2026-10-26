@@ -2,7 +2,6 @@
 FURYCTL_WORKDIR="{{config_root}}"
 FURYCTL_OUTDIR="{{config_root}}"
 FURYCTL_LOG="{{config_root}}/.furyctl/furyctl.log"
-KUBECONFIG="{{config_root}}/../talos/kubeconfig"
 
 '_'.file = "{{config_root}}/secrets/velero-s3-credentials.env"
 
