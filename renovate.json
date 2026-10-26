@@ -9,6 +9,5 @@
     "workload/services/**",
     "sd/plugins/**"
   ],
-  "schedule": ["before 6am on saturday"],
-  "prConcurrentLimit": 5
+  "prConcurrentLimit": 10
 }

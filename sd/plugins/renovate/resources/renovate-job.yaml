@@ -4,7 +4,7 @@ metadata:
   name: renovate
   namespace: renovate
 spec:
-  schedule: "0 4 * * 6"   # Saturdays 04:00; prefix with CRON_TZ=<zone> to change the timezone
+  schedule: "0 4 * * *"   # Everyday 04:00; prefix with CRON_TZ=<zone> to change the timezone
   image: renovate
   provider:
     name: github
