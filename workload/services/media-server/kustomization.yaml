@@ -39,7 +39,7 @@ images:
     newTag: 12.3@sha256:720ad28968e040f1ea049749f4ce546b28c7251244a6eb8aacf9147d8afbc24d
   - name: lidarr
     newName: ghcr.io/home-operations/lidarr
-    newTag: 3.1.6@sha256:24dacfbfa34ab6d99d6f0f2060fd8e97d1a8c5e82ff3d85f0e5a4c46bd9a3b2b
+    newTag: 3.2.0@sha256:25b09e80e76d9680a3e0802c9f87e456925b1224ad3b726eae5bb0914dcc074b
   - name: prowlarr
     newName: ghcr.io/home-operations/prowlarr
     newTag: 2.6.5@sha256:0e2e6e9a2a16683a160ff1c6830d8192231a0502ab0d605b416023b2ca225ff9
@@ -51,4 +51,4 @@ images:
     newTag: 6.4.4@sha256:1902ad2c08e9bac276ff9a1429af2eaa2f3c635a51f138f1b3eb734995171537
   - name: sonarr
     newName: ghcr.io/home-operations/sonarr
-    newTag: 5.0.0@sha256:491f13c731083c1e3a5eb707750ad61f0052a5a6c12b37f6f524eaa35664915d
+    newTag: 5.0.0@sha256:89b57d1302099223e200c901d9127d085e43d6088f355b1b59869b9936cdaa10

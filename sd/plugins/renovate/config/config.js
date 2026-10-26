@@ -5,7 +5,7 @@ module.exports = {
   requireConfig: "optional",
   username: "speziatorenovate[bot]",
   allowedCommands: [
-    "^/config/renovate-maintenance\\.sh (workload/services|sd/plugins)/[a-z0-9-]+$",
+    "^/config/renovate-maintenance\\.sh$",
   ],
   customEnvVariables: {
     MISE_DATA_DIR: "/var/cache/mise/data",
