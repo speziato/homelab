@@ -1,0 +1,92 @@
+apiVersion: renovate-operator.mogenius.com/v1alpha1
+kind: RenovateJob
+metadata:
+  name: renovate
+  namespace: renovate
+spec:
+  schedule: "0 4 * * 6"   # Saturdays 04:00; prefix with CRON_TZ=<zone> to change the timezone
+  image: ghcr.io/renovatebot/renovate:44.181.5@sha256:17a72d4e9787445c5047cfb20989b033a270833521fd0485c6372bdee21f92eb # slim image (not -full); pin with @sha256:<digest>
+  provider:
+    name: github
+  discoveryFilters:
+    - speziato/homelab
+  parallelism: 1
+
+  # The operator signs the JWT, fetches the installation token and injects RENOVATE_TOKEN.
+  # The Secret needs the keys below (and the allow-ref label if policy.enabled is turned on).
+  githubAppReference:
+    secretName: renovate-secret
+    appIdSecretKey: APP_ID
+    installationIdSecretKey: INSTALL_ID
+    pemSecretKey: PEM
+
+  # Global Renovate config (config.js). Mounted read-only under /etc/renovate/ and
+  # RENOVATE_CONFIG_FILE is set by the operator.
+  renovateConfig:
+    configMapRef:
+      name: renovate-config
+      key: config.js
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 3Gi   # the 1Gi tmpfs below is charged to the pod
+
+  # Renovate's working directory (RENOVATE_BASE_DIR=/tmp): in memory, so the decrypted
+  # checkout never touches disk.
+  scratchVolume:
+    medium: Memory
+    sizeLimit: 1Gi
+
+  securityContext:
+    pod:
+      fsGroup: 12021   # uid/gid of the Renovate image user
+
+  extraEnv:
+    - name: RENOVATE_CONTAINERBASE_DIR
+      value: /var/cache/containerbase
+    - name: MISE_DATA_DIR
+      value: /var/cache/mise/data
+    - name: MISE_CACHE_DIR
+      value: /var/cache/mise/cache
+    - name: MISE_STATE_DIR
+      value: /var/cache/mise/state
+    - name: MISE_TMP_DIR
+      value: /tmp/mise
+    - name: MISE_AUTO_INSTALL
+      value: "false"
+    - name: HOME
+      value: /home/renovate
+
+  extraVolumes:
+    # ConfigMap "renovate-config": keys config.js and renovate-maintenance.sh
+    - name: scripts
+      configMap:
+        name: renovate-config
+        defaultMode: 365   # 0555
+    - name: git-crypt
+      secret:
+        secretName: git-crypt
+        defaultMode: 256   # 0400
+        items:
+          - key: workload.git-crypt.key
+            path: git-crypt.key
+    - name: renovate-persistence
+      persistentVolumeClaim:
+        claimName: renovate-persistence
+    - name: home
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: scripts
+      mountPath: /config
+      readOnly: true
+    - name: git-crypt
+      mountPath: /secrets
+      readOnly: true
+    - name: renovate-persistence
+      mountPath: /var/cache
+    - name: home
+      mountPath: /home/renovate

@@ -1,0 +1,20 @@
+# Source: renovate-operator/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: renovate-operator-renovate-operator
+  namespace: renovate
+  labels:
+    app: renovate-operator-renovate-operator
+spec:
+  selector:
+    app: renovate-operator-renovate-operator
+  ports:
+    - protocol: TCP
+      port: 8081
+      name: http
+      targetPort: http
+    - protocol: TCP
+      port: 8080
+      name: metrics
+      targetPort: metrics

@@ -23,9 +23,13 @@
     { "matchManagers": ["custom.regex"], "groupName": "{{{parentDir}}}" },
     { "matchManagers": ["custom.regex"],
       "postUpgradeTasks": {
-        "commands": ["/config/renovate-maintenance.sh {{{packageFileDir}}}"],
+        "commands": ["/config/renovate-maintenance.sh"],
+        "workingDirTemplate": "{{{packageFileDir}}}",
         "fileFilters": ["workload/services/**", "sd/plugins/**", "!**/secrets/**"],
-        "executionMode": "branch" 
+        "executionMode": "branch",
+        "installTools": {
+          "mise": {}
+        }
       } 
     }
   ]

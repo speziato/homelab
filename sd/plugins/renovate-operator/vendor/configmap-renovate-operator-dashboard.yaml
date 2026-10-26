@@ -1,0 +1,1234 @@
+# Source: renovate-operator/templates/dashboard.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    grafana-folder: Renovate
+  labels:
+    grafana-sighup-dashboard: default
+    grafana_dashboard: "1"
+  name: renovate-operator-dashboard
+  namespace: renovate
+data:
+  renovate-operator.json: |
+
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+          "id": 100,
+          "panels": [],
+          "title": "Overview",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 0, "y": 1 },
+          "id": 6,
+          "description": "Repositories found by the last discovery run of each selected RenovateJob (renovate_operator_discovered_repositories).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_discovered_repositories{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Repositories",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "blue", "value": 0 }, { "color": "green", "value": 1 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 3, "y": 1 },
+          "id": 110,
+          "description": "Projects whose Renovate Job is running right now (renovate_operator_projects_running).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_projects_running{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Running",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 20 }, { "color": "orange", "value": 100 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 6, "y": 1 },
+          "id": 111,
+          "description": "Projects waiting in the Scheduled state for a free parallelism slot (renovate_operator_projects_scheduled).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_projects_scheduled{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Queued (Scheduled)",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "blue", "value": 1 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 9, "y": 1 },
+          "id": 112,
+          "description": "Renovate-managed pull requests left open after each project's last run; automerged PRs are excluded (renovate_operator_open_pull_requests).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_open_pull_requests{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Open PRs",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "yellow", "value": 1 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 12, "y": 1 },
+          "id": 113,
+          "description": "Dependency updates waiting for approval on the Dependency Dashboard after each project's last run (renovate_operator_approvals_needed).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_approvals_needed{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Awaiting Approval",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "red", "value": 1 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 15, "y": 1 },
+          "id": 7,
+          "description": "Projects whose last run failed (renovate_operator_run_failed == 1).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "count(renovate_operator_run_failed{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"} == 1) or vector(0)",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Failing Projects",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "orange", "value": 1 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 18, "y": 1 },
+          "id": 8,
+          "description": "Projects whose last run logged WARN or ERROR entries (renovate_operator_dependency_issues == 1). The run itself may still have succeeded.",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "count(renovate_operator_dependency_issues{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"} == 1) or vector(0)",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Projects with Log Warnings",
+          "type": "stat"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "mappings": [],
+              "unit": "percent",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "#EAB839", "value": 1 }, { "color": "orange", "value": 5 }, { "color": "red", "value": 10 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 4, "w": 3, "x": 21, "y": 1 },
+          "id": 5,
+          "description": "Share of project runs in the selected time range that failed (increase of renovate_operator_project_executions_total).",
+          "options": {
+            "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "showPercentChange": false, "textMode": "auto", "wideLayout": true
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(increase(renovate_operator_project_executions_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\", status=\"failed\"}[$__range])) / clamp_min(sum(increase(renovate_operator_project_executions_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__range])), 1) * 100",
+              "instant": false, "legendFormat": "__auto", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Failure Rate %",
+          "type": "stat"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+          "id": 101,
+          "panels": [],
+          "title": "Job Lifecycle & Latency",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "reqps",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+          "id": 120,
+          "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(kind) (rate(renovate_operator_jobs_dispatched_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval]))",
+              "legendFormat": "{{kind}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Jobs Dispatched (rate)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "s",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+          "id": 121,
+          "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.50, sum by(le) (rate(renovate_operator_job_duration_seconds_bucket{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])))",
+              "legendFormat": "p50", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.95, sum by(le) (rate(renovate_operator_job_duration_seconds_bucket{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])))",
+              "legendFormat": "p95", "range": true, "refId": "B"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.99, sum by(le) (rate(renovate_operator_job_duration_seconds_bucket{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])))",
+              "legendFormat": "p99", "range": true, "refId": "C"
+            }
+          ],
+          "title": "Job Duration (quantiles)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "s",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+          "id": 122,
+          "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.50, sum by(le) (rate(renovate_operator_project_queue_wait_seconds_bucket{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])))",
+              "legendFormat": "p50", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.95, sum by(le) (rate(renovate_operator_project_queue_wait_seconds_bucket{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])))",
+              "legendFormat": "p95", "range": true, "refId": "B"
+            }
+          ],
+          "title": "Project Queue Wait (quantiles)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "reqps",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+          "id": 123,
+          "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(reason) (rate(renovate_operator_job_failures_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval]))",
+              "legendFormat": "{{reason}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Job Failures by Reason (rate)",
+          "type": "timeseries"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+          "id": 102,
+          "panels": [],
+          "title": "Saturation & Queue Depth",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 15, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+          "id": 130,
+          "options": { "legend": { "calcs": [ "max" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(renovate_job) (renovate_operator_projects_scheduled{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "scheduled: {{renovate_job}}", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(renovate_job) (renovate_operator_projects_running{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "running: {{renovate_job}}", "range": true, "refId": "B"
+            }
+          ],
+          "title": "Scheduled vs Running (per job)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "parallelism limit" },
+                "properties": [ { "id": "custom.drawStyle", "value": "line" }, { "id": "custom.lineStyle", "value": { "dash": [ 10, 10 ], "fill": "dash" } }, { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } } ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 12, "y": 23 },
+          "id": 131,
+          "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "renovate_operator_global_running_projects",
+              "legendFormat": "global running", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "renovate_operator_global_parallelism_limit != 0",
+              "legendFormat": "parallelism limit", "range": true, "refId": "B"
+            }
+          ],
+          "title": "Global Running vs Limit",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "s",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 4, "x": 20, "y": 23 },
+          "id": 132,
+          "options": { "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "histogram_quantile(0.95, sum by(le) (rate(renovate_operator_executor_loop_duration_seconds_bucket[$__rate_interval])))",
+              "legendFormat": "p95", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Executor Loop p95",
+          "type": "timeseries"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 31 },
+          "id": 103,
+          "panels": [],
+          "title": "Scheduler",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 60, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "reqps",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "error" }, "properties": [ { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } } ] },
+              { "matcher": { "id": "byName", "options": "success" }, "properties": [ { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } } ] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 32 },
+          "id": 140,
+          "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(result) (rate(renovate_operator_schedule_runs_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval]))",
+              "legendFormat": "{{result}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Schedule Firings by Result (rate)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": [
+              {
+                "matcher": { "id": "byName", "options": "Next Run" },
+                "properties": [ { "id": "unit", "value": "dateTimeFromNow" } ]
+              }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
+          "id": 141,
+          "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": [ "sum" ], "show": false }, "showHeader": true },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "renovate_operator_schedule_next_run_timestamp_seconds{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"} * 1000",
+              "format": "table", "instant": true, "legendFormat": "__auto", "range": false, "refId": "A"
+            }
+          ],
+          "title": "Next Scheduled Run",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true, "__name__": true, "container": true, "endpoint": true, "instance": true, "job": true, "namespace": true, "pod": true, "service": true },
+                "indexByName": {},
+                "renameByName": { "Value": "Next Run", "project": "Project", "renovate_job": "Renovate Job", "renovate_namespace": "Namespace" }
+              }
+            }
+          ],
+          "type": "table"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 40 },
+          "id": 104,
+          "panels": [],
+          "title": "Discovery",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 41 },
+          "id": 150,
+          "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(renovate_job) (renovate_operator_discovered_repositories{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "{{renovate_job}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Discovered Repositories (per job)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 60, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "reqps",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "failed" }, "properties": [ { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } } ] },
+              { "matcher": { "id": "byName", "options": "completed" }, "properties": [ { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } } ] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 41 },
+          "id": 151,
+          "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(status) (rate(renovate_operator_discovery_jobs_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval]))",
+              "legendFormat": "{{status}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Discovery Jobs by Status (rate)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "reqps",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 41 },
+          "id": 152,
+          "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(reason) (rate(renovate_operator_repositories_filtered_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval]))",
+              "legendFormat": "{{reason}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Repositories Filtered by Reason (rate)",
+          "type": "timeseries"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 49 },
+          "id": 105,
+          "panels": [],
+          "title": "Pull Requests & Outcomes",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "cpm",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "merged" }, "properties": [ { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } } ] },
+              { "matcher": { "id": "byName", "options": "created" }, "properties": [ { "id": "color", "value": { "fixedColor": "blue", "mode": "fixed" } } ] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 50 },
+          "id": 160,
+          "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(rate(renovate_operator_pull_requests_created_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])) * 60",
+              "legendFormat": "created", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(rate(renovate_operator_pull_requests_merged_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])) * 60",
+              "legendFormat": "merged", "range": true, "refId": "B"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(rate(renovate_operator_pull_requests_updated_total{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}[$__rate_interval])) * 60",
+              "legendFormat": "updated", "range": true, "refId": "C"
+            }
+          ],
+          "title": "PR Activity (per minute)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 6, "x": 12, "y": 50 },
+          "id": 161,
+          "options": {
+            "legend": { "displayMode": "list", "placement": "right", "showLegend": true, "values": [ "value" ] },
+            "pieType": "donut",
+            "reduceOptions": { "calcs": [ "lastNotNull" ], "fields": "", "values": false },
+            "tooltip": { "mode": "single", "sort": "none" }
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(status) (renovate_operator_repositories_by_status{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "instant": true, "legendFormat": "{{status}}", "range": false, "refId": "A"
+            }
+          ],
+          "title": "Repositories by Status",
+          "type": "piechart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 8, "w": 6, "x": 18, "y": 50 },
+          "id": 162,
+          "options": {
+            "barRadius": 0, "barWidth": 0.8, "fullHighlight": false, "groupWidth": 0.7,
+            "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+            "orientation": "horizontal", "showValue": "auto", "stacking": "none",
+            "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "topk(10, sum by(project) (renovate_operator_open_pull_requests{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"}) > 0)",
+              "format": "time_series", "instant": true, "legendFormat": "{{project}}", "range": false, "refId": "A"
+            }
+          ],
+          "title": "Top Open PRs by Project",
+          "type": "barchart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "continuous-GrYlRd" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "scheme", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1, "scaleDistribution": { "type": "linear" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "s",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 9, "w": 12, "x": 0, "y": 58 },
+          "id": 163,
+          "options": {
+            "barRadius": 0, "barWidth": 0.8, "fullHighlight": false, "groupWidth": 0.7,
+            "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": false },
+            "orientation": "horizontal", "showValue": "auto", "stacking": "none",
+            "tooltip": { "mode": "single", "sort": "none" }, "xTickLabelRotation": 0, "xTickLabelSpacing": 0
+          },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "topk(15, renovate_operator_last_execution_duration_seconds{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "format": "time_series", "instant": true, "legendFormat": "{{project}}", "range": false, "refId": "A"
+            }
+          ],
+          "title": "Slowest Projects (last run duration)",
+          "type": "barchart"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": []
+          },
+          "gridPos": { "h": 9, "w": 12, "x": 12, "y": 58 },
+          "id": 164,
+          "options": { "legend": { "calcs": [ "lastNotNull", "max" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_open_pull_requests{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "open PRs", "range": true, "refId": "A"
+            },
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum(renovate_operator_approvals_needed{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "awaiting approval", "range": true, "refId": "B"
+            }
+          ],
+          "title": "Open PRs & Approvals over time",
+          "type": "timeseries"
+        },
+
+        {
+          "collapsed": false,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 67 },
+          "id": 106,
+          "panels": [],
+          "title": "Log Quality & Issues",
+          "type": "row"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "palette-classic" },
+              "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } },
+              "mappings": [],
+              "unit": "short",
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "error" }, "properties": [ { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } } ] },
+              { "matcher": { "id": "byName", "options": "warn" }, "properties": [ { "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } } ] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 68 },
+          "id": 170,
+          "options": { "legend": { "calcs": [ "lastNotNull" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "editorMode": "code", "exemplar": false,
+              "expr": "sum by(level) (renovate_operator_log_issues{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"})",
+              "legendFormat": "{{level}}", "range": true, "refId": "A"
+            }
+          ],
+          "title": "Log Issues by Level (total)",
+          "type": "timeseries"
+        },
+        {
+          "datasource": { "type": "prometheus", "uid": "$datasource" },
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+              "mappings": [],
+              "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }
+            },
+            "overrides": [
+              { "matcher": { "id": "byName", "options": "project" }, "properties": [ { "id": "custom.width", "value": 300 } ] }
+            ]
+          },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 68 },
+          "id": 9,
+          "options": { "cellHeight": "sm", "footer": { "countRows": false, "fields": "", "reducer": [ "sum" ], "show": false }, "showHeader": true },
+          "pluginVersion": "12.3.1",
+          "targets": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "editorMode": "code", "exemplar": false,
+              "expr": "renovate_operator_run_failed{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"} == 1 or renovate_operator_dependency_issues{renovate_namespace=~\"$RenovateNamespace\", renovate_job=~\"$RenovateJob\"} == 1",
+              "format": "table", "instant": true, "legendFormat": "__auto", "range": false, "refId": "A"
+            }
+          ],
+          "title": "Projects with Issues",
+          "transformations": [
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": { "Time": true, "Value": true, "__name__": true, "container": true, "endpoint": true, "instance": true, "job": true, "namespace": true, "pod": true, "service": true },
+                "indexByName": { "Time": 0, "__name__": 1, "renovate_namespace": 2, "renovate_job": 3, "project": 4, "Value": 5 },
+                "renameByName": { "project": "Project", "renovate_job": "Renovate Job", "renovate_namespace": "Namespace" }
+              }
+            }
+          ],
+          "type": "table"
+        },
+
+        {
+          "collapsed": true,
+          "gridPos": { "h": 1, "w": 24, "x": 0, "y": 76 },
+          "id": 107,
+          "panels": [
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+                  "mappings": [],
+                  "unit": "reqps",
+                  "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+                },
+                "overrides": [
+                  { "matcher": { "id": "byRegexp", "options": ".*rejected.*" }, "properties": [ { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } } ] }
+                ]
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 0, "y": 77 },
+              "id": 180,
+              "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(provider, result) (rate(renovate_operator_webhook_requests_total[$__rate_interval]))",
+                  "legendFormat": "{{provider}} / {{result}}", "range": true, "refId": "A"
+                }
+              ],
+              "title": "Webhook Requests by Provider/Result (rate)",
+              "type": "timeseries"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+                  "mappings": [],
+                  "unit": "reqps",
+                  "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "red", "value": 0.001 } ] }
+                },
+                "overrides": []
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 12, "y": 77 },
+              "id": 181,
+              "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(provider) (rate(renovate_operator_webhook_signature_verification_failures_total[$__rate_interval]))",
+                  "legendFormat": "sig fail: {{provider}}", "range": true, "refId": "A"
+                },
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(provider, error_type) (rate(renovate_operator_webhook_auth_failures_total[$__rate_interval]))",
+                  "legendFormat": "auth fail: {{provider}}/{{error_type}}", "range": true, "refId": "B"
+                }
+              ],
+              "title": "Webhook Auth & Signature Failures (rate)",
+              "type": "timeseries"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+                  "mappings": [],
+                  "unit": "reqps",
+                  "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 } ] }
+                },
+                "overrides": []
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 0, "y": 85 },
+              "id": 183,
+              "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(provider) (rate(renovate_operator_webhook_payload_decode_failures_total[$__rate_interval]))",
+                  "legendFormat": "{{provider}}", "range": true, "refId": "A"
+                }
+              ],
+              "title": "Webhook Payload Decode Failures (rate)",
+              "type": "timeseries"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+                  "mappings": [],
+                  "unit": "reqps",
+                  "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "red", "value": 0.001 } ] }
+                },
+                "overrides": []
+              },
+              "gridPos": { "h": 8, "w": 12, "x": 12, "y": 85 },
+              "id": 184,
+              "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(error_type) (rate(renovate_operator_secret_resolution_errors_total[$__rate_interval]))",
+                  "legendFormat": "{{error_type}}", "range": true, "refId": "A"
+                }
+              ],
+              "title": "Secret Resolution Errors by Type (rate)",
+              "type": "timeseries"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "$datasource"
+              },
+              "description": "Whether the operator is enforcing its policy. Not enforcing means anyone who can write a RenovateJob can read secrets in its namespace and redirect the operator's credentials - see docs/security.md.",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "thresholds"
+                  },
+                  "mappings": [
+                    {
+                      "options": {
+                        "0": {
+                          "color": "red",
+                          "index": 1,
+                          "text": "Not enforcing"
+                        },
+                        "1": {
+                          "color": "green",
+                          "index": 0,
+                          "text": "Enforcing"
+                        }
+                      },
+                      "type": "value"
+                    }
+                  ],
+                  "noValue": "unknown",
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "red",
+                        "value": 0
+                      },
+                      {
+                        "color": "green",
+                        "value": 1
+                      }
+                    ]
+                  }
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 4,
+                "x": 0,
+                "y": 93
+              },
+              "id": 185,
+              "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code",
+                  "exemplar": false,
+                  "expr": "max(renovate_operator_policy_enabled)",
+                  "instant": true,
+                  "legendFormat": "__auto",
+                  "range": false,
+                  "refId": "A"
+                }
+              ],
+              "title": "Policy Engine",
+              "type": "stat"
+            },
+            {
+              "datasource": { "type": "prometheus", "uid": "$datasource" },
+              "description": "RenovateJob actions refused by the policy engine. A sustained non-zero rate usually means a job needs a host adding to policy.allowedHosts, a secret labelling, or an image listing - the RenovateJob's Accepted condition names which.",
+              "fieldConfig": {
+                "defaults": {
+                  "color": { "mode": "palette-classic" },
+                  "custom": { "axisBorderShow": false, "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "insertNulls": false, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "auto", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } },
+                  "mappings": [],
+                  "unit": "reqps",
+                  "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": 0 }, { "color": "red", "value": 0.001 } ] }
+                },
+                "overrides": []
+              },
+              "gridPos": { "h": 8, "w": 20, "x": 4, "y": 93 },
+              "id": 186,
+              "options": { "legend": { "calcs": [ "sum" ], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+              "pluginVersion": "12.3.1",
+              "targets": [
+                {
+                  "editorMode": "code", "exemplar": false,
+                  "expr": "sum by(check) (rate(renovate_operator_policy_denials_total[$__rate_interval]))",
+                  "legendFormat": "{{check}}", "range": true, "refId": "A"
+                }
+              ],
+              "title": "Policy Denials by Check (rate)",
+              "type": "timeseries"
+            }
+          ],
+          "title": "SecOps: Webhooks, Credentials \u0026 Policy",
+          "type": "row"
+        }
+      ],
+      "preload": false,
+      "schemaVersion": 42,
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "current": {
+              "text": "default",
+              "value": "default"
+            },
+            "label": "Data Source",
+            "name": "datasource",
+            "options": [],
+            "query": "prometheus",
+            "refresh": 1,
+            "regex": "",
+            "type": "datasource"
+          },
+          {
+            "current": {
+              "text": "All",
+              "value": [
+                "$__all"
+              ]
+            },
+            "definition": "label_values(renovate_operator_project_executions_total,renovate_namespace)",
+            "includeAll": true,
+            "multi": true,
+            "name": "RenovateNamespace",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(renovate_operator_project_executions_total,renovate_namespace)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "type": "query"
+          },
+          {
+            "current": {
+              "text": "All",
+              "value": [
+                "$__all"
+              ]
+            },
+            "definition": "label_values(renovate_operator_project_executions_total{\"renovate_namespace\"=~\"$RenovateNamespace\"},renovate_job)",
+            "includeAll": true,
+            "multi": true,
+            "name": "RenovateJob",
+            "options": [],
+            "query": {
+              "qryType": 1,
+              "query": "label_values(renovate_operator_project_executions_total{\"renovate_namespace\"=~\"$RenovateNamespace\"},renovate_job)",
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-12h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Renovate Operator",
+      "uid": "lu79xfd",
+      "version": 11
+    }

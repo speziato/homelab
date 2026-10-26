@@ -38,7 +38,7 @@ kubectl debug $(kubectl get nodes -o name | head -n 1) \
   -- bash
 """
 
-[tasks.renovate-local]
+[tasks."renovate:run-local"]
 run = """
 #!/usr/bin/env bash
 
@@ -52,12 +52,23 @@ NOW=$(date --iso-8601=seconds)
 
 podman run --rm \
   --userns=keep-id:uid=12021,gid=12021 \
-  -v "{{config_root}}:/repo:ro" -w /repo \
+  -v "{{config_root}}/sd:/repo/sd:ro" \
+  -v "{{config_root}}/workload:/repo/workload:ro" \
+  -v "{{config_root}}/renovate-local.json:/repo/renovate-local.json:ro" \
+
+  -w /repo \
   -v "$OUT:/out" \
   -e RENOVATE_CONFIG_FILE=/repo/renovate-local.json \
   -e RENOVATE_GITHUB_COM_TOKEN=$GITHUB_TOKEN \
-  -e RENOVATE_REPORT_TYPE=file -e RENOVATE_REPORT_PATH=/out/report-$NOW.json \
+  -e LOG_LEVEL=debug -e LOG_FILE_FORMAT=json -e LOG_FILE=/out/log-$NOW.json \
   ghcr.io/renovatebot/renovate:44.181@sha256:17a72d4e9787445c5047cfb20989b033a270833521fd0485c6372bdee21f92eb renovate --platform=local --dry-run=lookup
+"""
 
-python3 {{config_root}}/renovate/hack/report-viewer.py $OUT/report-$NOW.json
+[tasks."renovate:reporter"]
+run = """
+#!/usr/bin/env bash
+podman run --rm \
+  -p 8080:8080 \
+  -v "{{config_root}}/renovate/reports:/logs:ro" \
+  ghcr.io/acaylor/renovate-reporter:v0.2.0
 """

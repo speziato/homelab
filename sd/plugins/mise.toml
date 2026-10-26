@@ -11,7 +11,7 @@ echo "Starting maintenance task for ${PLUGIN_NAME}..."
 """
 [tasks._postmaintenance]
 run = """
-echo "Done maintenance task for ${PLUGIN_NAME}..."
+echo "Done maintenance task for ${PLUGIN_NAME}"
 """
 [tasks._maintenance]
 # default maintenance task - noop
@@ -64,6 +64,7 @@ echo "OK"
 description = "creates a new plugin folder already configured for the above mise tasks"
 usage = '''
 arg "<name>" help="New plugin name"
+flag "--helm" help="Use the helm maintenance contract"
 '''
 
 run = """
@@ -76,6 +77,39 @@ cat > "{{ config_root }}/${usage_name?}/mise.toml" << EOF
 [env]
 PLUGIN_NAME="${usage_name?}"
 EOF
+
+if [[ ${usage_helm} == "true" ]]; then
+cat >> "{{ config_root }}/${usage_name?}/mise.toml" << EOF
+[tasks._maintenance]
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+HELM_REPO_URL="<repo url>"
+HELM_REPO_NAME="<repo name>"
+HELM_CHART_NAME="<chart name>"
+# renovate: datasource=helm depName=<chart name> registryUrl=<repo url>
+HELM_CHART_VERSION="<chart version>"
+NAMESPACE="<namespace>"
+HELM_RELEASE_NAME="<release name>"
+# Helm chart repo: https://<git repo of helm chart>
+
+helm repo add \\${HELM_REPO_NAME} \\${HELM_REPO_URL} > /dev/null
+helm repo update > /dev/null
+rm -rf resources/vendor
+helm template \\${HELM_RELEASE_NAME} \\${HELM_REPO_NAME}/\\${HELM_CHART_NAME} -n "\\${NAMESPACE}" --values MAINTENANCE.values.yaml --version "\\${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor -q
+rm deploy.maintenance.yaml
+rm resources/vendor/-.yaml
+mkdir resources/vendor/crds
+mv resources/vendor/customresourcedefinition-* resources/vendor/crds || true
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "\\${NAMESPACE}"
+'''
+EOF
+
+touch {{config_root}}/${usage_name?}/MAINTENANCE.values.yaml
+fi
 
 PLUGIN_NAME=${usage_name?} yq -i '.spec.plugins.kustomize += [{"name": strenv(PLUGIN_NAME), "folder": "./plugins/"+strenv(PLUGIN_NAME)}]' {{config_root}}/../furyctl.yaml
 """

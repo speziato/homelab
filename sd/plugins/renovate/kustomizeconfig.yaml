@@ -1,0 +1,19 @@
+nameReference:
+  - kind: ConfigMap
+    version: v1
+    fieldSpecs:
+      - group: renovate-operator.mogenius.com
+        version: v1alpha1
+        kind: RenovateJob
+        path: spec/extraVolumes/configMap/name
+      - group: renovate-operator.mogenius.com
+        version: v1alpha1
+        kind: RenovateJob
+        path: spec/renovateConfig/configMapRef/name
+  - kind: Secret
+    version: v1
+    fieldSpecs:
+      - group: renovate-operator.mogenius.com
+        version: v1alpha1
+        kind: RenovateJob
+        path: spec/extraVolumes/secret/secretName
