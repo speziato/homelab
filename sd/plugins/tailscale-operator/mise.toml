@@ -1,19 +1,25 @@
-[tasks.maintenance]
+[env]
+PLUGIN_NAME="tailscale-operator"
+
+[tasks._maintenance]
 run = '''
 #!/usr/bin/env bash
+set -euo pipefail
+
 HELM_REPO_URL="https://pkgs.tailscale.com/helmcharts"
 HELM_REPO_NAME="tailscale"
 HELM_CHART_NAME="tailscale-operator"
+# renovate: datasource=helm depName=tailscale-operator registryUrl=https://pkgs.tailscale.com/helmcharts
 HELM_CHART_VERSION="1.102.4"
 NAMESPACE=tailscale
-RELEASE_NAME=tailscale
+HELM_RELEASE_NAME=tailscale
 # Helm chart repo: https://github.com/tailscale/tailscale/tree/main/cmd/k8s-operator/deploy/chart
 
-helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL}
-helm repo update
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL} > /dev/null
+helm repo update > /dev/null
 rm -rf resources/vendor
-helm template ${RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
-kubectl slice -f deploy.maintenance.yaml -o resources/vendor
+helm template ${HELM_RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o resources/vendor -q
 rm deploy.maintenance.yaml
 rm resources/vendor/-.yaml
 mkdir resources/vendor/crds
@@ -23,28 +29,4 @@ kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
 kustomize edit add secret operator-oauth --from-env-file=secrets/oidc-client.env
 kustomize edit remove resource patches/add-emptydir-config-volume.yaml
 kustomize edit add patch --path patches/add-emptydir-config-volume.yaml
-kustomize build . >/dev/null || (echo "Something went wrong, check upstream for changes" >2 && exit 1)
-'''
-
-[tasks.diff]
-description = "Runs a kapp diff against the furyctl plugin, without deploying anything"
-run = '''
-#!/usr/bin/env bash
-TMPDIR=$(mktemp -d)
-OUTFILE="${TMPDIR}/out.yaml"
-kustomize build {{config_root}} > "${OUTFILE}"
-kapp deploy --diff-run -a kfd-plugin-tailscale-operator -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
-rm -rf "${TMPDIR}"
-'''
-
-[tasks.deploy]
-description = "Deploys the furyctl plugin, using kapp instead of furyctl - useful to avoid a full furyctl run"
-run = '''
-#!/usr/bin/env bash
-
-TMPDIR=$(mktemp -d)
-OUTFILE="${TMPDIR}/out.yaml"
-kustomize build {{config_root}} > "${OUTFILE}"
-kapp deploy -a kfd-plugin-tailscale-operator -n kube-system -f "${OUTFILE}" --allow-all-ns -y --default-label-scoping-rules=false --apply-default-update-strategy=fallback-on-replace -c
-rm -rf "${TMPDIR}"
 '''

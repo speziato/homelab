@@ -32,7 +32,7 @@ spec:
           # Init container to set up SSH key permissions
           initContainers:
           - name: setup
-            image: busybox:stable
+            image: busybox
             envFrom:
               - secretRef:
                   name: backup-sftp-sync-credentials
@@ -86,7 +86,7 @@ spec:
           
           containers:
           - name: rclone-cleanup
-            image: docker.io/rclone/rclone:sha-7c16602@sha256:3d7dc78f74b7617cf75aff996bd52e3ed70a31a623777934046070e276535792
+            image: rclone
             imagePullPolicy: IfNotPresent
             envFrom:
               - configMapRef:

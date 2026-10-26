@@ -5,6 +5,7 @@ resources:
 - resources/ns.yaml
 - resources/objectstore-postgresql.yaml
 - resources/immich
+- resources/psono
 
 secretGenerator:
   - name: postgresql-object-store-backup-credentials

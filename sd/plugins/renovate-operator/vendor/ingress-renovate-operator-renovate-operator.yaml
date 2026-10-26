@@ -1,0 +1,26 @@
+# Source: renovate-operator/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: renovate-operator-renovate-operator
+  namespace: renovate
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-sd
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: renovate.lan.speziato.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: renovate-operator-renovate-operator
+                port:
+                  name: http
+  tls:
+    - hosts:
+      - renovate.lan.speziato.dev
+      secretName: renovate-tls

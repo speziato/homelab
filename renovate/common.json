@@ -1,0 +1,36 @@
+{
+  "enabledManagers": [
+    "kustomize",
+    "kubernetes",
+    "custom.regex"],
+  "ignorePaths": [
+    "**/vendor/**",
+    "**/secrets/**"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^(workload/services|sd/plugins)/[^/]+/mise\\.toml$/",
+        "/MAINTENANCE\\.values\\.yaml$/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+packageName=(?<packageName>\\S+))?(?:\\s+registryUrl=(?<registryUrl>\\S+))?(?:\\s+versioning=(?<versioning>\\S+))?[^\\n]*\\n\\s*(?:env\\.)?[A-Za-z0-9_.]+\\s*[:=]\\s*\"?(?<currentValue>[^\"\\s#@]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?\"?"
+      ]
+    }
+  ],
+  "packageRules": [
+    { "matchManagers": ["custom.regex"], "groupName": "{{{parentDir}}}" },
+    { "matchManagers": ["custom.regex"],
+      "postUpgradeTasks": {
+        "commands": ["/config/renovate-maintenance.sh"],
+        "workingDirTemplate": "{{{packageFileDir}}}",
+        "fileFilters": ["workload/services/**", "sd/plugins/**", "!**/secrets/**"],
+        "executionMode": "branch",
+        "installTools": {
+          "mise": {}
+        }
+      } 
+    }
+  ]
+}

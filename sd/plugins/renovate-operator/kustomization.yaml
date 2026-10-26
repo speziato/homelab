@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- resources/ns.yaml
+- vendor/configmap-renovate-operator-dashboard.yaml
+- vendor/crds/customresourcedefinition-clusterrenovatejobtemplates.renovate-operator.mogenius.com.yaml
+- vendor/crds/customresourcedefinition-renovatejobs.renovate-operator.mogenius.com.yaml
+- vendor/crds/customresourcedefinition-renovatejobtemplates.renovate-operator.mogenius.com.yaml
+- vendor/crds/customresourcedefinition-renovateprojects.renovate-operator.mogenius.com.yaml
+- vendor/deployment-renovate-operator-renovate-operator.yaml
+- vendor/ingress-renovate-operator-renovate-operator.yaml
+- vendor/role-renovate-operator-renovate-operator.yaml
+- vendor/rolebinding-renovate-operator-renovate-operator.yaml
+- vendor/service-renovate-operator-renovate-operator.yaml
+- vendor/serviceaccount-renovate-operator-renovate-operator.yaml
+- vendor/servicemonitor-renovate-operator-renovate-operator.yaml
+namespace: renovate
+secretGenerator:
+- envs:
+  - secrets/renovate-s3-credentials.env
+  name: renovate-s3-credentials
+  options:
+    disableNameSuffixHash: true
+  type: Opaque

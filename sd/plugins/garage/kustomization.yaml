@@ -2,18 +2,18 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - additional
-- resources/clusterrole-manage-crds-garage-garage.yaml
-- resources/clusterrolebinding-allow-crds-for-garage-garage.yaml
-- resources/configmap-garage-config.yaml
-- resources/ingress-garage-s3-api.yaml
-- resources/ingress-garage-s3-web.yaml
 - resources/ns.yaml
-- resources/service-garage-headless.yaml
-- resources/service-garage-metrics.yaml
-- resources/service-garage.yaml
-- resources/serviceaccount-garage.yaml
-- resources/servicemonitor-garage.yaml
-- resources/statefulset-garage.yaml
+- vendor/clusterrole-manage-crds-garage-garage.yaml
+- vendor/clusterrolebinding-allow-crds-for-garage-garage.yaml
+- vendor/configmap-garage-config.yaml
+- vendor/ingress-garage-s3-api.yaml
+- vendor/ingress-garage-s3-web.yaml
+- vendor/service-garage-headless.yaml
+- vendor/service-garage-metrics.yaml
+- vendor/service-garage.yaml
+- vendor/serviceaccount-garage.yaml
+- vendor/servicemonitor-garage.yaml
+- vendor/statefulset-garage.yaml
 namespace: garage
 secretGenerator:
 - envs:

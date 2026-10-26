@@ -51,12 +51,12 @@ spec:
             provider: certManager
             # if provider is set as secret, this key will be used to create the certificate in the cluster
             # secret:
-              # the certificate file content or you can use the file notation to get the content from a file
-              # cert: "{file://relative/path/to/ssl.crt}"
-              # the key file, a file notation can be used to get the content from a file
-              # key: "{file://relative/path/to/ssl.key}"
-              # the ca file, a file notation can be used to get the content from a file
-              # ca: "{file://relative/path/to/ssl.ca}"
+            # the certificate file content or you can use the file notation to get the content from a file
+            # cert: "{file://relative/path/to/ssl.crt}"
+            # the key file, a file notation can be used to get the content from a file
+            # key: "{file://relative/path/to/ssl.key}"
+            # the ca file, a file notation can be used to get the content from a file
+            # ca: "{file://relative/path/to/ssl.ca}"
         # configuration for the cert-manager package
         certManager:
           # the configuration for the clusterIssuer that will be created
@@ -162,7 +162,6 @@ spec:
             disableNameSuffixHash: true
           envs:
             - ./patches/cert-manager/secrets/cloudflare.env
-            
   # Plugins to be installed
   plugins:
     kustomize:
@@ -190,7 +189,7 @@ spec:
         folder: ./plugins/backups-sftp-sync
       - name: diun
         folder: ./plugins/diun
-      # - name: operators
-      #   folder: ./plugins/operators
-      # - name: oracle-infra
-      #   folder: ./plugins/oracle-infra
+      - name: renovate-operator
+        folder: ./plugins/renovate-operator
+      - name: renovate
+        folder: ./plugins/renovate

@@ -2,10 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../kapp-configs
-  - ./resources/kubevirt-operator.yaml
-  - ./resources/kubevirt-cr.yaml
-  - ./resources/cdi-operator.yaml
-  - ./resources/cdi-cr.yaml
+  - ./vendor/kubevirt-operator.yaml
+  - ./vendor/kubevirt-cr.yaml
+  - ./vendor/cdi-operator.yaml
+  - ./vendor/cdi-cr.yaml
 patches:
   - patch: |
       apiVersion: kubevirt.io/v1
@@ -40,7 +40,7 @@ patches:
 
 configMapGenerator:
   - files:
-      - resources/dashboards/kubevirt-control-plane.json
+      - vendor/dashboards/kubevirt-control-plane.json
     name: kubevirt-dashboards
     options:
       annotations:

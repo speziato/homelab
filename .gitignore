@@ -1,6 +1,7 @@
 **/*mise.local.toml
-**/symmetric.gpg
+**/*.git-crypt.key
 .vscode
 .furyctl
 kubeconfig
 talosconfig
+renovate/reports/

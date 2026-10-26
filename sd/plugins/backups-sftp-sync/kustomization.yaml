@@ -18,3 +18,10 @@ configMapGenerator:
   - name: backup-sftp-sync-config
     envs:
       - config/backup-sftp-sync-config.env
+images:
+  - name: busybox
+    newName: busybox
+    newTag: stable
+  - name: rclone
+    newName: ghcr.io/rclone/rclone
+    newTag: 1.75.2@sha256:2687085f718d3c628f7fdfb77c52a1d344332aed543110bb88088f2c70d43eb5
