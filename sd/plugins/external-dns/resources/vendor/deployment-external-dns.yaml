@@ -31,6 +31,10 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "2"
       containers:
         - name: external-dns
           securityContext:
@@ -52,7 +56,7 @@ spec:
                   key: api-token
                   name: cloudflare-api-token-secret
           args:
-            - --log-level=debug
+            - --log-level=info
             - --log-format=text
             - --interval=5m
             - --events

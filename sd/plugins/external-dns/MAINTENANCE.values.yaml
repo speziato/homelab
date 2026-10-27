@@ -10,8 +10,11 @@ policy: sync
 interval: 5m
 domainFilters:
   - speziato.dev
-
-logLevel: debug
+dnsConfig:
+  options:
+    - name: ndots
+      value: "2"
+logLevel: info
 txtOwnerId: external-dns-homelab
 txtPrefix: external-dns-%{record_type}.
 provider: 

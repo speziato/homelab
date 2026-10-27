@@ -14,7 +14,10 @@ spec:
     spec:
       serviceAccountName: wait-for-job
       automountServiceAccountToken: false
-
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "2"
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
