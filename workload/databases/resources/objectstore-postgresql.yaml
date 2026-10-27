@@ -6,7 +6,7 @@ metadata:
 spec:
   configuration:
     destinationPath: s3://backups/postgresql/
-    endpointURL: "http://garage.garage.svc.cluster.local:3900"
+    endpointURL: "http://garage.garage:3900"
     wal:
       compression: zstd
     data:
