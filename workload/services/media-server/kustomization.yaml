@@ -36,7 +36,7 @@ images:
     newTag: 1.6.2@sha256:b8434a7339ebd9c2bfe4464c28db79944e0f52f47da85345fc7e0563c19f83ac
   - name: jellyfin
     newName: ghcr.io/jellyfin/jellyfin
-    newTag: 12.3@sha256:720ad28968e040f1ea049749f4ce546b28c7251244a6eb8aacf9147d8afbc24d
+    newTag: 12.4@sha256:7da5184caa38c553f219f6772476540081f392a68049e2b68c923f6daf877f8e
   - name: lidarr
     newName: ghcr.io/home-operations/lidarr
     newTag: 3.2.0@sha256:25b09e80e76d9680a3e0802c9f87e456925b1224ad3b726eae5bb0914dcc074b
