@@ -8,6 +8,13 @@ spec:
     spec:
       containers:
         - name: grafana
+          env:
+            - nmame: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES
+              value: "false"
+            - nmame: GF_ANALYTICS_CHECK_FOR_UPDATES
+              value: "false"
+            - nmame: GF_ANALYTICS_REPORTING_ENABLED
+              value: "false"
           resources:
             requests:
               cpu: 100m
