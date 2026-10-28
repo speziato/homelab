@@ -10,7 +10,7 @@ HELM_REPO_URL="https://pkgs.tailscale.com/helmcharts"
 HELM_REPO_NAME="tailscale"
 HELM_CHART_NAME="tailscale-operator"
 # renovate: datasource=helm depName=tailscale-operator registryUrl=https://pkgs.tailscale.com/helmcharts
-HELM_CHART_VERSION="1.102.4"
+HELM_CHART_VERSION="1.104.2"
 NAMESPACE=tailscale
 HELM_RELEASE_NAME=tailscale
 # Helm chart repo: https://github.com/tailscale/tailscale/tree/main/cmd/k8s-operator/deploy/chart
