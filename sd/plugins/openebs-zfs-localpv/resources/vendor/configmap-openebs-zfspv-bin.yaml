@@ -5,9 +5,9 @@ metadata:
   name: openebs-zfspv-bin
   namespace: openebs # should be the same namespace where it is getting mounted
   labels:
-    chart: zfs-localpv-2.9.0
+    chart: zfs-localpv-2.11.2
     heritage: Helm
-    openebs.io/version: "2.9.0"
+    openebs.io/version: "2.11.2"
     role: "openebs-zfs"
     name: "openebs-zfs-node"
     release: csi
