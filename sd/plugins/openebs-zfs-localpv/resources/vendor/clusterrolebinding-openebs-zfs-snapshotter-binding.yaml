@@ -4,9 +4,9 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: openebs-zfs-snapshotter-binding
   labels:
-    chart: zfs-localpv-2.9.0
+    chart: zfs-localpv-2.11.2
     heritage: Helm
-    openebs.io/version: "2.9.0"
+    openebs.io/version: "2.11.2"
     role: "openebs-zfs"
     app: "openebs-zfs-controller"
     release: csi
