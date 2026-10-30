@@ -4,12 +4,11 @@ kind: StatefulSet
 metadata:
   name: garage
   labels:
-    helm.sh/chart: garage-0.9.1
+    helm.sh/chart: garage-0.10.4
     app.kubernetes.io/name: garage
     app.kubernetes.io/instance: garage
-    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/managed-by: Helm
-    
 spec:
   selector:
     matchLabels:
@@ -21,18 +20,18 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: fffc8d141320e5abf9d83a8a72ae530f6c70a248753ae6a3396abcdfd770c106
+        checksum/config: a7aa6e14fdc2b9582ef76857afb4207745e68d970c01a44009ac0637d0af26b1
       labels:
-        helm.sh/chart: garage-0.9.1
+        helm.sh/chart: garage-0.10.4
         app.kubernetes.io/name: garage
         app.kubernetes.io/instance: garage
-        app.kubernetes.io/version: "v2.1.0"
+        app.kubernetes.io/version: "v2.5.0"
         app.kubernetes.io/managed-by: Helm
-        
     spec:
       serviceAccountName: garage
       securityContext:
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
@@ -70,7 +69,7 @@ spec:
               drop:
               - ALL
             readOnlyRootFilesystem: true
-          image: "dxflrs/amd64_garage:v2.1.0"
+          image: "dxflrs/amd64_garage:v2.5.0"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3900
