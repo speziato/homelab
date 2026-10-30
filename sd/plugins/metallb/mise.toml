@@ -6,14 +6,26 @@ run = '''
 #!/usr/bin/env bash
 set -euo pipefail
 
-# renovate: datasource=github-releases depName=metallb/metallb
-VERSION="v0.15.2"
-rm -rf ./vendor
-rm -rf kustomization.yaml
-kustomize localize --no-verify "github.com/metallb/metallb/config/native?ref=${VERSION}" vendor >/dev/null
-kustomize init --namespace metallb-system
-kustomize edit add resource ./vendor/config/native
-kustomize edit add resource ./resources/ip-address-pool.yaml
-kustomize edit add resource ./resources/l2-advertisement.yaml
-kustomize edit add resource ./resources/podmonitor.yaml
+HELM_REPO_URL="https://metallb.github.io/metallb"
+HELM_REPO_NAME="metallb"
+HELM_CHART_NAME="metallb"
+HELM_RELEASE_NAME="metallb"
+# renovate: datasource=helm depName=metallb registryUrl=https://metallb.github.io/metallb
+HELM_CHART_VERSION="0.16.1"
+NAMESPACE=metallb-system
+
+TARGET_DIR="{{config_root}}/vendor"
+
+helm repo add ${HELM_REPO_NAME} ${HELM_REPO_URL} > /dev/null
+helm repo update > /dev/null
+rm -rf $TARGET_DIR
+helm template ${HELM_RELEASE_NAME} ${HELM_REPO_NAME}/${HELM_CHART_NAME} -n "${NAMESPACE}" --values MAINTENANCE.values.yaml --version "${HELM_CHART_VERSION}"  > deploy.maintenance.yaml
+kubectl slice -f deploy.maintenance.yaml -o $TARGET_DIR -q
+mkdir $TARGET_DIR/crds
+mv $TARGET_DIR/customresourcedefinition-* $TARGET_DIR/crds
+rm deploy.maintenance.yaml
+
+rm -f kustomization.yaml
+kustomize init --autodetect --recursive --namespace "${NAMESPACE}"
+
 '''

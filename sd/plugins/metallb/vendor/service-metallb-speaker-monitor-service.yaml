@@ -1,0 +1,28 @@
+# Source: metallb/templates/servicemonitor.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/scheme: "https"
+  labels:
+    name: metallb-speaker-monitor-service
+    helm.sh/chart: metallb-0.16.1
+    app.kubernetes.io/name: metallb
+    app.kubernetes.io/instance: metallb
+    app.kubernetes.io/version: "v0.16.1"
+    app.kubernetes.io/managed-by: Helm
+  name: metallb-speaker-monitor-service
+  namespace: "metallb-system"
+spec:
+  selector:
+    app.kubernetes.io/name: metallb
+    app.kubernetes.io/instance: metallb
+    app.kubernetes.io/component: speaker
+  clusterIP: None
+  ports:
+    - name: "metricshttps"
+      port: 9120
+      targetPort: 9120
+  sessionAffinity: None
+  type: ClusterIP

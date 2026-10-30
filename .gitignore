@@ -5,3 +5,4 @@
 kubeconfig
 talosconfig
 renovate/reports/
+.helm
