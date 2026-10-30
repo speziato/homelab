@@ -187,8 +187,6 @@ spec:
         folder: ./plugins/schedule-pvc-backup
       - name: backups-sftp-sync
         folder: ./plugins/backups-sftp-sync
-      - name: diun
-        folder: ./plugins/diun
       - name: renovate-operator
         folder: ./plugins/renovate-operator
       - name: renovate
