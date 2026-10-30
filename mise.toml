@@ -2,6 +2,8 @@
 KUBECONFIG="{{config_root}}/kubeconfig"
 KUBECTL_EXTERNAL_DIFF = "dyff between --omit-header --set-exit-code"
 TALOSCONFIG="{{config_root}}/talosconfig"
+HELM_REPOSITORY_CACHE="{{config_root}}/.helm/cache"
+HELM_REPOSITORY_CONFIG="{{config_root}}/.helm/repositories.yaml"
 
 [settings]
 lockfile = true

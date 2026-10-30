@@ -1,0 +1,22 @@
+# Source: metallb/templates/servicemonitor.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/scheme: "https"
+  labels:
+    name: metallb-controller-monitor-service
+  name: metallb-controller-monitor-service
+spec:
+  selector:
+    app.kubernetes.io/name: metallb
+    app.kubernetes.io/instance: metallb
+    app.kubernetes.io/component: controller
+  clusterIP: None
+  ports:
+    - name: "metricshttps"
+      port: 9120
+      targetPort: 9120
+  sessionAffinity: None
+  type: ClusterIP

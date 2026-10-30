@@ -1,0 +1,28 @@
+# Source: metallb/templates/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: metallb-speaker-monitor
+  namespace: "metallb-system"
+  labels:
+    helm.sh/chart: metallb-0.16.1
+    app.kubernetes.io/name: metallb
+    app.kubernetes.io/instance: metallb
+    app.kubernetes.io/version: "v0.16.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: speaker
+spec:
+  endpoints:
+    - port: "metricshttps"
+      honorLabels: true
+      bearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      scheme: "https"
+      tlsConfig:
+        insecureSkipVerify: true
+  jobLabel: "app.kubernetes.io/name"
+  namespaceSelector:
+    matchNames:
+      - metallb-system
+  selector:
+    matchLabels:
+      name: metallb-speaker-monitor-service
