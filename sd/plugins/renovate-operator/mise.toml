@@ -7,7 +7,7 @@ set -euo pipefail
 
 HELM_REPO_URL="oci://ghcr.io/mogenius/helm-charts/renovate-operator"
 # renovate: datasource=docker depName=ghcr.io/mogenius/helm-charts/renovate-operator
-HELM_CHART_VERSION="6.6.0"
+HELM_CHART_VERSION="6.7.0"
 NAMESPACE="renovate"
 HELM_RELEASE_NAME="renovate-operator"
 # Helm chart repo: https://github.com/mogenius/renovate-operator/
