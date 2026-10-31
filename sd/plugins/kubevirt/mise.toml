@@ -8,9 +8,9 @@ run = """
 set -euo pipefail
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-KUBEVIRT_VERSION="v1.7.0"
+KUBEVIRT_VERSION="v1.9.1"
 # renovate: datasource=github-releases depName=kubevirt/containerized-data-importer
-CDI_VERSION="v1.63.1"
+CDI_VERSION="v1.66.1"
 
 # check the installation guide: 
 curl -sSL -o vendor/kubevirt-operator.yaml https://github.com/kubevirt/kubevirt/releases/download/${KUBEVIRT_VERSION}/kubevirt-operator.yaml
