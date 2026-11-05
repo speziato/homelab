@@ -25,7 +25,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: renovate-operator
-          image: ghcr.io/mogenius/renovate-operator:6.6.0
+          image: ghcr.io/mogenius/renovate-operator:6.8.0
           imagePullPolicy: IfNotPresent
           args:
             - "--zap-log-level=info"
@@ -65,12 +65,16 @@ spec:
               value: "[]"
             - name: SERVER_PORT
               value: "8081"
+            - name: HEALTH_PROBE_PORT
+              value: "8083"
             - name: CLUSTER_TEMPLATES_ENABLED
               value: "false"
             - name: WATCH_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: SESSION_STORE
+              value: "cookie"
             - name: VALKEY_FORWARD_CACHE_TO_JOBS
               value: "true"
             - name: POLICY_ENABLED
@@ -109,6 +113,8 @@ spec:
               value: "true"
             - name: S3_LOG_PREFIX
               value: "renovate-logs"
+            - name: S3_LOG_OBJECT_TAGS
+              value: "{}"
             - name: S3_CACHE_PREFIX
               value: "renovate-cache"
             - name: S3_FORWARD_CACHE_TO_JOBS
@@ -116,15 +122,19 @@ spec:
             - name: S3_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: renovate-s3-credentials
-                  key: access-key-id
+                  name: "renovate-s3-credentials"
+                  key: "access-key-id"
             - name: S3_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: renovate-s3-credentials
-                  key: secret-access-key
+                  name: "renovate-s3-credentials"
+                  key: "secret-access-key"
             - name: S3_CREDENTIALS_SECRET_NAME
               value: "renovate-s3-credentials"
+            - name: S3_ACCESS_KEY_ID_SECRET_KEY
+              value: "access-key-id"
+            - name: S3_SECRET_ACCESS_KEY_SECRET_KEY
+              value: "secret-access-key"
           ports:
             - containerPort: 8081
               name: http
@@ -132,3 +142,17 @@ spec:
             - containerPort: 8080
               name: metrics
               protocol: TCP
+            - containerPort: 8083
+              name: probes
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: probes
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: probes
+            timeoutSeconds: 5

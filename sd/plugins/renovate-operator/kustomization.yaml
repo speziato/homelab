@@ -4,6 +4,7 @@ resources:
 - resources/ns.yaml
 - vendor/configmap-renovate-operator-dashboard.yaml
 - vendor/crds/customresourcedefinition-clusterrenovatejobtemplates.renovate-operator.mogenius.com.yaml
+- vendor/crds/customresourcedefinition-githubappinstallationsets.renovate-operator.mogenius.com.yaml
 - vendor/crds/customresourcedefinition-renovatejobs.renovate-operator.mogenius.com.yaml
 - vendor/crds/customresourcedefinition-renovatejobtemplates.renovate-operator.mogenius.com.yaml
 - vendor/crds/customresourcedefinition-renovateprojects.renovate-operator.mogenius.com.yaml
