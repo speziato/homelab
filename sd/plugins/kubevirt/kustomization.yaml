@@ -20,6 +20,12 @@ patches:
         #     - LiveMigrate
         monitorNamespace: monitoring
         serviceMonitorNamespace: kubevirt
+        workloadUpdateStrategy:
+          workloadUpdateMethods:
+            # - LiveMigrate # not available here
+            - Evict
+          batchEvictionSize: 10
+          batchEvictionInterval: "1m"
         configuration:
           smbios:
             sku: "TalosCloud"
@@ -27,12 +33,14 @@ patches:
             manufacturer: "Talos Virtualization"
             product: "talosvm"
             family: "ccio"
+          virtTemplateDeployment:
+            enabled: false
           developerConfiguration:
             featureGates:
               - CPUManager
               - Sidecar
-              - Snapshot
-              - HotplugVolumes
+              # - Snapshot # GA
+              # - DeclarativeHotplugVolumes # GA
               # - DataVolumes # GA
               # - SRIOV # GA
               # - LiveMigration # GA
