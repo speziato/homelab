@@ -46,24 +46,31 @@ specifiers = ["2.1.0"]
 rename_exe = "garage"
 
 [tools."http:garage"."platforms.linux-arm64"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.linux-arm64-musl"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.linux-x64"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.linux-x64-musl"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.macos-arm64"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.macos-x64"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [tools."http:garage"."platforms.windows-x64"]
+checksum = "sha256:543b0414d1464ab855ebe9b843938a5e5361fd24436891ce3dff9e03d02839d8"
 url = "https://garagehq.deuxfleurs.fr/_releases/v2.1.0/x86_64-unknown-linux-musl/garage"
 
 [[tools.kapp]]
