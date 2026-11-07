@@ -15,7 +15,7 @@ spec:
         kubevirt.io/domain: homeassistant
         app.kubernetes.io/instance: homeassistant
     spec:
-      evictionStrategy: LiveMigrate
+      evictionStrategy: None
       dnsPolicy: "ClusterFirst"
       domain:
         firmware:
