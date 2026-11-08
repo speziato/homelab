@@ -6,7 +6,7 @@ FURYCTL_LOG="{{config_root}}/.furyctl/furyctl.log"
 '_'.file = "{{config_root}}/secrets/velero-s3-credentials.env"
 
 [tools]
-furyctl = "0.34.0"
+furyctl = "0.36.1"
 kapp = "0.66.1"
-"http:garage" = {version = "2.1.0", url = "https://garagehq.deuxfleurs.fr/_releases/v{{version}}/x86_64-unknown-linux-musl/garage", rename_exe="garage"}
-velero = "1.17.1"
+"http:garage" = { version = "2.5.0", os = "linux", url = 'https://garagehq.deuxfleurs.fr/_releases/v{{ version }}/{{ arch(x64="x86_64",arm64="aarch64") }}-unknown-linux-musl/garage', rename_exe = "garage" }
+velero = "1.18.4"
