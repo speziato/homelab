@@ -71,7 +71,7 @@ spec:
             value: all
           - name: REDIS_HOSTNAME
             value: immich-valkey
-          image: ghcr.io/immich-app/immich-server:v3.3.5
+          image: ghcr.io/immich-app/immich-server:v3.3.6
           imagePullPolicy: IfNotPresent
           livenessProbe:
             failureThreshold: 3
