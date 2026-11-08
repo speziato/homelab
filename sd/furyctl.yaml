@@ -191,3 +191,5 @@ spec:
         folder: ./plugins/renovate-operator
       - name: renovate
         folder: ./plugins/renovate
+      - name: talos-apid-tailscale
+        folder: ./plugins/talos-apid-tailscale

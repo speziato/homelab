@@ -1,6 +1,7 @@
 [env]
 CONTROL_PLANE_IP="192.168.1.10"
 CLUSTER_NAME="talos-test"
+TAILSCALE_ENDPOINT="talos.possum-centauri.ts.net"
 
 '_'.file.path = "secrets/ilo.env"
 
@@ -17,6 +18,7 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --config-patch @{{config_root}}/patches/additional-storage-disk1.yaml \
     --config-patch @{{config_root}}/patches/allow-block-devices-ownership.yaml \
     --config-patch @{{config_root}}/patches/allow-cp-workload.yaml \
+    --config-patch @{{config_root}}/patches/certsans.yaml \
     --config-patch @{{config_root}}/patches/enable-imagevolume-fg.yaml \
     --config-patch @{{config_root}}/patches/enable-project-quota.yaml \
     --config-patch @{{config_root}}/patches/etcd-metrics-patch.yaml \
@@ -26,7 +28,7 @@ talosctl gen config $CLUSTER_NAME https://$CONTROL_PLANE_IP:6443 \
     --output-types controlplane,talosconfig
 
 talosctl config context $CLUSTER_NAME --talosconfig {{config_root}}/talosconfig
-talosctl config endpoint $CONTROL_PLANE_IP --talosconfig {{config_root}}/talosconfig
+talosctl config endpoint $TAILSCALE_ENDPOINT --talosconfig {{config_root}}/talosconfig
 talosctl config node $CONTROL_PLANE_IP --talosconfig {{config_root}}/talosconfig
 """
 
