@@ -1,3 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: x509-certificate-exporter-control-plane
+  namespace: monitoring
+data:
+  config.yaml: |
+    web:
+      enableStats: true
+
+    server:
+      listen: ":9793"
+
+    log:
+      level: info
+      format: text
+
+    metrics:
+      exposeRelative: false
+      exposePerCertError: false
+      exposeNotBefore: true
+      exposeExpired: true
+      exposeDiagnostics: false
+      trimPathComponents: 3
+
+    cache:
+      filePoll:
+        interval: 300s
+        skipUnchanged: true
+
+    sources:
+      - kind: file
+        name: host-paths-control-plane
+        followSymlinks: true
+        paths:
+          - /mnt/watch/file-4e011152ff1166efb100401a2542aa835a398acc/var/lib/kubelet/pki/kubelet-server-current.pem
+          - /mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b/var/lib/kubelet/pki/kubelet-client-current.pem
+          - /mnt/watch/file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5/etc/kubernetes/pki/apiserver.crt
+          - /mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898/etc/kubernetes/pki/ca.crt
+          - /mnt/watch/file-99c1687bfbcf4396bdf08131c2971b798d8eb94f/etc/kubernetes/pki/front-proxy-ca.crt
+          - /mnt/watch/file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f/etc/kubernetes/pki/front-proxy-client.crt
+        # Map host-namespace path prefixes (where symlink targets are
+        # recorded) to the paths the exporter actually sees inside the pod.
+        # Mirrors the volume mounts generated in daemonset.yaml. A non-empty
+        # list also confines symlink resolution to these scopes — anything
+        # that escapes raises x509_source_errors_total{reason="out_of_scope_symlink"}.
+        pathMappings:
+          - from: "/var/lib/kubelet/pki"
+            to: "/mnt/watch/file-4e011152ff1166efb100401a2542aa835a398acc/var/lib/kubelet/pki"
+          - from: "/var/lib/kubelet/pki"
+            to: "/mnt/watch/file-9dff78b77fe2f4b0f34f77796df3fea5983e5d4b/var/lib/kubelet/pki"
+          - from: "/etc/kubernetes/pki"
+            to: "/mnt/watch/file-24d5fa06386fdaf0d20c51e47b92012ea665b9f5/etc/kubernetes/pki"
+          - from: "/etc/kubernetes/pki"
+            to: "/mnt/watch/file-15d8ed7db7457d4f5108195ceb52a124a8703898/etc/kubernetes/pki"
+          - from: "/etc/kubernetes/pki"
+            to: "/mnt/watch/file-99c1687bfbcf4396bdf08131c2971b798d8eb94f/etc/kubernetes/pki"
+          - from: "/etc/kubernetes/pki"
+            to: "/mnt/watch/file-dfdaa9ca375647a99973f96da9f7fd05a44e5e4f/etc/kubernetes/pki"
+        formats: [pem]
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -7,44 +68,123 @@ spec:
   template:
     spec:
       containers:
-      - args:
-        - --listen-address=:9793
-        - --trim-path-components=2
-        - --max-cache-duration=300s
-        - --watch-file=/etc/kubernetes/pki/apiserver.crt
-        - --watch-file=/etc/kubernetes/pki/ca.crt
-        - --watch-file=/etc/kubernetes/pki/front-proxy-ca.crt
-        - --watch-file=/etc/kubernetes/pki/front-proxy-client.crt
-        - --watch-kubeconf=/etc/kubernetes/admin.conf
-        - --watch-kubeconf=/etc/kubernetes/controller-manager.conf
-        - --watch-kubeconf=/etc/kubernetes/scheduler.conf
-        name: x509-certificate-exporter
-        volumeMounts:
-        - mountPath: /etc/etcd/pki
-          name: etc-etcd-pki
-          readOnly: true
-        - mountPath: /etc/kubernetes
-          name: etc-kubernetes
-          readOnly: true
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: default-scheduler
-      securityContext: {}
-      serviceAccount: x509-certificate-exporter-node-control-plane
-      serviceAccountName: x509-certificate-exporter-node-control-plane
-      terminationGracePeriodSeconds: 30
-      tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-        operator: Exists
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/control-plane
-        operator: Exists
+        - name: x509-certificate-exporter
+          volumeMounts:
+            - name: file-d53b89938a3d439c2fc32700f21b9a6d3d5e280b
+              mountPath: /mnt/watch/file-d53b89938a3d439c2fc32700f21b9a6d3d5e280b/etc/etcd/pki
+              readOnly: true
+              $patch: delete
+            - name: file-c8e6234df1c5e705baa1abe5cd91a672353607a4
+              mountPath: /mnt/watch/file-c8e6234df1c5e705baa1abe5cd91a672353607a4/etc/etcd/pki/etcd
+              readOnly: true
+              $patch: delete
+            - name: file-67ffd277e7234401ae8ad9470bbabc6fbab0ec70
+              mountPath: /mnt/watch/file-67ffd277e7234401ae8ad9470bbabc6fbab0ec70/etc/etcd/pki/etcd
+              readOnly: true
+              $patch: delete
+            - name: file-c04fb1e17a554394e8bb9da2faa8392f750854d7
+              mountPath: /mnt/watch/file-c04fb1e17a554394e8bb9da2faa8392f750854d7/etc/etcd/pki/etcd
+              readOnly: true
+              $patch: delete
+            - name: file-f4a717b09c34f92953529a15f6f35bd47fd17add
+              mountPath: /mnt/watch/file-f4a717b09c34f92953529a15f6f35bd47fd17add/etc/etcd/pki/etcd
+              readOnly: true
+              $patch: delete
+            - name: file-35a4fcc6ab089d789fecaeed428cc8392148766a
+              mountPath: /mnt/watch/file-35a4fcc6ab089d789fecaeed428cc8392148766a/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: file-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+              mountPath: /mnt/watch/file-41a6b8b147ef309a70619cafcfeb8961b3c29cae/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: file-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+              mountPath: /mnt/watch/file-ee9e4e203c758bb95ec439d60c16fb4e8854efaf/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: kube-87dc0192f1ae9905eaf104bc294b632069be55fe
+              mountPath: /mnt/watch/kube-87dc0192f1ae9905eaf104bc294b632069be55fe/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: kube-35a4fcc6ab089d789fecaeed428cc8392148766a
+              mountPath: /mnt/watch/kube-35a4fcc6ab089d789fecaeed428cc8392148766a/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: kube-91fc8350dfdc257c03a9493f9daedf5842ee49b8
+              mountPath: /mnt/watch/kube-91fc8350dfdc257c03a9493f9daedf5842ee49b8/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+              mountPath: /mnt/watch/kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae/etc/kubernetes
+              readOnly: true
+              $patch: delete
+            - name: kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+              mountPath: /mnt/watch/kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf/etc/kubernetes
+              readOnly: true
+              $patch: delete
       volumes:
-      - hostPath: null
-        type: EmptyDir
-        name: etc-etcd-pki
-      - hostPath:
-          path: /etc/kubernetes
-          type: Directory
-        name: etc-kubernetes
+        - name: file-d53b89938a3d439c2fc32700f21b9a6d3d5e280b
+          hostPath:
+            path: /etc/etcd/pki
+            type: "Directory"
+          $patch: delete
+        - name: file-c8e6234df1c5e705baa1abe5cd91a672353607a4
+          hostPath:
+            path: /etc/etcd/pki/etcd
+            type: "Directory"
+          $patch: delete
+        - name: file-67ffd277e7234401ae8ad9470bbabc6fbab0ec70
+          hostPath:
+            path: /etc/etcd/pki/etcd
+            type: "Directory"
+          $patch: delete
+        - name: file-c04fb1e17a554394e8bb9da2faa8392f750854d7
+          hostPath:
+            path: /etc/etcd/pki/etcd
+            type: "Directory"
+          $patch: delete
+        - name: file-f4a717b09c34f92953529a15f6f35bd47fd17add
+          hostPath:
+            path: /etc/etcd/pki/etcd
+            type: "Directory"
+          $patch: delete
+        - name: file-35a4fcc6ab089d789fecaeed428cc8392148766a
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: file-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: file-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: kube-87dc0192f1ae9905eaf104bc294b632069be55fe
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: kube-35a4fcc6ab089d789fecaeed428cc8392148766a
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: kube-91fc8350dfdc257c03a9493f9daedf5842ee49b8
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: kube-41a6b8b147ef309a70619cafcfeb8961b3c29cae
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
+        - name: kube-ee9e4e203c758bb95ec439d60c16fb4e8854efaf
+          hostPath:
+            path: /etc/kubernetes
+            type: "Directory"
+          $patch: delete
