@@ -5,7 +5,7 @@ HELM_REPO_URL="https://guerzon.github.io/vaultwarden"
 HELM_REPO_NAME="vaultwarden"
 HELM_CHART_NAME="vaultwarden"
 # renovate: datasource=helm depName=vaultwarden registryUrl=https://guerzon.github.io/vaultwarden
-HELM_CHART_VERSION="0.46.3"
+HELM_CHART_VERSION="0.46.4"
 NAMESPACE=services
 HELM_RELEASE_NAME=vaultwarden
 # Helm chart repo: https://github.com/guerzon/vaultwarden/tree/main/charts/vaultwarden
