@@ -14,7 +14,7 @@ image:
   ## Ref: https://hub.docker.com/r/vaultwarden/server/tags
   ##
   # renovate: datasource=docker depName=vaultwarden/server versioning=docker
-  tag: "1.37.4-alpine"
+  tag: "1.37.5-alpine"
   ## @param image.pullPolicy Vaultwarden image pull policy
   ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
