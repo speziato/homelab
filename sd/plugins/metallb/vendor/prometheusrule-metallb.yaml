@@ -4,10 +4,10 @@ kind: PrometheusRule
 metadata:
   name: metallb
   labels:
-    helm.sh/chart: metallb-0.16.1
+    helm.sh/chart: metallb-0.16.2
     app.kubernetes.io/name: metallb
     app.kubernetes.io/instance: metallb
-    app.kubernetes.io/version: "v0.16.1"
+    app.kubernetes.io/version: "v0.16.2"
     app.kubernetes.io/managed-by: Helm
 spec:
   groups:
@@ -34,7 +34,7 @@ spec:
       annotations:
         summary: 'Exhausted address pool on {{ $labels.pod }}'
         description: '{{ $labels.job }} - MetalLB {{ $labels.container }} on {{ $labels.pod }} has exhausted address pool {{ $labels.pool }} for > 1 minute'
-      expr: metallb_allocator_addresses_in_use_total{pool!~""} >= on(pool) metallb_allocator_addresses_total
+      expr: metallb_allocator_addresses_in_use_total{pool!~""} >= metallb_allocator_addresses_total
       for: 1m
       labels:
         severity: critical
@@ -43,21 +43,21 @@ spec:
       annotations:
         summary: 'Exhausted address pool on {{ $labels.pod }}'
         message: '{{ $labels.job }} - MetalLB {{ $labels.container }} on {{ $labels.pod }} has address pool {{ $labels.pool }} past 75% usage for > 1 minute'
-      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / on(pool) metallb_allocator_addresses_total ) * 100 > 75
+      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / metallb_allocator_addresses_total ) * 100 > 75
       labels:
         severity: warning
     - alert: MetalLBAddressPoolUsage85Percent
       annotations:
         summary: 'Exhausted address pool on {{ $labels.pod }}'
         message: '{{ $labels.job }} - MetalLB {{ $labels.container }} on {{ $labels.pod }} has address pool {{ $labels.pool }} past 85% usage for > 1 minute'
-      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / on(pool) metallb_allocator_addresses_total ) * 100 > 85
+      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / metallb_allocator_addresses_total ) * 100 > 85
       labels:
         severity: warning
     - alert: MetalLBAddressPoolUsage95Percent
       annotations:
         summary: 'Exhausted address pool on {{ $labels.pod }}'
         message: '{{ $labels.job }} - MetalLB {{ $labels.container }} on {{ $labels.pod }} has address pool {{ $labels.pool }} past 95% usage for > 1 minute'
-      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / on(pool) metallb_allocator_addresses_total ) * 100 > 95
+      expr: ( metallb_allocator_addresses_in_use_total{pool!~""} / metallb_allocator_addresses_total ) * 100 > 95
       labels:
         severity: critical
     - alert: MetalLBBGPSessionDown

@@ -4,10 +4,10 @@ kind: ClusterRoleBinding
 metadata:
   name: metallb:speaker
   labels:
-    helm.sh/chart: metallb-0.16.1
+    helm.sh/chart: metallb-0.16.2
     app.kubernetes.io/name: metallb
     app.kubernetes.io/instance: metallb
-    app.kubernetes.io/version: "v0.16.1"
+    app.kubernetes.io/version: "v0.16.2"
     app.kubernetes.io/managed-by: Helm
 subjects:
 - kind: ServiceAccount
