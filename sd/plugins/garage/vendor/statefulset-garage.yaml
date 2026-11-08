@@ -71,6 +71,11 @@ spec:
             readOnlyRootFilesystem: true
           image: "dxflrs/amd64_garage:v2.5.0"
           imagePullPolicy: IfNotPresent
+          command:
+            - /garage
+          args:
+            - server
+            - --single-node
           ports:
             - containerPort: 3900
               name: s3-api
@@ -92,6 +97,18 @@ spec:
             - name: etc
               mountPath: /etc/garage.toml
               subPath: garage.toml
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3903
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3903
+            initialDelaySeconds: 5
+            periodSeconds: 30
           resources:
             limits:
               cpu: 200m

@@ -9,9 +9,16 @@ metadata:
     app.kubernetes.io/instance: garage
     app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/managed-by: Helm
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-sd
 spec:
+  tls:
+    - hosts:
+        - "speziato.dev"
+        - "*.web.speziato.dev"
+      secretName: garage-web-access
   rules:
-    - host: "*.web.garage.tld"
+    - host: "*.web.speziato.dev"
       http:
         paths:
           - path: /
@@ -21,7 +28,7 @@ spec:
                 name: garage
                 port:
                   number: 3902
-    - host: "mywebpage.example.com"
+    - host: "speziato.dev"
       http:
         paths:
           - path: /
