@@ -10,7 +10,7 @@ data:
 
     db_engine = "sqlite"
 
-    block_size = 1048576
+    block_size = "1048576"
 
     replication_factor = 1
     consistency_mode = "consistent"
@@ -21,8 +21,9 @@ data:
     # rpc_secret will be populated by the init container from a k8s secret object
     rpc_secret = "__RPC_SECRET_REPLACE__"
 
-    bootstrap_peers = []
-
+    bootstrap_peers = [ 
+    ]
+  
     [kubernetes_discovery]
     namespace = "garage"
     service_name = "garage"

@@ -4,16 +4,16 @@ kind: ClusterRole
 metadata:
   name: manage-crds-garage-garage
   labels:
-    helm.sh/chart: garage-0.9.1
+    helm.sh/chart: garage-0.10.4
     app.kubernetes.io/name: garage
     app.kubernetes.io/instance: garage
-    app.kubernetes.io/version: "v2.1.0"
+    app.kubernetes.io/version: "v2.5.0"
     app.kubernetes.io/managed-by: Helm
-    
 rules:
 - apiGroups: ["apiextensions.k8s.io"]
   resources: ["customresourcedefinitions"]
   verbs: ["get", "list", "watch", "create", "patch"]
+
 - apiGroups: ["deuxfleurs.fr"]
   resources: ["garagenodes"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
