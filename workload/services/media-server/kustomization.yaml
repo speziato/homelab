@@ -48,7 +48,7 @@ images:
     newTag: 5.3.0@sha256:5a858e61f94cf2712391db32ed03556576c700858f3e62c4c6fcde262443ebd8
   - name: radarr
     newName: ghcr.io/home-operations/radarr
-    newTag: 6.4.4@sha256:1902ad2c08e9bac276ff9a1429af2eaa2f3c635a51f138f1b3eb734995171537
+    newTag: 7.0.2@sha256:69ea515df6e2a3ea1490cfa127ffaaf9597a9db84fffa2fa150a6fae98fe04cb
   - name: sonarr
     newName: ghcr.io/home-operations/sonarr
     newTag: 5.0.0@sha256:93b0923dd12afd43247739e19dac59d74c52a15ea12e036b7ced264cffb42574
