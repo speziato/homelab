@@ -4,12 +4,10 @@ metadata:
   name: jellyfin
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-    nginx.ingress.kubernetes.io/websocket-services: "jellyfin"
+    haproxy.org/timeout-server: "3600s"
+    haproxy.org/timeout-tunnel: "3600s"
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: jellyfin.lan.speziato.dev
       http:

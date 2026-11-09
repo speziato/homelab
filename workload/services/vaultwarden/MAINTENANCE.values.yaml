@@ -824,16 +824,29 @@ ingress:
   ## @param ingress.class Ingress resource class
   ## The Ingress class to use, e. g. "nginx" for a nginx ingress controller or "alb" for a AWS LB controller.
   #
-  class: "nginx"
+  class: "haproxy"
   ## @param ingress.nginxIngressAnnotations Add nginx specific ingress annotations
   ## These annotations only make sense for the kubernetes nginx ingress controller (https://kubernetes.github.io/ingress-nginx/)
   ##
-  nginxIngressAnnotations: true
+  nginxIngressAnnotations: false
   ## @param ingress.additionalAnnotations Additional annotations for the ingress resource.
   ##
   additionalAnnotations:
     external-dns.alpha.kubernetes.io/hostname: vaultwarden.lan.speziato.dev
     cert-manager.io/cluster-issuer: letsencrypt-sd
+    # Convert the default nginx annotation into haproxy ones
+    haproxy.org/ssl-redirect: "true"
+    haproxy.org/cors-enable: "true"
+    haproxy.org/rate-limit-requests: "15"
+    haproxy.org/rate-limit-period: "1s"
+    haproxy.org/rate-limit-status-code: "429"
+    haproxy.org/timeout-connect: "10s"
+    haproxy.org/timeout-server: "1800s"
+    haproxy.org/backend-config-snippet: |
+      stick-table type ip size 100k expire 30s store conn_cur
+      http-request track-sc1 src
+      http-request deny deny_status 429 if { sc1_conn_cur gt 25 }
+      http-request deny deny_status 413 if { req.hdr_val(content-length) gt 1073741824 }
     # external-dns.alpha.kubernetes.io/target: vaultwarden.possum-centauri.ts.net
     # tailscale.com/proxy-group: tailscale-ingress
   ## @param ingress.labels Additional labels for the ingress resource.

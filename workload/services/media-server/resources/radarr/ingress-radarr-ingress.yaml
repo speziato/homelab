@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: radarr
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: radarr.lan.speziato.dev
       http:

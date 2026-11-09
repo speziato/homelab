@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: lidarr
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: lidarr.lan.speziato.dev
       http:

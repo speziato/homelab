@@ -2,10 +2,12 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: ingress-nginx
+    app.kubernetes.io/instance: haproxy-ingress
   annotations:
-    external-dns.kubernetes.io/hostname: ingress.lan.speziato.dev
-  name: ingress-nginx-lb
+    external-dns.kubernetes.io/hostname: ingress-haproxy.lan.speziato.dev
+    metallb.io/loadBalancerIPs: 192.168.1.100
+  name: haproxy-ingress-lb
+  namespace: ingress-haproxy
 spec:
   externalTrafficPolicy: Local
   internalTrafficPolicy: Cluster
@@ -19,9 +21,7 @@ spec:
     protocol: TCP
     targetPort: https
   selector:
-    app: ingress-nginx
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/instance: ingress-nginx
-    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/instance: haproxy-ingress
+    app.kubernetes.io/name: kubernetes-ingress
   sessionAffinity: None
   type: LoadBalancer

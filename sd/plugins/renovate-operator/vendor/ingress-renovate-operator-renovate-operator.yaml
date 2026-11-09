@@ -5,10 +5,10 @@ metadata:
   name: renovate-operator-renovate-operator
   namespace: renovate
   annotations:
-    kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: haproxy
     cert-manager.io/cluster-issuer: letsencrypt-sd
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: renovate.lan.speziato.dev
       http:

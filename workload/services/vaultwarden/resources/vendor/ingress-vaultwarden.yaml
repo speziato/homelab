@@ -14,17 +14,20 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
     external-dns.alpha.kubernetes.io/hostname: vaultwarden.lan.speziato.dev
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/limit-connections: "25"
-    nginx.ingress.kubernetes.io/limit-rps: "15"
-    nginx.ingress.kubernetes.io/proxy-body-size: 1024m
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "1800"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "1800"
+    haproxy.org/backend-config-snippet: |
+      stick-table type ip size 100k expire 30s store conn_cur
+      http-request track-sc1 src
+      http-request deny deny_status 429 if { sc1_conn_cur gt 25 }
+      http-request deny deny_status 413 if { req.hdr_val(content-length) gt 1073741824 }
+    haproxy.org/cors-enable: "true"
+    haproxy.org/rate-limit-period: 1s
+    haproxy.org/rate-limit-requests: "15"
+    haproxy.org/rate-limit-status-code: "429"
+    haproxy.org/ssl-redirect: "true"
+    haproxy.org/timeout-connect: 10s
+    haproxy.org/timeout-server: 1800s
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: "haproxy"
   tls:
     - hosts:
         - "vaultwarden.lan.speziato.dev"

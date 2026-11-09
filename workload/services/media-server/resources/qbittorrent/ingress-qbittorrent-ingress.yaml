@@ -4,9 +4,8 @@ metadata:
   name: qbittorrent
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: qbittorrent.lan.speziato.dev
       http:

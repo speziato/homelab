@@ -41,10 +41,11 @@ spec:
       ingress:
         # the base domain used for all the KFD ingresses, if in the nginx dual configuration, it should be the same as the .spec.distribution.modules.ingress.dns.private.name zone
         baseDomain: lan.speziato.dev
+        infrastructureIngressController: haproxy
         # configurations for the nginx ingress controller package
         nginx:
           # type defines if the nginx should be configured as single or dual (internal + external) or none, with none no ingress controller will be deployed and also no ingress resource will be created
-          type: single
+          type: none
           # the tls section defines how the tls for the ingresses should be managed
           tls:
             # provider can be certManager, secret
@@ -57,6 +58,10 @@ spec:
             # key: "{file://relative/path/to/ssl.key}"
             # the ca file, a file notation can be used to get the content from a file
             # ca: "{file://relative/path/to/ssl.ca}"
+        haproxy:
+          type: single
+          tls:
+            provider: certManager
         # configuration for the cert-manager package
         certManager:
           # the configuration for the clusterIssuer that will be created

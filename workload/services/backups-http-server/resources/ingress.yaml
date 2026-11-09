@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: backups-http-server
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: backups.lan.speziato.dev
       http:

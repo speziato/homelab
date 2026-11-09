@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: prowlarr
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: prowlarr.lan.speziato.dev
       http:

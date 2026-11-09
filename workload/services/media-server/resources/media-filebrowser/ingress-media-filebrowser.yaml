@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: media-filebrowser
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: media-filebrowser.lan.speziato.dev
       http:

@@ -105,7 +105,7 @@ ingress:
   # -- whether to enable the ingress renovate-operator
   enabled: true
   # -- the ingressclassname for the ingress, default: nginx
-  ingressClassName: "nginx"
+  ingressClassName: "haproxy"
   # -- the host the ingress should listen for
   host: renovate.lan.speziato.dev
   # -- tls configuration to be applied on the ingress

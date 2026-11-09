@@ -7,4 +7,4 @@ spec:
   - dnsName: "*.lan.speziato.dev"
     recordType: CNAME
     targets:
-    - ingress.lan.speziato.dev
+    - ingress-haproxy.lan.speziato.dev

@@ -11,9 +11,9 @@ metadata:
     helm.sh/chart: immich-0.13.4
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   namespace: services
 spec:
+  ingressClassName: haproxy
   tls:
     - hosts:
         - "immich.lan.speziato.dev"

@@ -12,6 +12,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
 spec:
+  ingressClassName: haproxy
   tls:
     - hosts:
         - "speziato.dev"

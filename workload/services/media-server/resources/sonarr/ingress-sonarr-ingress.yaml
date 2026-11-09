@@ -5,7 +5,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-sd
   name: sonarr
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
     - host: sonarr.lan.speziato.dev
       http:
