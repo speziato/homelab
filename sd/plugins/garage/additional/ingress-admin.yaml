@@ -10,7 +10,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-sd
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   tls:
     - hosts:
         - "garage-admin.lan.speziato.dev"
