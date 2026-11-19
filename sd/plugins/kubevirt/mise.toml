@@ -8,7 +8,7 @@ run = """
 set -euo pipefail
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-KUBEVIRT_VERSION="v1.9.1"
+KUBEVIRT_VERSION="v1.10.0"
 # renovate: datasource=github-releases depName=kubevirt/containerized-data-importer
 CDI_VERSION="v1.66.1"
 
