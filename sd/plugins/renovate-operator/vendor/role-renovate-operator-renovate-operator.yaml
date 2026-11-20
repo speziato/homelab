@@ -51,3 +51,13 @@ rules:
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "create", "update", "delete", "list", "watch"]
+
+  # Allow leader election via coordination leases
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "get", "update"]
+
+  # Allow creating events for leader election
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
