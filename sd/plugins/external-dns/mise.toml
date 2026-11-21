@@ -11,7 +11,7 @@ HELM_REPO_NAME="external-dns"
 HELM_CHART_NAME="external-dns"
 HELM_RELEASE_NAME="external-dns"
 # renovate: datasource=helm depName=external-dns registryUrl=https://kubernetes-sigs.github.io/external-dns/
-HELM_CHART_VERSION="1.23.0"
+HELM_CHART_VERSION="1.24.0"
 NAMESPACE="external-dns"
 
 helm repo add ${HELM_REPO_NAME} https://kubernetes-sigs.github.io/external-dns/ > /dev/null
