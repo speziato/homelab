@@ -18,7 +18,7 @@ spec:
               service:
                 name: jellyfin
                 port:
-                  number: 8096
+                  name: http
   tls:
     - hosts:
         - jellyfin.lan.speziato.dev
