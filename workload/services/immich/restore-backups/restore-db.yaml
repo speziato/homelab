@@ -11,7 +11,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: restore
-          image: ghcr.io/cloudnative-pg/postgresql:18-standard-trixie
+          image: ghcr.io/cloudnative-pg/postgresql:19-standard-trixie
           command: ["/bin/bash", "-c"]
           args:
             - |
