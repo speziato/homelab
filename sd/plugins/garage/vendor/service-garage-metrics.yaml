@@ -4,10 +4,10 @@ kind: Service
 metadata:
   name: garage-metrics
   labels:
-    helm.sh/chart: garage-0.10.4
+    helm.sh/chart: garage-0.10.7
     app.kubernetes.io/name: garage
     app.kubernetes.io/instance: garage
-    app.kubernetes.io/version: "v2.5.0"
+    app.kubernetes.io/version: "v2.6.0"
     app.kubernetes.io/managed-by: Helm
   annotations:
     prometheus.io/scrape: "true"
