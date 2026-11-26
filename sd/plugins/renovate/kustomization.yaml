@@ -25,4 +25,4 @@ secretGenerator:
 images:
   - name: renovate
     newName: ghcr.io/renovatebot/renovate
-    newTag: 44.257.9@sha256:578179439fceea89646662dd583b27efdad8d1429e0cbd90681c40dde068589e
+    newTag: 44.264.1@sha256:7c6e6274efc81ba9c6c4e7a2124c40a3a04e88d3745a4d1e4c97cb0c6cd33820
